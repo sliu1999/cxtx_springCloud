@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.UserMapper">
+    <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.User">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="ONLINE_ID" jdbcType="INTEGER" property="onlineId" />
+        <result column="ONLINE_NAME" jdbcType="TIMESTAMP" property="onlineName" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="ROLE_NAMES" jdbcType="VARCHAR" property="roleNames" />
+    </resultMap>
+
+    <resultMap id="FullResultMap" type="com.cxtx.user_manage.domain.User">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
+        <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="ONLINE_ID" jdbcType="INTEGER" property="onlineId" />
+        <result column="ONLINE_NAME" jdbcType="TIMESTAMP" property="onlineName" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <collection property="roles" javaType="java.util.ArrayList" column="{loginId=LOGIN_ID}" select="selectRolesByLoginId"></collection>
+    </resultMap>
+
+    <delete id="deleteUserById" parameterType="java.lang.String">
+        DELETE FROM tb_sys_user WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteUserByLoginId" parameterType="java.lang.String">
+        DELETE FROM tb_sys_user WHERE LOGIN_ID = #{loginId}
+    </delete>
+
+    <delete id="deleteUser2RoleById" parameterType="java.lang.String">
+        DELETE FROM tb_sys_user_r_role WHERE LOGIN_ID = (SELECT LOGIN_ID FROM tb_sys_user WHERE ID = #{id})
+    </delete>
+
+    <delete id="deleteUser2RoleByLoginId" parameterType="java.lang.String">
+        DELETE FROM tb_sys_user_r_role WHERE LOGIN_ID = #{loginId}
+    </delete>
+
+    <insert id="insertUser" parameterType="com.cxtx.user_manage.domain.User">
+        <selectKey  keyProperty="id" resultType="String" order="BEFORE">
+            <![CDATA[  SELECT uuid()  FROM  dual  ]]>
+        </selectKey>
+        INSERT INTO tb_sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="loginId != null">
+                LOGIN_ID,
+            </if>
+            <if test="password != null">
+                PASSWORD,
+            </if>
+            CREATE_TIME,
+            UPDATE_TIME,
+            <if test="onlineId != null">
+                ONLINE_ID,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="loginId != null">
+                #{loginId,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            SYSDATE(),
+            SYSDATE(),
+            <if test="onlineId != null">
+                #{onlineId,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <insert id="insertUser2Roles" parameterType="com.cxtx.user_manage.domain.User">
+        INSERT INTO tb_sys_user_r_role (ID,LOGIN_ID,ROLE_ID,IS_DEFAULT) VALUES
+        <foreach collection="roles" item="role" separator=",">
+            (UUID(),#{loginId},#{role.id},#{role.isDefault})
+        </foreach>
+    </insert>
+
+    <update id="updateUser2RolesDefault" parameterType="map">
+        UPDATE  tb_sys_user_r_role
+        <set>
+            IS_DEFAULT = (CASE WHEN ROLE_ID = #{roleId} THEN 1 ELSE 0 END)
+        </set>
+        WHERE LOGIN_ID = #{loginId}
+    </update>
+
+    <update id="updateUser" parameterType="com.cxtx.user_manage.domain.User">
+        UPDATE tb_sys_user
+        <set>
+            <if test="loginId != null">
+                LOGIN_ID = #{loginId,jdbcType=VARCHAR},
+            </if>
+            UPDATE_TIME = SYSDATE(),
+            <if test="onlineId != null">
+                ONLINE_ID = #{onlineId,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectUserById" parameterType="java.lang.String" resultMap="FullResultMap">
+        SELECT
+        A.ID,
+        A.LOGIN_ID,
+        A.CREATE_TIME,
+        A.UPDATE_TIME,
+        A.ONLINE_ID,
+        B.NAME AS ONLINE_NAME,
+        A.REMARK
+        FROM tb_sys_user A
+        LEFT JOIN tb_dic_online B ON B.ID = A.ONLINE_ID
+        WHERE A.ID = #{id}
+    </select>
+
+    <select id="selectUserByLoginId" parameterType="java.lang.String" resultMap="FullResultMap">
+        SELECT
+        A.ID,
+        A.LOGIN_ID,
+        A.ONLINE_ID,
+        B.NAME AS ONLINE_NAME
+        FROM tb_sys_user A
+        LEFT JOIN tb_dic_online B ON B.ID = A.ONLINE_ID
+        WHERE A.LOGIN_ID = #{loginId}
+    </select>
+
+    <select id="selectRolesByLoginId" parameterType="map" resultMap="com.cxtx.user_manage.mapper.RoleMapper.BaseResultMap">
+        SELECT
+        A.ID,
+        A.NAME,
+        B.IS_DEFAULT
+        FROM tb_sys_role A
+        LEFT JOIN tb_sys_user_r_role B ON B.ROLE_ID = A.ID
+        WHERE B.LOGIN_ID = #{loginId}
+    </select>
+
+    <select id="selectUserList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        A.ID,
+        A.LOGIN_ID,
+        A.CREATE_TIME,
+        A.UPDATE_TIME,
+        A.ONLINE_ID,
+        B. NAME AS ONLINE_NAME,
+        A.REMARK,
+        C.ROLE_NAMES
+        FROM
+        tb_sys_user A
+        LEFT JOIN tb_dic_online B ON B.ID = A.ONLINE_ID
+        LEFT JOIN (
+        SELECT
+        a.LOGIN_ID,
+        GROUP_CONCAT(b.`NAME` separator '，') AS ROLE_NAMES,
+        GROUP_CONCAT(b.ID) as ROLE_IDS
+        FROM
+        tb_sys_user_r_role a
+        LEFT JOIN tb_sys_role b ON a.ROLE_ID = b.id
+        GROUP BY
+        a.LOGIN_ID
+        ) C ON A.LOGIN_ID = C.LOGIN_ID
+        WHERE
+        1 = 1
+        <if test="loginId !=null and loginId!=''">
+            AND A.LOGIN_ID LIKE CONCAT('%',#{loginId},'%')
+        </if>
+        <if test="roleId !=null and roleId!=''">
+            AND FIND_IN_SET(#{roleId},C.ROLE_IDS) > 0
+        </if>
+        order by A.CREATE_TIME DESC
+    </select>
+
+    <select id="selectCountByLoginIdAndRoleId" parameterType="map" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_sys_user_r_role WHERE LOGIN_ID = #{loginId} AND ROLE_ID = #{roleId}
+    </select>
+
+    <select id="selectCountByLoginId" parameterType="map" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_sys_user WHERE 1=1
+        AND LOGIN_ID = #{loginId}
+        <if test="id !=null and id!=''">
+            AND ID != #{id}
+        </if>
+    </select>
+
+    <select id="selectPasswordLimitIndexByLoginId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        SELECT FIND_IN_SET(#{loginId},PARAMETER_VALUE) FROM tb_sys_parameter WHERE PARAMETER_ID = 'LIMIT_CHANGE_PASSWORD'
+    </select>
+
+    <update id="updateUserPasswordById" parameterType="com.cxtx.user_manage.web.rest.vo.ChangeUserPasswordDTO">
+        UPDATE tb_sys_user
+        <set>
+            PASSWORD = #{password}
+        </set>
+        WHERE ID = #{id}
+    </update>
+
+    <update id="updateUserPasswordByLoginId" parameterType="com.cxtx.user_manage.web.rest.vo.ChangeCurrentUserPasswordDTO">
+        UPDATE tb_sys_user
+        <set>
+            PASSWORD = #{newPassword}
+        </set>
+        WHERE LOGIN_ID = #{loginId}
+    </update>
+
+    <select id="selectCountByLoginIdAndPassword" parameterType="map" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_sys_user WHERE LOGIN_ID = #{loginId} AND PASSWORD = #{password}
+    </select>
+
+</mapper>

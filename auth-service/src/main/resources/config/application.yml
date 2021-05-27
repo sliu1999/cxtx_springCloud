@@ -1,0 +1,27 @@
+server:
+  port: 7001
+  servlet:
+    context-path: /authservice
+spring:
+  application:
+    name: auth-service
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.117.128.180:3306/user_manage?serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
+    username: usermanage
+    password: 12345678
+  redis:
+    host: 192.168.1.17
+    password: 123456
+    port: 6379
+
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.117.128.180:8848
+
+mybatis:
+  mapper-locations: classpath*:config/mybatis/mappers/mysql/**/*.xml
+  config-location: classpath:config/mybatis/config/mysql/mybatis-config.xml
+
+upload-path: /root/cxtx/image

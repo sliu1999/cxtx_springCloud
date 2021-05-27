@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.SysInfoMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.SysInfo">
+    <id column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="CN_NAME" jdbcType="VARCHAR" property="cnName" />
+    <result column="EN_NAME" jdbcType="VARCHAR" property="enName" />
+    <result column="IP" jdbcType="VARCHAR" property="ip" />
+    <result column="PORT" jdbcType="VARCHAR" property="port" />
+    <result column="VERSION" jdbcType="VARCHAR" property="version" />
+    <result column="COPY_RIGHT" jdbcType="VARCHAR" property="copyRight" />
+    <result column="SYS_TYPE" jdbcType="INTEGER" property="sysType" />
+    <result column="SYS_TYPE_NAME" jdbcType="VARCHAR" property="sysTypeName" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+
+  <select id="selectSysInfo" resultMap="BaseResultMap">
+    SELECT
+    A.ID,
+    A.CN_NAME,
+    A.EN_NAME,
+    A.IP,
+    A.PORT,
+    A.VERSION,
+    A.COPY_RIGHT,
+    A.SYS_TYPE,
+    A.URL,
+    B.NAME AS SYS_TYPE_NAME
+    FROM tb_sys_info A
+    LEFT JOIN tb_dic_sys_type B ON B.ID=A.SYS_TYPE
+    LIMIT 1
+  </select>
+
+  <insert id="insertSysInfo" parameterType="com.cxtx.user_manage.domain.SysInfo">
+    <selectKey  keyProperty="id" resultType="String" order="BEFORE">
+      <![CDATA[  SELECT UUID()  FROM  DUAL  ]]>
+    </selectKey>
+    INSERT INTO tb_sys_info
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="cnName != null">
+        CN_NAME,
+      </if>
+      <if test="enName != null">
+        EN_NAME,
+      </if>
+      <if test="ip != null">
+        IP,
+      </if>
+      <if test="port != null">
+        PORT,
+      </if>
+      <if test="version != null">
+        VERSION,
+      </if>
+      <if test="copyRight != null">
+        COPY_RIGHT,
+      </if>
+      <if test="sysType != null">
+        SYS_TYPE,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+    </trim>
+    <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="cnName != null">
+        #{cnName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null">
+        #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="copyRight != null">
+        #{copyRight,jdbcType=VARCHAR},
+      </if>
+      <if test="sysType != null">
+        #{sysType,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateSysInfo" parameterType="com.cxtx.user_manage.domain.SysInfo">
+    UPDATE tb_sys_info
+    <set>
+      <if test="cnName != null">
+        CN_NAME = #{cnName,jdbcType=VARCHAR},
+      </if>
+      <if test="enName != null">
+        EN_NAME = #{enName,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null">
+        IP = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null">
+        PORT = #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        VERSION = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="copyRight != null">
+        COPY_RIGHT = #{copyRight,jdbcType=VARCHAR},
+      </if>
+      <if test="sysType != null">
+        SYS_TYPE = #{sysType,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+    </set>
+    WHERE ID = #{id,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

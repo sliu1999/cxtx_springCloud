@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.Department">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <result column="PARENT_ID" jdbcType="VARCHAR" property="parentId" />
+        <result column="PARENT_NAME" jdbcType="VARCHAR" property="parentName" />
+        <result column="SORT" jdbcType="INTEGER" property="sort" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="LEADER" jdbcType="VARCHAR" property="leader" />
+        <result column="LEADER_NAME" jdbcType="VARCHAR" property="leaderName" />
+        <result column="STAFF_COUNT" jdbcType="INTEGER" property="staffCount" />
+    </resultMap>
+
+    <resultMap id="DepartmentNode" type="map">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <result column="TITLE" jdbcType="VARCHAR" property="text" />
+        <result column="PARENT_ID" jdbcType="VARCHAR" property="parent" />
+        <result column="SORT" jdbcType="INTEGER" property="sort" />
+    </resultMap>
+
+    <delete id="deleteDepartment" parameterType="java.lang.String">
+        DELETE FROM tb_sys_department WHERE FIND_IN_SET(ID,#{ids}) > 0
+    </delete>
+
+    <delete id="deleteStaff2DepartmentsByDepartmentIds" parameterType="java.lang.String">
+        DELETE FROM tb_sys_staff_r_department WHERE FIND_IN_SET(DEPARTMENT_ID,#{ids}) > 0
+    </delete>
+
+    <select id="selectSubDepartmentsIds" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT getDepartChildList(#{parentId})
+    </select>
+
+    <insert id="insertDepartment" parameterType="com.cxtx.user_manage.domain.Department">
+        <selectKey  keyProperty="id" resultType="String" order="BEFORE">
+            <![CDATA[  SELECT uuid()  FROM  dual  ]]>
+        </selectKey>
+        INSERT INTO tb_sys_department
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="name != null">
+                NAME,
+            </if>
+            <if test="parentId != null">
+                PARENT_ID,
+            </if>
+            <if test="sort != null">
+                SORT,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+            <if test="leader != null">
+                LEADER,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="leader != null">
+                #{leader,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateDepartment" parameterType="com.cxtx.user_manage.domain.Department">
+        UPDATE tb_sys_department
+        <set>
+            <if test="name != null">
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="parentId != null">
+                PARENT_ID = #{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                SORT = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="leader != null">
+                LEADER = #{leader,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectDepartmentById" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT
+        A.ID,
+        A.NAME,
+        A.PARENT_ID,
+        B.NAME AS PARENT_NAME,
+        A.SORT,
+        A.REMARK,
+        A.LEADER,
+        C.NAME AS LEADER_NAME
+        FROM tb_sys_department A
+        LEFT JOIN tb_sys_department B ON B.ID = A.PARENT_ID
+        LEFT JOIN tb_sys_staff C ON C.ID = A.LEADER
+        WHERE A.ID = #{id}
+    </select>
+
+    <select id="selectDepartmentTree" resultMap="DepartmentNode">
+        SELECT
+        A.ID,
+        A.NAME,
+        CONCAT(A.NAME,'(',B.STAFF_COUNT,')') AS TITLE,
+        A.PARENT_ID,
+        A.SORT
+        FROM tb_sys_department A
+        LEFT JOIN (
+            SELECT
+            T1.ID,
+            COUNT(DISTINCT T2.STAFF_ID) AS STAFF_COUNT
+            FROM tb_sys_department T1
+            LEFT JOIN tb_sys_staff_r_department T2 ON FIND_IN_SET(T2.DEPARTMENT_ID,getDepartChildList(T1.ID)) > 0
+            GROUP BY T1.ID
+        ) B ON A.ID=B.ID
+        ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(getDepartChildList(ID) ORDER BY SORT) FROM tb_sys_department WHERE PARENT_ID IS NULL)), A.SORT
+    </select>
+
+    <select id="selectDepartmentList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        A.ID,
+        A.NAME,
+        A.PARENT_ID,
+        B.NAME AS PARENT_NAME,
+        A.SORT,
+        A.REMARK,
+        A.LEADER,
+        C.NAME AS LEADER_NAME,
+        E.STAFF_COUNT
+        FROM TB_SYS_DEPARTMENT A
+        LEFT JOIN tb_sys_department B ON B.ID = A.PARENT_ID
+        LEFT JOIN tb_sys_staff C ON C.ID = A.LEADER
+        LEFT JOIN (
+            SELECT
+            T1.ID,
+            COUNT(DISTINCT T2.STAFF_ID) AS STAFF_COUNT
+            FROM tb_sys_department T1
+            LEFT JOIN tb_sys_staff_r_department T2 ON FIND_IN_SET(T2.DEPARTMENT_ID,getDepartChildList(T1.ID)) > 0
+            GROUP BY T1.ID
+        ) E ON A.ID=E.ID
+        WHERE 1=1
+        <if test="parentId == null or parentId == ''">
+            AND A.PARENT_ID IS NULL
+        </if>
+        <if test="parentId != null and parentId != ''">
+            AND A.PARENT_ID = #{parentId}
+        </if>
+        ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(getDepartChildList(ID) ORDER BY SORT) FROM tb_sys_department WHERE PARENT_ID IS NULL)), A.SORT
+    </select>
+
+</mapper>

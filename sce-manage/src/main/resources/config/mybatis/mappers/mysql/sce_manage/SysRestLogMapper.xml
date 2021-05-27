@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.sce_manage.mapper.SysRestLogMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.sce_manage.domain.SysRestLog">
+    <id column="ID" jdbcType="INTEGER" property="id" />
+    <result column="OPERATE" jdbcType="VARCHAR" property="operate" />
+    <result column="TOKEN_USER" jdbcType="VARCHAR" property="tokenUser" />
+    <result column="INFO_USER" jdbcType="VARCHAR" property="infoUser" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="CREATE_DATE" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="IP_ADDR" jdbcType="VARCHAR" property="ipAddr" />
+    <result column="USER_AGENT" jdbcType="VARCHAR" property="userAgent" />
+    <result column="URL" jdbcType="VARCHAR" property="url" />
+    <result column="HTTP_METHOD" jdbcType="VARCHAR" property="httpMethod" />
+    <result column="CLASS_METHOD" jdbcType="VARCHAR" property="classMethod" />
+    <result column="SESSION_ID" jdbcType="VARCHAR" property="sessionId" />
+    <result column="OPERATE_TIMESTAMP" jdbcType="BIGINT" property="operateTimestamp" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    ID, OPERATE, TOKEN_USER, INFO_USER, DESCRIPTION, CREATE_DATE, IP_ADDR, USER_AGENT, 
+    URL, HTTP_METHOD, CLASS_METHOD, SESSION_ID, OPERATE_TIMESTAMP
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_sys_rest_log
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tb_sys_rest_log
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.cxtx.sce_manage.domain.SysRestLog">
+    insert into tb_sys_rest_log (ID, OPERATE, TOKEN_USER, 
+      INFO_USER, DESCRIPTION, CREATE_DATE, 
+      IP_ADDR, USER_AGENT, URL, 
+      HTTP_METHOD, CLASS_METHOD, SESSION_ID, 
+      OPERATE_TIMESTAMP)
+    values (#{id,jdbcType=INTEGER}, #{operate,jdbcType=VARCHAR}, #{tokenUser,jdbcType=VARCHAR}, 
+      #{infoUser,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{ipAddr,jdbcType=VARCHAR}, #{userAgent,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, 
+      #{httpMethod,jdbcType=VARCHAR}, #{classMethod,jdbcType=VARCHAR}, #{sessionId,jdbcType=VARCHAR}, 
+      #{operateTimestamp,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cxtx.sce_manage.domain.SysRestLog">
+    insert into tb_sys_rest_log
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="operate != null">
+        OPERATE,
+      </if>
+      <if test="tokenUser != null">
+        TOKEN_USER,
+      </if>
+      <if test="infoUser != null">
+        INFO_USER,
+      </if>
+      <if test="description != null">
+        DESCRIPTION,
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE,
+      </if>
+      <if test="ipAddr != null">
+        IP_ADDR,
+      </if>
+      <if test="userAgent != null">
+        USER_AGENT,
+      </if>
+      <if test="url != null">
+        URL,
+      </if>
+      <if test="httpMethod != null">
+        HTTP_METHOD,
+      </if>
+      <if test="classMethod != null">
+        CLASS_METHOD,
+      </if>
+      <if test="sessionId != null">
+        SESSION_ID,
+      </if>
+      <if test="operateTimestamp != null">
+        OPERATE_TIMESTAMP,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="operate != null">
+        #{operate,jdbcType=VARCHAR},
+      </if>
+      <if test="tokenUser != null">
+        #{tokenUser,jdbcType=VARCHAR},
+      </if>
+      <if test="infoUser != null">
+        #{infoUser,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ipAddr != null">
+        #{ipAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null">
+        #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="httpMethod != null">
+        #{httpMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="classMethod != null">
+        #{classMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionId != null">
+        #{sessionId,jdbcType=VARCHAR},
+      </if>
+      <if test="operateTimestamp != null">
+        #{operateTimestamp,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.sce_manage.domain.SysRestLog">
+    update tb_sys_rest_log
+    <set>
+      <if test="operate != null">
+        OPERATE = #{operate,jdbcType=VARCHAR},
+      </if>
+      <if test="tokenUser != null">
+        TOKEN_USER = #{tokenUser,jdbcType=VARCHAR},
+      </if>
+      <if test="infoUser != null">
+        INFO_USER = #{infoUser,jdbcType=VARCHAR},
+      </if>
+      <if test="description != null">
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ipAddr != null">
+        IP_ADDR = #{ipAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="userAgent != null">
+        USER_AGENT = #{userAgent,jdbcType=VARCHAR},
+      </if>
+      <if test="url != null">
+        URL = #{url,jdbcType=VARCHAR},
+      </if>
+      <if test="httpMethod != null">
+        HTTP_METHOD = #{httpMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="classMethod != null">
+        CLASS_METHOD = #{classMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="sessionId != null">
+        SESSION_ID = #{sessionId,jdbcType=VARCHAR},
+      </if>
+      <if test="operateTimestamp != null">
+        OPERATE_TIMESTAMP = #{operateTimestamp,jdbcType=BIGINT},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cxtx.sce_manage.domain.SysRestLog">
+    update tb_sys_rest_log
+    set OPERATE = #{operate,jdbcType=VARCHAR},
+      TOKEN_USER = #{tokenUser,jdbcType=VARCHAR},
+      INFO_USER = #{infoUser,jdbcType=VARCHAR},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      IP_ADDR = #{ipAddr,jdbcType=VARCHAR},
+      USER_AGENT = #{userAgent,jdbcType=VARCHAR},
+      URL = #{url,jdbcType=VARCHAR},
+      HTTP_METHOD = #{httpMethod,jdbcType=VARCHAR},
+      CLASS_METHOD = #{classMethod,jdbcType=VARCHAR},
+      SESSION_ID = #{sessionId,jdbcType=VARCHAR},
+      OPERATE_TIMESTAMP = #{operateTimestamp,jdbcType=BIGINT}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+
+
+  <select id="selectAll" resultMap="BaseResultMap">
+    select * from tb_sys_rest_log
+  </select>
+</mapper>

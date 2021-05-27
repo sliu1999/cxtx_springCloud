@@ -1,0 +1,35 @@
+server:
+  port: 7000
+  servlet:
+    context-path: /user
+spring:
+  application:
+    name: cxtx-user
+  rabbitmq:
+    host: 192.168.1.17
+    port: 5672
+    username: sliu
+    password: admin123
+    virtual-host: host2
+  mqconfig:
+    exchange: cxtx-exchange
+    queue-public:
+      name: cxtx-public-queue
+      topic: cxtx-public-topic
+    queue-private:
+      name: cxtx-boot-c-queue
+      topic: cxtx-boot-c-topic
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.117.128.180:3306/boot_c?serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&allowMultiQueries=true
+    username: bootc
+    password: 12345678
+
+
+
+mybatis:
+  mapper-locations: classpath*:config/mybatis/mappers/mysql/**/*.xml
+  config-location: classpath:config/mybatis/config/mysql/mybatis-config.xml
+
+

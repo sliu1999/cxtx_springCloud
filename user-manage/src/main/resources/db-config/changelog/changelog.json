@@ -1,0 +1,24 @@
+{
+    "mysql":{
+        "logs":[
+            {
+                "file":"updatesql-config-000.sql",
+                "remark":""
+            },{
+                "file":"updatesql-config-001.sql",
+                "remark":""
+            },{
+                "file":"updatesql-config-002.sql",
+                "remark":""
+            },{
+                "file":"updatesql-config-004.sql",
+                "remark":""
+            }
+        ]
+    },
+    "oracle":{
+        "logs":[
+
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+server:
+  port: 7000
+  servlet:
+    context-path: /common
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.117.128.180:3306/boot_c?serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
+    username: root
+    password: 12345678
+
+
+
+mybatis:
+  mapper-locations: classpath*:config/mybatis/mappers/mysql/**/*.xml
+  config-location: classpath:config/mybatis/config/mysql/mybatis-config.xml
+
+

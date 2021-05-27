@@ -1,0 +1,15 @@
+{
+    "mysql":{
+        "logs":[
+            {
+                "file":"updatesql-common-000.sql",
+                "remark":""
+            }
+        ]
+    },
+    "oracle":{
+        "logs":[
+
+        ]
+    }
+}

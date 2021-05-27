@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.common.mapper.FileUploadMapper">
+    <resultMap id="BaseResultMap" type="com.cxtx.common.domain.FileInfo">
+        <id property="id" column="ID" />
+        <result property="mainId" column="MAIN_ID" />
+        <result property="fileName" column="FILE_NAME" />
+        <result property="saveName" column="SAVE_NAME" />
+        <result property="fullUrl" column="full_Url" />
+        <result property="uploadTime" column="UPLOAD_TIME" />
+        <result property="dir" column="DIR" />
+        <result property="systemName" column="SYSTEM_NAME" />
+        <result property="orderNum" column="ORDER_NUM" />
+        <result property="isCover" column="IS_COVER" />
+        <result property="fileType" column="FILE_TYPE" />
+    </resultMap>
+
+    <!--查询附件-->
+    <select id="queryFilesInfo" parameterType="map" resultMap="BaseResultMap">
+        select
+        listagg(save_name,',') within GROUP (order by save_name) as save_name,
+        SYSTEM_NAME,
+        dir
+        from ${tableName}
+        where main_id=#{mainId}
+        GROUP BY SYSTEM_NAME,dir
+    </select>
+
+    <!--查询被删除的附件-->
+    <select id="queryDeleteFilesInfo" parameterType="map" resultMap="BaseResultMap">
+        select
+        listagg(save_name,',') within GROUP (order by save_name) as save_name,
+        SYSTEM_NAME,
+        dir
+        from ${tableName}
+        where main_id=#{mainId}
+        <if test="null != files and files.size > 0">
+            and save_name not in
+            <foreach item="itm" collection="files" open="(" separator="," close=")">
+                #{itm.saveName}
+            </foreach>
+        </if>
+        GROUP BY SYSTEM_NAME,dir
+    </select>
+
+    <select id="queryTableNameById" parameterType="String" resultType="String">
+        select TABLE_NAME  from TB_SYS_ATTACHED_TAB
+        where id=#{tableId}
+    </select>
+
+    <!--批量添加附件-->
+    <insert id="saveFilesInfo" parameterType="map">
+        INSERT INTO ${tableName} (ID,MAIN_ID,FILE_NAME,SAVE_NAME,FILE_TYPE,UPLOAD_TIME,DIR,SYSTEM_NAME,IS_COVER,ORDER_NUM)
+        <foreach collection="files"  item="itm" index="index" separator="union all">
+            (SELECT sys_guid(),#{mainId},#{itm.fileName},#{itm.saveName},#{itm.fileType},sysdate,#{itm.dir},#{itm.systemName},
+            <if test="null != itm.isCover">
+                #{itm.isCover},
+            </if>
+            <if test="null == itm.isCover">
+                0,
+            </if>
+            #{index} FROM DUAL)
+        </foreach>
+    </insert>
+
+    <!--删除附件-->
+    <delete id="deleteFileInfo" parameterType="map">
+        delete from ${tableName} where main_id=#{mainId}
+    </delete>
+
+    <!--根据id，表id查询附件-->
+    <select id="queryFilesInfoByMainId" parameterType="map" resultMap="BaseResultMap">
+        select
+        *
+        from ${tableName}
+        where main_id=#{mainId}
+    </select>
+
+</mapper>

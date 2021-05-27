@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.RoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.Role">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <result column="REMARK" jdbcType="VARCHAR" property="remark" />
+        <result column="IS_DEFAULT" jdbcType="INTEGER" property="isDefault" />
+    </resultMap>
+
+    <resultMap id="FullResultMap" type="com.cxtx.user_manage.domain.Role">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <collection property="menuIds" javaType="java.util.ArrayList" column="{roleId=ID}" select="selectMenuIdsByRoleId"></collection>
+    </resultMap>
+
+    <insert id="insertRole" parameterType="com.cxtx.user_manage.domain.Role">
+        <selectKey  keyProperty="id" resultType="String" order="BEFORE">
+            <![CDATA[  SELECT uuid()  FROM  dual  ]]>
+        </selectKey>
+        INSERT INTO tb_sys_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="name != null">
+                NAME,
+            </if>
+            <if test="remark != null">
+                REMARK,
+            </if>
+        </trim>
+        <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateRole" parameterType="com.cxtx.user_manage.domain.Role">
+        UPDATE tb_sys_role
+        <set>
+            <if test="name != null">
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                REMARK = #{remark,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="insertRole2Menus" parameterType="com.cxtx.user_manage.domain.Role">
+        INSERT INTO tb_sys_role_r_menu (ID,ROLE_ID,MENU_ID) VALUES
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (UUID(),#{id},#{menuId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleById" parameterType="java.lang.String">
+        DELETE FROM tb_sys_role WHERE ID = #{id}
+    </delete>
+
+    <delete id="deleteRole2MenusByRoleId" parameterType="java.lang.String">
+        DELETE FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId}
+    </delete>
+
+    <select id="selectRoleById" parameterType="java.lang.String" resultMap="FullResultMap">
+        SELECT
+        ID,
+        NAME,
+        REMARK
+        FROM tb_sys_role
+        WHERE ID = #{id}
+    </select>
+
+    <select id="selectRoleListByUserId" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT DISTINCT ROLE_ID FROM tb_sys_user_r_role WHERE LOGIN_ID = (SELECT LOGIN_ID FROM tb_sys_user WHERE ID = #{userId})
+    </select>
+
+    <select id="selectMenuIdsByRoleId" parameterType="map" resultType="java.lang.String">
+        SELECT
+        MENU_ID
+        FROM tb_sys_role_r_menu
+        WHERE ROLE_ID = #{roleId}
+    </select>
+
+    <select id="selectRoleList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        ID,
+        NAME,
+        REMARK
+        FROM tb_sys_role
+        WHERE 1=1
+        <if test="name != null">
+            AND NAME LIKE CONCAT('%',#{name},'%')
+        </if>
+    </select>
+
+    <select id="selectAllRole" resultMap="BaseResultMap">
+        SELECT
+        ID,
+        NAME,
+        REMARK
+        FROM tb_sys_role
+        WHERE 1=1
+    </select>
+
+</mapper>

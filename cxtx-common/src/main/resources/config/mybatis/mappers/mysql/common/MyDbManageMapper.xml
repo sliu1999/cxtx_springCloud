@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.common.mapper.MyDbManageMapper">
+
+    <resultMap id="DbLogMap" type="com.cxtx.common.domain.DbLog">
+        <id column="ID" jdbcType="DECIMAL" property="id" />
+        <result column="FILE_NAME" jdbcType="VARCHAR" property="fileName" />
+        <result column="OPERATE_DATE" jdbcType="TIMESTAMP" property="operateDate" />
+    </resultMap>
+
+    <update id="createDbLogTable">
+        CREATE TABLE IF NOT EXISTS `tb_sys_db_log` (
+        `ID`  int(9) NOT NULL AUTO_INCREMENT ,
+        `FILE_NAME`  varchar(2000) NOT NULL ,
+        `OPERATE_DATE`  datetime NOT NULL ,
+        PRIMARY KEY (`ID`)
+        )
+    </update>
+    <select id="selectDbLogByFileName" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select count(*) from tb_sys_db_log where FILE_NAME = #{fileName}
+    </select>
+
+    <insert id="insertDbLog" parameterType="java.lang.String">
+        insert into tb_sys_db_log (FILE_NAME,OPERATE_DATE) VALUES
+        (#{fileName},NOW())
+    </insert>
+
+
+
+
+
+
+</mapper>

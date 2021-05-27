@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.StaffMapper">
+    <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.Staff">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="STAFF_NO" jdbcType="VARCHAR" property="staffNo" />
+        <result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+        <result column="OFFICE_PHONE" jdbcType="VARCHAR" property="officePhone" />
+        <result column="ENTRY_DATE" jdbcType="VARCHAR" property="entryDate" />
+        <result column="IDENTITY_CARD" jdbcType="VARCHAR" property="identityCard" />
+        <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+        <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
+        <result column="SEX" jdbcType="INTEGER" property="sex" />
+        <result column="SEX_NAME" jdbcType="VARCHAR" property="sexName" />
+        <result column="STAFF_TYPE" jdbcType="INTEGER" property="staffType" />
+        <result column="STAFF_TYPE_NAME" jdbcType="VARCHAR" property="staffTypeName" />
+        <result column="SORT" jdbcType="INTEGER" property="sort" />
+        <result column="PIN_YIN" jdbcType="VARCHAR" property="pinyin" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="LEADER" jdbcType="VARCHAR" property="leader" />
+        <result column="LEADER_NAME" jdbcType="VARCHAR" property="leaderName" />
+        <result column="ROLE_NAMES" jdbcType="VARCHAR" property="roleNames" />
+        <result column="DEPARTMENT_NAMES" jdbcType="VARCHAR" property="departmentNames" />
+    </resultMap>
+
+    <resultMap id="FullResultMap" type="com.cxtx.user_manage.domain.Staff">
+        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <result column="STAFF_NO" jdbcType="VARCHAR" property="staffNo" />
+        <result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
+        <result column="NAME" jdbcType="VARCHAR" property="name" />
+        <result column="PHONE" jdbcType="VARCHAR" property="phone" />
+        <result column="OFFICE_PHONE" jdbcType="VARCHAR" property="officePhone" />
+        <result column="ENTRY_DATE" jdbcType="VARCHAR" property="entryDate" />
+        <result column="IDENTITY_CARD" jdbcType="VARCHAR" property="identityCard" />
+        <result column="ADDRESS" jdbcType="VARCHAR" property="address" />
+        <result column="BIRTHDAY" jdbcType="TIMESTAMP" property="birthday" />
+        <result column="SEX" jdbcType="INTEGER" property="sex" />
+        <result column="SEX_NAME" jdbcType="VARCHAR" property="sexName" />
+        <result column="STAFF_TYPE" jdbcType="INTEGER" property="staffType" />
+        <result column="STAFF_TYPE_NAME" jdbcType="VARCHAR" property="staffTypeName" />
+        <result column="SORT" jdbcType="INTEGER" property="sort" />
+        <result column="PIN_YIN" jdbcType="VARCHAR" property="pinyin" />
+        <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="UPDATE_TIME" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="LEADER" jdbcType="VARCHAR" property="leader" />
+        <result column="LEADER_NAME" jdbcType="VARCHAR" property="leaderName" />
+        <collection property="departments" javaType="java.util.ArrayList" column="{staffId=ID}" select="selectStaff2Departments"></collection>
+    </resultMap>
+
+    <select id="selectStaff2Departments" parameterType="map" resultMap="com.cxtx.user_manage.mapper.DepartmentMapper.BaseResultMap">
+        SELECT
+        A.ID,
+        A.NAME,
+        A.PARENT_ID,
+        B.NAME AS PARENT_NAME,
+        A.SORT,
+        A.REMARK,
+        A.LEADER,
+        C.NAME AS LEADER_NAME
+        FROM tb_sys_department A
+        LEFT JOIN tb_sys_department B ON B.ID = A.PARENT_ID
+        LEFT JOIN tb_sys_staff C ON C.ID = A.LEADER
+        WHERE A.ID IN (SELECT DEPARTMENT_ID FROM tb_sys_staff_r_department WHERE STAFF_ID = #{staffId})
+    </select>
+
+    <delete id="deleteStaff2Departments" parameterType="java.lang.String">
+        DELETE FROM tb_sys_staff_r_department WHERE STAFF_ID = #{staffId}
+    </delete>
+
+    <insert id="insertStaff2Departments" parameterType="com.cxtx.user_manage.domain.Staff">
+        INSERT INTO tb_sys_staff_r_department (ID,STAFF_ID,DEPARTMENT_ID) VALUES
+        <foreach collection="departments" item="department" separator=",">
+            (UUID(),#{id},#{department.id})
+        </foreach>
+    </insert>
+
+    <insert id="insertStaff" parameterType="com.cxtx.user_manage.domain.Staff">
+        <selectKey  keyProperty="id" resultType="String" order="BEFORE">
+            <![CDATA[  SELECT UUID()  FROM  dual  ]]>
+        </selectKey>
+        insert into tb_sys_staff
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="staffNo != null">
+                STAFF_NO,
+            </if>
+            <if test="loginId != null">
+                LOGIN_ID,
+            </if>
+            <if test="name != null">
+                NAME,
+            </if>
+            <if test="phone != null">
+                PHONE,
+            </if>
+            <if test="officePhone != null">
+                OFFICE_PHONE,
+            </if>
+            <if test="entryDate != null">
+              ENTRY_DATE,
+            </if>
+            <if test="identityCard != null">
+                IDENTITY_CARD,
+            </if>
+            <if test="address != null">
+                ADDRESS,
+            </if>
+            <if test="birthday != null">
+                BIRTHDAY,
+            </if>
+            <if test="sex != null">
+              SEX,
+            </if>
+            <if test="staffType != null">
+                STAFF_TYPE,
+            </if>
+            <if test="sort != null">
+                SORT,
+            </if>
+            <if test="pinyin != null">
+                PIN_YIN,
+            </if>
+            CREATE_TIME,
+            UPDATE_TIME,
+            <if test="leader != null">
+                LEADER,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=VARCHAR},
+            </if>
+            <if test="staffNo != null">
+                #{staffNo,jdbcType=VARCHAR},
+            </if>
+            <if test="loginId != null">
+                #{loginId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="officePhone != null">
+                #{officePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="entryDate != null">
+                #{entryDate,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                #{identityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="staffType != null">
+                #{staffType,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="pinyin != null">
+                #{pinyin,jdbcType=VARCHAR},
+            </if>
+            SYSDATE(),
+            SYSDATE(),
+            <if test="leader != null">
+              #{leader,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateStaff" parameterType="com.cxtx.user_manage.domain.Staff">
+        UPDATE tb_sys_staff
+        <set>
+            <if test="staffNo != null">
+                STAFF_NO = #{staffNo,jdbcType=VARCHAR},
+            </if>
+            <if test="loginId != null">
+                LOGIN_ID = #{loginId,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                PHONE = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="officePhone != null">
+                OFFICE_PHONE = #{officePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="entryDate != null">
+                ENTRY_DATE = #{entryDate,jdbcType=VARCHAR},
+            </if>
+            <if test="identityCard != null">
+                IDENTITY_CARD = #{identityCard,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                ADDRESS = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="birthday != null">
+                BIRTHDAY = #{birthday,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                SEX = #{sex,jdbcType=INTEGER},
+            </if>
+            <if test="staffType != null">
+                STAFF_TYPE = #{staffType,jdbcType=INTEGER},
+            </if>
+            <if test="sort != null">
+                SORT = #{sort,jdbcType=INTEGER},
+            </if>
+            <if test="pinyin != null">
+                PIN_YIN = #{pinyin,jdbcType=VARCHAR},
+            </if>
+            UPDATE_TIME = SYSDATE(),
+            <if test="leader != null">
+                LEADER = #{leader,jdbcType=VARCHAR},
+            </if>
+        </set>
+        WHERE ID = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <select id="selectStaffById" parameterType="java.lang.String"  resultMap="FullResultMap">
+        SELECT
+        A.*,
+        B.NAME AS SEX_NAME,
+        C.NAME AS STAFF_TYPE_NAME,
+        D.NAME AS LEADER_NAME
+        FROM
+        tb_sys_staff A
+        LEFT JOIN tb_dic_sex B ON B.ID = A.SEX
+        LEFT JOIN tb_dic_staff_type C ON C.ID = A.STAFF_TYPE
+        LEFT JOIN tb_sys_staff D ON D.ID = A.LEADER
+        WHERE A.ID = #{id}
+    </select>
+
+    <select id="selectStaffByLoginId" parameterType="java.lang.String"  resultMap="FullResultMap">
+        SELECT
+        A.*,
+        B.NAME AS SEX_NAME,
+        C.NAME AS STAFF_TYPE_NAME,
+        D.NAME AS LEADER_NAME
+        FROM
+        tb_sys_staff A
+        LEFT JOIN tb_dic_sex B ON B.ID = A.SEX
+        LEFT JOIN tb_dic_staff_type C ON C.ID = A.STAFF_TYPE
+        LEFT JOIN tb_sys_staff D ON D.ID = A.LEADER
+        WHERE A.LOGIN_ID = #{loginId}
+    </select>
+
+    <delete id="deleteStaffById" parameterType="java.lang.String">
+        DELETE FROM tb_sys_staff WHERE ID = #{id}
+    </delete>
+
+    <select id="selectStaffList" parameterType="map" resultMap="BaseResultMap">
+        SELECT
+        A.*,
+        B.NAME AS SEX_NAME,
+        C.NAME AS STAFF_TYPE_NAME,
+        D.NAME AS LEADER_NAME,
+        E.DEPARTMENT_NAMES,
+        F.ROLE_NAMES
+        FROM
+        tb_sys_staff A
+        LEFT JOIN tb_dic_sex B ON B.ID = A.SEX
+        LEFT JOIN tb_dic_staff_type C ON C.ID = A.STAFF_TYPE
+        LEFT JOIN tb_sys_staff D ON D.ID = A.LEADER
+        LEFT JOIN (
+            SELECT
+            T.STAFF_ID,
+            GROUP_CONCAT(T.DEPARTMENT_ID) as DEPARTMENT_IDS,
+            GROUP_CONCAT(T1.NAME) as DEPARTMENT_NAMES
+            FROM tb_sys_staff_r_department T
+            LEFT JOIN tb_sys_department T1 ON T1.ID=T.DEPARTMENT_ID
+            GROUP BY T.STAFF_ID
+        ) E ON E.STAFF_ID = A.ID
+        LEFT JOIN (
+            SELECT
+            T.LOGIN_ID,
+            GROUP_CONCAT(T.ROLE_ID) as ROLE_IDS,
+            GROUP_CONCAT(T1.NAME) as ROLE_NAMES
+            FROM tb_sys_user_r_role T
+            LEFT JOIN tb_sys_role T1 ON T1.ID=T.ROLE_ID
+            GROUP BY T.LOGIN_ID
+        ) F ON F.LOGIN_ID = A.LOGIN_ID
+        WHERE 1=1
+        <if test="staffStatus!=null and staffStatus != ''">
+            AND C.TYPE=#{staffStatus}
+        </if>
+        <if test="staffType!=null and staffType != ''">
+            AND C.ID=#{staffType}
+        </if>
+        <if test="sex!=null and sex != ''">
+            AND B.ID=#{sex}
+        </if>
+        <if test="departmentId!=null and departmentId != ''">
+            AND FIND_IN_SET(#{departmentId},E.DEPARTMENT_IDS)>0
+        </if>
+        <if test="roleId!=null and roleId != ''">
+            AND FIND_IN_SET(#{roleId},F.ROLE_IDS)>0
+        </if>
+        <if test="keyword!=null and keyword != ''">
+            AND (
+                A.STAFF_NO LIKE CONCAT('%',#{keyword},'%') OR
+                A.NAME LIKE CONCAT('%',#{keyword},'%') OR
+                A.PHONE LIKE CONCAT('%',#{keyword},'%')
+            )
+        </if>
+    </select>
+
+    <select id="selectCountByStaffNo" parameterType="map" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM tb_sys_staff
+        WHERE 1=1
+        AND STAFF_NO = #{staffNo}
+        <if test="id!=null and id!=''">
+            AND ID != #{id}
+        </if>
+    </select>
+
+</mapper>

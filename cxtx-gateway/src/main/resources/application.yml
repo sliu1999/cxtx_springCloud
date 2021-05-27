@@ -1,0 +1,52 @@
+server:
+  port: 8888
+
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 47.117.128.180:8848
+    gateway:
+      # 跨域配置 暂未 试
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+            - OPTIONS
+      #注册中心配置
+      discovery:
+        locator:
+          enabled: true  #开启通过serviceId转发到具体的服务实例
+          lower-case-service-id: true  #开启可以通过小写的serviceId进行基于服务路由转发
+    sentinel:
+      filter:
+        enabled: false #网关服务不展示在sentinel控制台
+      transport:
+        port: 8718
+        dashboard: 47.117.128.180:8080  #控制台地址
+  redis:
+    host: 192.168.1.17
+    password: 123456
+    port: 6379
+
+#Hystrix的fallbackcmd的时间
+hystrix.command.fallbackcmd.execution.isolation.thread.timeoutInMilliseconds: 10000
+
+sce-manage:  #某个服务的负载均衡配置  路由里的uri
+  ribbon:
+    # 负载地址
+    listOfServers: http://localhost:7072  #配置的微服务的服务器ip端口，多个用，隔开配置
+    # 负载轮询策略
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule  #简单轮询服务列表
+    # 健康检查
+    #NFLoadBalancerPingClassName: com.modules.scistor.config.HealthExamination
+    connectTimout: 2000 #请求连接的超时时间
+    readTimout: 7000 #请求处理的超时时间
+
+
+
