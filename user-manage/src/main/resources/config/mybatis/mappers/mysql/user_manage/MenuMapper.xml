@@ -169,6 +169,51 @@
         ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(GETMENUCHILDLIST(ID) ORDER BY SORT) FROM tb_sys_menu WHERE PARENT_ID IS NULL)), A.SORT
     </select>
 
+    <select id="selectAllMenu" resultType="map">
+        SELECT
+            ID AS id,
+            `NAME` AS label,
+            SORT AS sort,
+            PARENT_ID AS parentId
+        FROM
+            tb_sys_menu
+        WHERE
+            MENU_TYPE = '0'
+        ORDER BY SORT asc
+    </select>
+
+    <select id="selectRoleStairMenu" parameterType="java.lang.String" resultType="map">
+        SELECT
+            ID AS id,
+            `NAME` AS label,
+            SORT AS sort,
+            PARENT_ID AS parentId
+        FROM
+            tb_sys_menu
+        WHERE
+            MENU_TYPE = '0'
+        AND PARENT_ID IS NULL
+        AND ID IN (SELECT DISTINCT MENU_ID FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId})
+        ORDER BY
+            SORT ASC
+    </select>
+
+    <select id="selectRoleSubMenu" parameterType="java.lang.String" resultType="map">
+        SELECT
+            ID AS id,
+            `NAME` AS label,
+            SORT AS sort,
+            PARENT_ID AS parentId
+        FROM
+            tb_sys_menu
+        WHERE
+            MENU_TYPE = '0'
+        AND PARENT_ID IS NOT NULL
+        AND ID IN (SELECT DISTINCT MENU_ID FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId})
+        ORDER BY
+            SORT ASC
+    </select>
+
     <select id="selectModuleLimitsByRoleId" parameterType="map" resultMap="BaseResultMap">
         SELECT
         A.ID,
@@ -217,6 +262,7 @@
                 )
             ) > 0
         AND a.PARENT_ID IS NULL
+        AND a.MENU_TYPE = '0'
         GROUP BY
             a.ID,
             a.`NAME`,

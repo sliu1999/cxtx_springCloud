@@ -26,8 +26,7 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private RoleMapper roleMapper;
 
-    public RoleServiceImpl() {
-    }
+
 
     @Override
     public int saveRole(Role role) {

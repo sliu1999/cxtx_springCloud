@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,8 +28,6 @@ public class MenuServiceImpl implements MenuService {
     @Autowired
     private UserService userService;
 
-    public MenuServiceImpl() {
-    }
 
     @Override
     public int deleteMenuById(String id) {
@@ -44,6 +44,59 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<Map> selectMenusTree() {
         return this.menuMapper.selectMenusTree();
+    }
+
+    @Override
+    public List<Map> selectMenusTreeTwo() {
+        List<Map> allList = this.menuMapper.selectAllMenu();
+        List<Map> parentList = new ArrayList<>();
+        for(Map all : allList){
+            if(all.get("parentId") == null){
+                Map parent = new HashMap(4);
+                parent.put("id",all.get("id"));
+                parent.put("label",all.get("label"));
+                parentList.add(parent);
+            }
+        }
+        for(Map parent : parentList){
+            buildChildTree(parent,allList);
+        }
+        return parentList;
+    }
+
+    @Override
+    public List<Map> queryRoleMenusTree(String roleId) {
+        List<Map> stairList = menuMapper.selectRoleStairMenu(roleId);
+        List<Map> subList = menuMapper.selectRoleSubMenu(roleId);
+        List<Map> parentList = new ArrayList<>();
+        for(Map stair : stairList){
+            if(stair.get("parentId") == null){
+                Map parent = new HashMap(4);
+                parent.put("id",stair.get("id"));
+                parent.put("label",stair.get("label"));
+                parentList.add(parent);
+            }
+        }
+        for(Map parent : parentList){
+            buildChildTree(parent,subList);
+        }
+        return parentList;
+    }
+
+
+    private Map buildChildTree(Map pNode,List<Map> allList){
+        List<Map> childMenus =new  ArrayList<>();
+        for(Map menuNode : allList) {
+            if(menuNode.get("parentId") != null && !"".equals(menuNode.get("parentId"))){
+                if(menuNode.get("parentId").equals(pNode.get("id"))) {
+                    childMenus.add(buildChildTree(menuNode,allList));
+                }
+            }
+        }
+        if(childMenus!=null && childMenus.size()>0){
+            pNode.put("children",childMenus);
+        }
+        return pNode;
     }
 
     @Override

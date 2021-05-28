@@ -27,6 +27,12 @@ public interface MenuMapper {
 
     List<Map> selectMenusTree();
 
+    List<Map> selectAllMenu();
+
+    List<Map> selectRoleStairMenu(@Param("roleId") String roleId);
+
+    List<Map> selectRoleSubMenu(@Param("roleId") String roleId);
+
     List<Menu> selectMenuModulesByRoleId(@Param("id") String var1, @Param("roleId") String var2);
 
     List<Menu> selectModuleLimitsByRoleId(@Param("roleId") String var1, @Param("menuId") String var2);

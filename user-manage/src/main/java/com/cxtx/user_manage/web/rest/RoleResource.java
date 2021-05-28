@@ -78,7 +78,7 @@ public class RoleResource {
     @PostMapping({"/roles"})
     @ApiOperation(
             value = "保存角色",
-            notes = "保存角色信息",
+            notes = "保存角色信息,新增和修改",
             response = ResponseUtil.Response.class
     )
     @ApiImplicitParam(

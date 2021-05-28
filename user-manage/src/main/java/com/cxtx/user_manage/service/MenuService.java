@@ -14,6 +14,10 @@ public interface MenuService {
 
     List<Map> selectMenusTree();
 
+    List<Map> selectMenusTreeTwo();
+
+    List<Map> queryRoleMenusTree(String roleId);
+
     List<Menu> selectMenuModulesByRoleId(String var1, String var2) throws Exception;
 
     List<Menu> selectModuleLimitsByRoleId(Map params) throws Exception;

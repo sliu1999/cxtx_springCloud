@@ -21,8 +21,6 @@ public class SysInfoServiceImpl implements SysInfoService {
     @Autowired
     private SysInfoMapper sysInfoMapper;
 
-    public SysInfoServiceImpl() {
-    }
 
     @Override
     public int saveSysInfo(SysInfo record) {

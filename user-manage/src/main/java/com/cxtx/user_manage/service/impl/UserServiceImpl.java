@@ -33,9 +33,6 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private StaffService staffService;
 
-    public UserServiceImpl() {
-    }
-
     @Override
     public int deleteUserById(String id) {
         this.userMapper.deleteUser2RoleById(id);

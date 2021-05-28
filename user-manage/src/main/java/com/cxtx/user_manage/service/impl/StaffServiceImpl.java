@@ -39,8 +39,6 @@ public class StaffServiceImpl implements StaffService {
     private static String FILE_TABLE_ICON_CARD_ID = "2018111401";
     private static String FILE_TABLE_ICON_PHOTO_ID = "2018111402";
 
-    public StaffServiceImpl() {
-    }
 
     @Override
     public int saveStaff(Staff staff) throws Exception {

@@ -90,6 +90,13 @@
             <artifactId>jakarta.validation-api</artifactId>
         </dependency>
         <!--end-->
+        <!--aop-->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.8.6</version>
+        </dependency>
+        <!--end-->
 
 
 

@@ -92,6 +92,36 @@ public class MenusResource {
         }
     }
 
+    @GetMapping({"/menus/treeTwo"})
+    @ApiOperation(
+            value = "获取菜单树",
+            notes = "获取element所需的数据格式的菜单树",
+            response = ResponseUtil.Response.class
+    )
+    public ResponseEntity<Map> queryMenusTreeTwo() {
+        try {
+            List<Map> result = this.menuService.selectMenusTreeTwo();
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询到结果！");
+        } catch (Exception var2) {
+            return ResponseUtil.error(var2.getMessage());
+        }
+    }
+
+    @GetMapping({"/menus/tree/{roleId}"})
+    @ApiOperation(
+            value = "获取菜单树",
+            notes = "获取element所需的数据格式的菜单树",
+            response = ResponseUtil.Response.class
+    )
+    public ResponseEntity<Map> queryRoleMenusTree(@PathVariable String roleId) {
+        try {
+            List<Map> result = this.menuService.queryRoleMenusTree(roleId);
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询到结果！");
+        } catch (Exception var2) {
+            return ResponseUtil.error(var2.getMessage());
+        }
+    }
+
     @GetMapping({"/menus/init/{roleId}/{loginId}"})
     @ApiOperation(
             value = "TWO",
@@ -129,14 +159,17 @@ public class MenusResource {
         }
     }
 
+    @ApiOperation(value = "动态路由",notes = "配置vue-element-admin 动态路由")
     @GetMapping(value = "/vue/menus")
     public ResponseEntity<Map> menus() {
         try {
             JwtModel jwtModel = HttpServletUtils.getUserInfo();
+            //获取当前用户绑定的所有一级菜单
             List<Menu> stairMenuList = menuService.selectStairMenuByUserId(jwtModel.getUserId().toString());
             List<HashMap> result = new ArrayList<>(4);
             if(stairMenuList != null && stairMenuList.size()>0){
                 for (Menu stairMenu : stairMenuList){
+                    //组装一级菜单数据格式
                     HashMap firstMenu = new HashMap(5);
                     firstMenu.put("path","/"+stairMenu.getAction());
                     firstMenu.put("component","Layout");
@@ -148,6 +181,7 @@ public class MenusResource {
                     firstMate.put("roles",stairMenu.getUseRoles().split(","));
                     firstMenu.put("meta",firstMate);
                     if(stairMenu.getId() != null){
+                        //获取当前一级菜单下所有二级菜单，子路由
                         List<Menu> childrenMenu = menuService.selectChildrenMenuByParentId(stairMenu.getId());
                         if(childrenMenu != null && childrenMenu.size()>0){
                             List<HashMap> children = new ArrayList<>(4);
@@ -159,11 +193,14 @@ public class MenusResource {
                                 childMenu.put("name",child.getName());
                                 HashMap childMate = new HashMap(4);
                                 childMate.put("title",child.getName());
-                                childMate.put("icon",child.getStyle());
-                                childMate.put("roles",child.getUseRoles().split(","));
+                                childMate.put("icon",child.getStyle()!=null?child.getStyle():null);
                                 childMenu.put("meta",childMate);
                                 if(child.getMenuType() == 1){
+                                    //如果是子路由，则隐藏
                                     childMenu.put("hidden",true);
+                                    childMate.put("roles",stairMenu.getUseRoles().split(","));
+                                }else {
+                                    childMate.put("roles",child.getUseRoles()!=null?child.getUseRoles().split(","):new ArrayList<>());
                                 }
                                 children.add(childMenu);
                             }
@@ -176,7 +213,7 @@ public class MenusResource {
             }
             return stairMenuList!=null ? ResponseUtil.success(result):ResponseUtil.error("未查询到结果！");
         }catch (Exception var){
-            return ResponseUtil.error(var.getMessage());
+            throw var;
         }
     }
 }

@@ -26,5 +26,10 @@ public class Role {
     private List<String> menuIds;
     private Integer isDefault;
 
+    @ApiModelProperty("绑定的用户数量")
+    private Integer userNum;
+    @ApiModelProperty("绑定的左侧菜单数量")
+    private Integer menuNum;
+
 
 }

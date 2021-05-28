@@ -7,6 +7,8 @@
         <result column="NAME" jdbcType="VARCHAR" property="name" />
         <result column="REMARK" jdbcType="VARCHAR" property="remark" />
         <result column="IS_DEFAULT" jdbcType="INTEGER" property="isDefault" />
+        <result column="USER_NUM" jdbcType="INTEGER" property="userNum" />
+        <result column="MENU_NUM" jdbcType="INTEGER" property="menuNum" />
     </resultMap>
 
     <resultMap id="FullResultMap" type="com.cxtx.user_manage.domain.Role">
@@ -86,22 +88,57 @@
         SELECT DISTINCT ROLE_ID FROM tb_sys_user_r_role WHERE LOGIN_ID = (SELECT LOGIN_ID FROM tb_sys_user WHERE ID = #{userId})
     </select>
 
+    <!--获取某个角色绑定的所有子菜单-->
     <select id="selectMenuIdsByRoleId" parameterType="map" resultType="java.lang.String">
         SELECT
         MENU_ID
         FROM tb_sys_role_r_menu
         WHERE ROLE_ID = #{roleId}
+            AND MENU_ID NOT IN (
+            SELECT DISTINCT
+                PARENT_ID
+            FROM
+                `tb_sys_menu`
+            WHERE
+                MENU_TYPE = '0'
+            AND PARENT_ID IS NOT NULL
+        )
     </select>
 
     <select id="selectRoleList" parameterType="map" resultMap="BaseResultMap">
         SELECT
-        ID,
-        NAME,
-        REMARK
-        FROM tb_sys_role
-        WHERE 1=1
+        a.ID,
+        a. NAME,
+        IFNULL(b.USER_NUM,0) as USER_NUM,
+        IFNULL(c.MENU_NUM,0) as MENU_NUM,
+        a.REMARK
+        FROM
+        tb_sys_role a
+        LEFT JOIN (
+        SELECT
+        ROLE_ID,
+        COUNT(DISTINCT LOGIN_ID) AS USER_NUM
+        FROM
+        tb_sys_user_r_role
+        GROUP BY
+        ROLE_ID
+        ) b ON a.ID = b.ROLE_ID
+        LEFT JOIN (
+        SELECT
+        a.ROLE_ID,
+        COUNT(DISTINCT a.MENU_ID) AS MENU_NUM
+        FROM
+        tb_sys_role_r_menu a
+        LEFT JOIN tb_sys_menu b ON a.MENU_ID = b.ID
+        WHERE
+        b.MENU_TYPE = '0'
+        GROUP BY
+        a.ROLE_ID
+        ) c ON a.ID = c.ROLE_ID
+        WHERE
+        1 = 1
         <if test="name != null">
-            AND NAME LIKE CONCAT('%',#{name},'%')
+            AND a.NAME LIKE CONCAT('%',#{name},'%')
         </if>
     </select>
 

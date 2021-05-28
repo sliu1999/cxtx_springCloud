@@ -26,8 +26,6 @@ public class DepartmentServiceImpl implements DepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;
 
-    public DepartmentServiceImpl() {
-    }
 
     @Override
     public int deleteDepartment(String id) {

@@ -23,5 +23,19 @@ public class TestResource {
     }
 
 
+    @GetMapping(value = "/testTryEx")
+    public String testTryEx() {
+        try {
+            int i = 1/0;
+        }catch (Exception e){
+            throw e;
+        }
+        return "hello";
+    }
 
+    @GetMapping(value = "/testEx")
+    public String testEx() {
+        int i = 1/0;
+        return "hello";
+    }
 }
