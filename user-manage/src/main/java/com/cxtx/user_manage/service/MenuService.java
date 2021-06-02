@@ -24,5 +24,9 @@ public interface MenuService {
 
     List<Menu> selectStairMenuByUserId(String userId);
 
+    List<Menu> queryAllStairMenu();
+
+    Menu queryMenuInfo(String id);
+
     List<Menu> selectChildrenMenuByParentId(String parentMenuId);
 }

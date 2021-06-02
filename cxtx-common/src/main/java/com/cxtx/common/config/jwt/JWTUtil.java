@@ -6,7 +6,7 @@ import java.util.Date;
 
 
 public class JWTUtil {
-    public static final long TOKEN_EXPIRE_TIME = 3600 * 1000 * 8; //8h
+    public static final long TOKEN_EXPIRE_TIME = 3600 * 1000 * 1; //1h
      private static final String ISSUER = "admin";
 
      /**

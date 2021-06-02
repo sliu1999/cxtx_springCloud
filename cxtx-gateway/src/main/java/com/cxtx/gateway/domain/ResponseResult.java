@@ -2,29 +2,29 @@ package com.cxtx.gateway.domain;
 
 public class ResponseResult<T> {
 
-             private int code = 0;
+             private int errorCode = 0;
 
              private String msg;
 
              private T data;
 
-             public ResponseResult(int code, String msg) {
-                 this.code = code;
+             public ResponseResult(int errorCode, String msg) {
+                 this.errorCode = errorCode;
                  this.msg = msg;
              }
 
-             public ResponseResult(int code, String msg, T data) {
-                 this.code = code;
+             public ResponseResult(int errorCode, String msg, T data) {
+                 this.errorCode = errorCode;
                  this.msg = msg;
                  this.data = data;
              }
 
              public static ResponseResult success() {
-                 return new ResponseResult(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getMessage());
+                 return new ResponseResult(ResponseCodeEnum.SUCCESS.getErrorCode(), ResponseCodeEnum.SUCCESS.getMessage());
              }
 
              public static <T> ResponseResult<T> success(T data) {
-                 return new ResponseResult(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getMessage(), data);
+                 return new ResponseResult(ResponseCodeEnum.SUCCESS.getErrorCode(), ResponseCodeEnum.SUCCESS.getMessage(), data);
              }
 
              public static ResponseResult error(int code, String msg) {
@@ -35,15 +35,15 @@ public class ResponseResult<T> {
              }
 
              public boolean isSuccess() {
-                 return code == 0;
+                 return errorCode == 0;
              }
 
-             public int getCode() {
-                 return code;
+             public int getErrorCode() {
+                 return errorCode;
              }
 
-             public void setCode(int code) {
-                 this.code = code;
+             public void setErrorCode(int code) {
+                 this.errorCode = errorCode;
              }
 
              public String getMsg() {

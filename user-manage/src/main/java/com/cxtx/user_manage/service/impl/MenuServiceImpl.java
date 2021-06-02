@@ -55,6 +55,7 @@ public class MenuServiceImpl implements MenuService {
                 Map parent = new HashMap(4);
                 parent.put("id",all.get("id"));
                 parent.put("label",all.get("label"));
+                parent.put("parentId",null);
                 parentList.add(parent);
             }
         }
@@ -120,6 +121,16 @@ public class MenuServiceImpl implements MenuService {
     @Override
     public List<Menu> selectStairMenuByUserId(String userId) {
         return menuMapper.selectStairMenuByUserId(userId);
+    }
+
+    @Override
+    public List<Menu> queryAllStairMenu() {
+        return menuMapper.selectAllStairMenu();
+    }
+
+    @Override
+    public Menu queryMenuInfo(String id) {
+        return menuMapper.queryMenuInfo(id);
     }
 
     @Override

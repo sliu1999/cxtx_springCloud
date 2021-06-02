@@ -69,7 +69,7 @@
             <if test="sort != null">
                 SORT,
             </if>
-            <if test="parentId != null">
+            <if test="parentId != null and parentId != ''">
                 PARENT_ID,
             </if>
             <if test="style != null">
@@ -92,7 +92,7 @@
             <if test="sort != null">
                 #{sort,jdbcType=INTEGER},
             </if>
-            <if test="parentId != null">
+            <if test="parentId != null and parentId != ''">
                 #{parentId,jdbcType=VARCHAR},
             </if>
             <if test="style != null">
@@ -177,8 +177,6 @@
             PARENT_ID AS parentId
         FROM
             tb_sys_menu
-        WHERE
-            MENU_TYPE = '0'
         ORDER BY SORT asc
     </select>
 
@@ -190,8 +188,7 @@
             PARENT_ID AS parentId
         FROM
             tb_sys_menu
-        WHERE
-            MENU_TYPE = '0'
+        where 1 = 1
         AND PARENT_ID IS NULL
         AND ID IN (SELECT DISTINCT MENU_ID FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId})
         ORDER BY
@@ -273,6 +270,14 @@
             a.MENU_TYPE
         ORDER BY
             a.SORT
+    </select>
+
+    <select id="selectAllStairMenu" resultMap="BaseResultMap">
+        select * from tb_sys_menu where PARENT_ID IS NULL ORDER BY SORT
+    </select>
+
+    <select id="queryMenuInfo" resultMap="BaseResultMap">
+        select * from tb_sys_menu where ID = #{id}
     </select>
 
     <select id="selectChildrenMenuByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">

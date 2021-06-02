@@ -92,6 +92,28 @@ public class MenusResource {
         }
     }
 
+    @GetMapping("/queryAllStairMenu")
+    @ApiOperation(value = "获取菜单" , notes = "获取所有一级菜单")
+    public ResponseEntity<Map> queryAllStairMenu(){
+        try {
+            List<Menu> all = menuService.queryAllStairMenu();
+            return all != null ? ResponseUtil.success(all) : ResponseUtil.error("未查询到数据");
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
+    @GetMapping("/menus/{id}")
+    @ApiOperation(value = "获取菜单详情" , notes = "")
+    public ResponseEntity<Map> queryMenuInfo(@PathVariable String id){
+        try {
+            Menu menu = menuService.queryMenuInfo(id);
+            return menu != null ? ResponseUtil.success(menu) : ResponseUtil.error("未查询到数据");
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
     @GetMapping({"/menus/treeTwo"})
     @ApiOperation(
             value = "获取菜单树",

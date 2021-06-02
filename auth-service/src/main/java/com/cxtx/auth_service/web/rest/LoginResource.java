@@ -64,7 +64,7 @@ public class LoginResource {
         request.setPassword(md5PW);
         JwtModel jwtModel = authUserService.isUser(request);
         if(jwtModel == null){
-            return ResponseResult.error (401,"用户名或密码错误");
+            return ResponseResult.error (ResponseCodeEnum.LOGIN_ERROR.getErrorCode(),"用户名或密码错误");
         }
 
          String token = JWTUtil.generateTokenByUserInfo(jwtModel.getUserId().toString(),objectMapper.writeValueAsString(jwtModel), secretKey);

@@ -78,7 +78,7 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
 
      private Mono<Void> getVoidMono(ServerHttpResponse serverHttpResponse, ResponseCodeEnum responseCodeEnum) {
          serverHttpResponse.getHeaders().add("Content-Type", "application/json;charset=UTF-8");
-         ResponseResult responseResult = ResponseResult.error(responseCodeEnum.getCode(), responseCodeEnum.getMessage());
+         ResponseResult responseResult = ResponseResult.error(responseCodeEnum.getErrorCode(), responseCodeEnum.getMessage());
          DataBuffer dataBuffer = serverHttpResponse.bufferFactory().wrap(JSON.toJSONString(responseResult).getBytes());
          return serverHttpResponse.writeWith(Flux.just(dataBuffer));
      }

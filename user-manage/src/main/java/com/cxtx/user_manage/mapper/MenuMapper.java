@@ -39,5 +39,9 @@ public interface MenuMapper {
 
     List<Menu> selectStairMenuByUserId(@Param("userId") String userId);
 
+    List<Menu> selectAllStairMenu();
+
+    Menu queryMenuInfo(@Param("id") String id);
+
     List<Menu> selectChildrenMenuByParentId(@Param("parentMenuId") String parentMenuId);
 }

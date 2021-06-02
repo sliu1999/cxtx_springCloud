@@ -14,17 +14,17 @@ public enum ResponseCodeEnum {
      TOKEN_SUBJECT(2006, "subject解析异常");
 
 
-     private int code;
+     private int errorCode;
 
      private String message;
 
-     ResponseCodeEnum(int code, String message) {
-         this.code = code;
+     ResponseCodeEnum(int errorCode, String message) {
+         this.errorCode = errorCode;
          this.message = message;
      }
 
-     public int getCode() {
-         return code;
+     public int getErrorCode() {
+         return errorCode;
      }
 
      public String getMessage() {
