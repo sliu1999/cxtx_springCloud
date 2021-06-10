@@ -98,6 +98,51 @@ public class DepartmentResource {
     }
 
     @ApiOperation(
+            value = "查询部门树",
+            notes = "返回element适用的数据结构的部门树",
+            response = ResponseUtil.Response.class
+    )
+    @GetMapping({"/departments/treeTwo"})
+    public ResponseEntity<?> selectDepartmentTreeTwo() {
+        try {
+            List<Map> result = this.departmentService.selectDepartmentTreeTwo();
+            return ResponseUtil.success(result);
+        } catch (Exception var2) {
+            return ResponseUtil.error(var2.getMessage());
+        }
+    }
+
+
+    @ApiOperation(
+            value = "查询部门树",
+            notes = "返回element适用的数据结构的除了自己的部门树",
+            response = ResponseUtil.Response.class
+    )
+    @GetMapping({"/departments/treeExceptMe"})
+    public ResponseEntity<?> treeExceptMe(@RequestParam String departId) {
+        try {
+            List<Map> result = this.departmentService.treeExceptMe(departId);
+            return ResponseUtil.success(result);
+        } catch (Exception var2) {
+            return ResponseUtil.error(var2.getMessage());
+        }
+    }
+    @ApiOperation(
+            value = "查询部门树",
+            notes = "返回List<Map>",
+            response = ResponseUtil.Response.class
+    )
+    @GetMapping({"/departments/treeExceptMeList"})
+    public ResponseEntity<?> treeExceptMeList(@RequestParam String departId) {
+        try {
+            List<Map> result = this.departmentService.treeExceptMeList(departId);
+            return ResponseUtil.success(result);
+        } catch (Exception var2) {
+            return ResponseUtil.error(var2.getMessage());
+        }
+    }
+
+    @ApiOperation(
             value = "部门分页查询",
             notes = "根据上级部门id，分页查询部门信息",
             response = ResponseUtil.Response.class

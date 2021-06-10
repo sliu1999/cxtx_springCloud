@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(
@@ -138,6 +139,16 @@ public class StaffResource {
             return result ? ResponseUtil.success("该工号可用") : ResponseUtil.error("工号重复……");
         } catch (Exception var5) {
             return ResponseUtil.error(var5.getMessage());
+        }
+    }
+
+    @GetMapping({"/staffs/list"})
+    public ResponseEntity<Map> queryStaffsList(@RequestParam Map param){
+        try {
+            List<Staff> list = staffService.queryStaffsList(param);
+            return ResponseUtil.success(list);
+        }catch (Exception e){
+            throw e;
         }
     }
 }

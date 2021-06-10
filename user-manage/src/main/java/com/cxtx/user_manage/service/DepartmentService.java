@@ -20,5 +20,11 @@ public interface DepartmentService {
 
     List<Map> selectDepartmentTree();
 
+    List<Map> selectDepartmentTreeTwo();
+
+    List<Map> treeExceptMe(String departId);
+
+    List<Map> treeExceptMeList(String departId);
+
     PageInfo<Department> selectDepartmentListByPage(Map var1);
 }

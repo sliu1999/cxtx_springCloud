@@ -7,6 +7,7 @@ import com.cxtx.user_manage.domain.User;
 import com.cxtx.user_manage.web.rest.vo.ChangeCurrentUserPasswordDTO;
 import com.cxtx.user_manage.web.rest.vo.ChangeUserPasswordDTO;
 
+import java.util.List;
 import java.util.Map;
 
 public interface UserService {
@@ -23,6 +24,8 @@ public interface UserService {
     User selectUserByLoginId(String var1);
 
     PageInfo<User> selectUsersByPage(Map var1);
+
+    List<User> selectUserList();
 
     Boolean checkUser2Role(String var1, String var2);
 

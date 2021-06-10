@@ -23,4 +23,4 @@ mybatis:
   mapper-locations: classpath*:config/mybatis/mappers/mysql/**/*.xml
   config-location: classpath:config/mybatis/config/mysql/mybatis-frame.xml
 
-upload-path: /root/cxtx/image
+upload-path: C:/root/cxtx/image

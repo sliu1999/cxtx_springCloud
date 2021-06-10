@@ -18,7 +18,7 @@
     <!--查询附件-->
     <select id="queryFilesInfo" parameterType="map" resultMap="BaseResultMap">
         select
-        listagg(save_name,',') within GROUP (order by save_name) as save_name,
+        group_concat(save_name) as save_name,
         SYSTEM_NAME,
         dir
         from ${tableName}
@@ -29,7 +29,7 @@
     <!--查询被删除的附件-->
     <select id="queryDeleteFilesInfo" parameterType="map" resultMap="BaseResultMap">
         select
-        listagg(save_name,',') within GROUP (order by save_name) as save_name,
+        group_concat(save_name) as save_name,
         SYSTEM_NAME,
         dir
         from ${tableName}
@@ -44,22 +44,22 @@
     </select>
 
     <select id="queryTableNameById" parameterType="String" resultType="String">
-        select TABLE_NAME  from TB_SYS_ATTACHED_TAB
+        select  TABLE_NAME from tb_sys_attached_tab
         where id=#{tableId}
     </select>
 
     <!--批量添加附件-->
     <insert id="saveFilesInfo" parameterType="map">
-        INSERT INTO ${tableName} (ID,MAIN_ID,FILE_NAME,SAVE_NAME,FILE_TYPE,UPLOAD_TIME,DIR,SYSTEM_NAME,IS_COVER,ORDER_NUM)
-        <foreach collection="files"  item="itm" index="index" separator="union all">
-            (SELECT sys_guid(),#{mainId},#{itm.fileName},#{itm.saveName},#{itm.fileType},sysdate,#{itm.dir},#{itm.systemName},
+        INSERT INTO  ${tableName}(ID,MAIN_ID,FILE_NAME,SAVE_NAME,FILE_TYPE,UPLOAD_TIME,DIR,SYSTEM_NAME,IS_COVER,ORDER_NUM) value
+        <foreach collection="files"  item="itm" index="index" separator=",">
+            (uuid(),#{mainId},#{itm.fileName},#{itm.saveName},#{itm.fileType},sysdate(),#{itm.dir},#{itm.systemName},
             <if test="null != itm.isCover">
                 #{itm.isCover},
             </if>
             <if test="null == itm.isCover">
                 0,
             </if>
-            #{index} FROM DUAL)
+            #{index})
         </foreach>
     </insert>
 

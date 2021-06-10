@@ -107,6 +107,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> selectUserList() {
+        return this.userMapper.selectUserList(null);
+    }
+
+    @Override
     public Boolean checkUser2Role(String loginId, String roleId) {
         return this.userMapper.selectCountByLoginIdAndRoleId(loginId, roleId) > 0 ? true : false;
     }

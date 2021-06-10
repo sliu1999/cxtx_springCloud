@@ -5,6 +5,7 @@ package com.cxtx.user_manage.service;
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.Staff;
 
+import java.util.List;
 import java.util.Map;
 
 public interface StaffService {
@@ -19,4 +20,6 @@ public interface StaffService {
     PageInfo<Staff> selectStaffListByPage(Map var1) throws Exception;
 
     Boolean duplicateCheckStaffNo(String var1, String var2);
+
+    List<Staff> queryStaffsList(Map param);
 }

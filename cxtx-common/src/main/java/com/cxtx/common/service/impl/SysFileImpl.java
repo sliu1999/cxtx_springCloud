@@ -35,9 +35,11 @@ public class SysFileImpl implements SysFileService {
         file.transferTo(new File(uploadPath + defaultDir + fileName));
 
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setFileName(fileName);
-        fileInfo.setSaveName(trueFileName);
-        fileInfo.setFullUrl(defaultDir);
+        fileInfo.setFileName(trueFileName);
+        fileInfo.setDir(uploadPath+defaultDir);
+        fileInfo.setSaveName(fileName);
+        fileInfo.setFileType(suffix);
+        fileInfo.setFullUrl(uploadPath+defaultDir);
         return fileInfo;
     }
 

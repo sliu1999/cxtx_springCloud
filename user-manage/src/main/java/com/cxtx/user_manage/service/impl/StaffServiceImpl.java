@@ -126,4 +126,9 @@ public class StaffServiceImpl implements StaffService {
     public Boolean duplicateCheckStaffNo(String staffNo, String id) {
         return this.staffMapper.selectCountByStaffNo(staffNo, id) == 0 ? true : false;
     }
+
+    @Override
+    public List<Staff> queryStaffsList(Map param) {
+        return staffMapper.selectStaffList(param);
+    }
 }

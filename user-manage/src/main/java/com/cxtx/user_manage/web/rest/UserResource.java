@@ -116,6 +116,16 @@ public class UserResource {
         }
     }
 
+    @GetMapping({"/users/list"})
+    public ResponseEntity<Map> queryUsersList() {
+        try {
+            List<User> result = this.userService.selectUserList();
+            return ResponseUtil.success(result);
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
     @ApiOperation(
             value = "保存用户",
             notes = "保存用户信息,新增和修改",

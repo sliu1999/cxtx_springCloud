@@ -137,6 +137,40 @@
         ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(getDepartChildList(ID) ORDER BY SORT) FROM tb_sys_department WHERE PARENT_ID IS NULL)), A.SORT
     </select>
 
+    <select id="selectAllDepartment" resultType="map">
+        SELECT
+            ID AS id,
+            `NAME` AS label,
+            PARENT_ID AS parentId,
+            SORT AS sort,
+            REMARK AS remark,
+            LEADER AS leader
+        FROM
+            tb_sys_department
+        WHERE
+            1 = 1
+        ORDER BY
+            SORT
+    </select>
+
+    <select id="selectAllExceptMe" parameterType="java.lang.String" resultType="map">
+        SELECT
+            ID AS id,
+            `NAME` AS label,
+            PARENT_ID AS parentId,
+            SORT AS sort,
+            REMARK AS remark,
+            LEADER AS leader
+        FROM
+            tb_sys_department
+        WHERE
+            1 = 1
+        AND id != #{departId}
+        AND (PARENT_ID != #{departId} OR PARENT_ID IS NULL)
+        ORDER BY
+            SORT
+    </select>
+
     <select id="selectDepartmentList" parameterType="map" resultMap="BaseResultMap">
         SELECT
         A.ID,
@@ -168,5 +202,6 @@
         </if>
         ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(getDepartChildList(ID) ORDER BY SORT) FROM tb_sys_department WHERE PARENT_ID IS NULL)), A.SORT
     </select>
+
 
 </mapper>
