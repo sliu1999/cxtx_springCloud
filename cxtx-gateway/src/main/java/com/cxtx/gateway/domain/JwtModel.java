@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class JwtModel {
-    private Long userId;
+    private String userId;
     private String username;
 
     @Override

@@ -20,7 +20,7 @@ public class HttpServletUtils {
             String userInfo = httpServletRequest.getHeader("userInfo");
             JSONObject jsonObject = JSONObject.parseObject(userInfo);
             JwtModel jwtModel = new JwtModel();
-            jwtModel.setUserId(jsonObject.getLong("userId"));
+            jwtModel.setUserId(jsonObject.getString("userId"));
             jwtModel.setUsername(jsonObject.getString("username"));
             return jwtModel;
         }
