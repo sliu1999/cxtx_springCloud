@@ -7,17 +7,6 @@ spring:
       discovery:
         server-addr: 47.117.128.180:8848
     gateway:
-      # 跨域配置 暂未 试
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: "*"
-            allowedMethods:
-            - GET
-            - POST
-            - PUT
-            - DELETE
-            - OPTIONS
       #注册中心配置
       discovery:
         locator:
