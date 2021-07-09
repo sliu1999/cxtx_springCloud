@@ -1,5 +1,5 @@
 server:
-  port: 7003
+  port: 7004
   servlet:
     context-path: /usermanage
 

@@ -30,7 +30,7 @@ spring:
         port: 8718
         dashboard: 47.117.128.180:8080  #控制台地址
   redis:
-    host: 192.168.1.17
+    host: 47.117.128.180
     password: 123456
     port: 6379
 

@@ -288,10 +288,11 @@ public class UserResource {
     public ResponseEntity<Map> current() {
         JwtModel jwtModel = HttpServletUtils.getUserInfo();
         List<String> roleList = roleService.selectRoleListByUserId(jwtModel.getUserId().toString());
+        //User userInfo = this.userService.selectUserByLoginId(jwtModel.getUserId());
         HashMap result = new HashMap(4);
         result.put("roles",roleList.toArray());
         result.put("introduction","I am a super administrator");
-        result.put("avatar","https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        result.put("avatar","https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif"); //头像
         result.put("name","Super Admin");
         return ResponseUtil.success(result);
     }
