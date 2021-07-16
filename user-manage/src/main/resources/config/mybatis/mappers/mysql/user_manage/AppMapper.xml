@@ -1,164 +1,200 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cxtx.user_manage.mapper.OaFlowFormMapper">
-  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFlowForm">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="form_model_id" jdbcType="BIGINT" property="formModelId" />
-    <result column="flow_id" jdbcType="BIGINT" property="flowId" />
-    <result column="flow_model_id" jdbcType="BIGINT" property="flowModelId" />
-    <result column="status" jdbcType="INTEGER" property="status" />
-    <result column="create_by" jdbcType="BIGINT" property="createBy" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
-    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
-    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
-    <result column="sort" jdbcType="INTEGER" property="sort" />
-    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, form_model_id, flow_id, flow_model_id, status, create_by, create_date, update_by, 
-    update_date, sort, remarks
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from oa_flow_form
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from oa_flow_form
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
-    insert into oa_flow_form (id, form_model_id, flow_id, 
-      flow_model_id, status, create_by, 
-      create_date, update_by, update_date, 
-      sort, remarks)
-    values (#{id,jdbcType=BIGINT}, #{formModelId,jdbcType=BIGINT}, #{flowId,jdbcType=BIGINT}, 
-      #{flowModelId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
-      #{sort,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
+<mapper namespace="com.cxtx.user_manage.mapper.AppMapper">
+  <!-- 查询表单是否存在 -->
+  <select id="ifTableExist" parameterType="String"
+          resultType="int">
+		select count(1) from sys_mod m where m.table_key =
+		#{tableKey}
+	</select>
+  <!-- 创建表 -->
+  <update id="createTable" parameterType="map">
+        create table _app_${map.tableKey}(
+            id bigint(20) primary key auto_increment COMMENT 'ID',
+            sort bigint(20) DEFAULT NULL COMMENT '排序',
+            status int(1) DEFAULT '1' COMMENT '数据状态 1可用，0不可用',
+            create_date timestamp NULL COMMENT '创建时间',
+            create_by bigint(20) DEFAULT NULL COMMENT '创建人ID',
+            create_name varchar(500) DEFAULT '' COMMENT '创建人',
+            update_by bigint(20) DEFAULT NULL COMMENT '修改人ID',
+            update_date timestamp NULL COMMENT '修改时间',
+            remarks varchar(500) DEFAULT '' COMMENT '备注',
+            uuid varchar(255) DEFAULT ''
+        ) CHARSET=utf8
+	</update>
+  <!-- 删除表字段属性 -->
+  <update id="removeFields" parameterType="map">
+    <foreach collection="map.fieldList" item="item" index="index"
+             separator=";">
+      alter table ${map.tableKey} drop column ${item.id}
+    </foreach>
+  </update>
+  <!-- 添加表字段属性 -->
+  <insert id="addFields" parameterType="map">
+    <foreach collection="map.fieldList" item="item" index="index"
+             separator=";">
+      alter table ${map.tableKey} add column ${item.id}
+      ${item.ctrl}
+    </foreach>
   </insert>
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
-    insert into oa_flow_form
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="formModelId != null">
-        form_model_id,
-      </if>
-      <if test="flowId != null">
-        flow_id,
-      </if>
-      <if test="flowModelId != null">
-        flow_model_id,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="createBy != null">
-        create_by,
-      </if>
-      <if test="createDate != null">
-        create_date,
-      </if>
-      <if test="updateBy != null">
-        update_by,
-      </if>
-      <if test="updateDate != null">
-        update_date,
-      </if>
-      <if test="sort != null">
-        sort,
-      </if>
-      <if test="remarks != null">
-        remarks,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="formModelId != null">
-        #{formModelId,jdbcType=BIGINT},
-      </if>
-      <if test="flowId != null">
-        #{flowId,jdbcType=BIGINT},
-      </if>
-      <if test="flowModelId != null">
-        #{flowModelId,jdbcType=BIGINT},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createBy != null">
-        #{createBy,jdbcType=BIGINT},
-      </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        #{updateBy,jdbcType=BIGINT},
-      </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sort != null">
-        #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="remarks != null">
-        #{remarks,jdbcType=VARCHAR},
-      </if>
-    </trim>
+  <!-- 增加单个表字段 -->
+  <insert id="addField">
+		alter table ${tableName} add column ${id} ${ctrl}
+	</insert>
+  <!-- 删除单个表字段属性 -->
+  <update id="removeField" >
+			alter table ${tableName} drop column ${id}
+	</update>
+  <!-- 更新表字段属性 -->
+  <update id="updateFields" parameterType="map">
+    <foreach collection="map.fieldList" item="item" index="index"
+             separator=";">
+      alter table ${map.tableKey} modify column ${item.id}
+      ${item.ctrl}
+    </foreach>
+  </update>
+  <!-- 创建明细表 -->
+  <insert id="addDetails" parameterType="map">
+    create table ${map.tableName}_${map.detailName} (id int(11) primary
+    key auto_increment,${map.detailName}_id int (11),
+    <if test="map.fieldList!=null">
+
+    </if>
+    <if test="map.fieldList==null">
+    </if>
+    <foreach collection="map.fieldList" item="item" index="index"
+             separator="," close=",">
+      ${item.id} ${item.ctrl}
+    </foreach>
+    status tinyInt ,create_by bigint(20) ,create_date datetime,tenant_id bigint(20),create_name varchar(255))
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
-    update oa_flow_form
+  <!-- 移除明细表 -->
+  <update id="removeDetails" parameterType="map">
+		drop table
+		${map.tableName}
+	</update>
+  <!-- 直接根据sql查询数量 -->
+  <select id="getCount" resultType="int">
+		${sql}
+	</select>
+  <!-- 根据根据sql查询信息 -->
+  <select id="getInfoBySql" resultType="map">
+		${sql}
+	</select>
+  <!-- 根据sql查询单个数据对象 -->
+  <select id="getFormDataByField" resultType="map">
+		${sql}
+	</select>
+
+  <select id="queryCount" resultType="int">
+		${getCount}
+	</select>
+  <select id="queryData" resultType="map">
+		${getPage}
+	</select>
+  <select id="queryRoleIdByUserId" resultType="long">
+		SELECT r.id FROM sys_user u
+		LEFT JOIN sys_user_role ur ON ur.user_id = u.id
+		LEFT JOIN sys_role r ON r.id = ur.role_id
+		WHERE
+		u.id = #{userId}
+	</select>
+  <insert id="saveRoleAndMod">
+		INSERT INTO sys_role_mod (mod_id, role_id) VALUES(#{modId},#{roleId})
+	</insert>
+
+  <!-- 流程模块添加 -->
+  <delete id="deleteForm" parameterType="map">
+		delete from _app_ #{appKey}_#{detailKey}  where id=#{detailId}
+	</delete>
+  <insert id="NamedCUDHoldId" parameterType = "map">
+    insert into ${tableName}
+    <foreach collection="param.keys" item="key" open="(" close=")" separator="," >
+      ${key}
+    </foreach>
+    values
+    <foreach collection="param.keys"  item="key" open="(" close=")" separator=",">
+      #{param[${key}]}
+    </foreach>
+  </insert>
+  <update id="NamedCUD" parameterType = "map" keyProperty = "id">
+    update ${tableName}
     <set>
-      <if test="formModelId != null">
-        form_model_id = #{formModelId,jdbcType=BIGINT},
-      </if>
-      <if test="flowId != null">
-        flow_id = #{flowId,jdbcType=BIGINT},
-      </if>
-      <if test="flowModelId != null">
-        flow_model_id = #{flowModelId,jdbcType=BIGINT},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=BIGINT},
-      </if>
-      <if test="createDate != null">
-        create_date = #{createDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=BIGINT},
-      </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
-      <if test="sort != null">
-        sort = #{sort,jdbcType=INTEGER},
-      </if>
-      <if test="remarks != null">
-        remarks = #{remarks,jdbcType=VARCHAR},
-      </if>
+      <foreach collection="param.keys" item="key" separator="," >
+        ${key} = #{param[${key}]}
+      </foreach>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{param.id}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
-    update oa_flow_form
-    set form_model_id = #{formModelId,jdbcType=BIGINT},
-      flow_id = #{flowId,jdbcType=BIGINT},
-      flow_model_id = #{flowModelId,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      sort = #{sort,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
+  <select id="CUD">
+		${sql}
+	</select>
+  <select id="getObject" resultType="map">
+		${sql}
+	</select>
+  <select id="getList" resultType="map">
+		${sql}
+	</select>
+  <select id="getMap" resultType="map">
+		${sql}
+	</select>
+  <select id="getObjectList" resultType = "list">
+		${sql}
+	</select>
+  <!-- 获取当前连接的数据库名称 -->
+  <select id="getDataBaseName" resultType="string">
+		SELECT DATABASE()
+	</select>
+  <select id = "ifTableExistInDataBase" resultType="int">
+		SELECT
+			COUNT(1)
+		FROM
+			INFORMATION_SCHEMA.TABLES
+		WHERE
+			TABLE_SCHEMA = #{dataBaseName}
+			AND TABLE_NAME = #{tableName}
+	</select>
+  <select id="ifColumnExistInTable" resultType = "int">
+		SELECT
+			COUNT(1)
+		FROM
+			information_schema.`COLUMNS`
+		WHERE
+			table_schema = #{dataBase}
+		AND table_name = #{table}
+		AND column_name = #{column}
+	</select>
+  <select id="getEleListByUser" resultType="map" parameterType="map">
+		SELECT
+			*
+		FROM
+			oa_process_log opl
+			INNER JOIN (
+		SELECT
+			process_id
+		FROM
+			oa_process_his oph
+			INNER JOIN oa_process op ON oph.process_id = op.id
+			INNER JOIN oa_flow_form off ON off.flow_id = op.flow_id
+			INNER JOIN oa_form_mod ofm ON off.form_mod_id = ofm.id
+		WHERE
+			oph.user_id = #{userId}
+			) a ON opl.process_id = a.process_id
+			where cur_assignee = #{userId} and opl.process_id = #{processId}
+		group by flow_id,cur_node
+	</select>
+  <select id="getFormDataByFieldList" resultType = "map">
+    select
+    <foreach collection="fields" item="item" separator=",">
+      item
+    </foreach>
+    from #{tableName} where id = #{id}
+  </select>
+  <select id="getFormDataListByFieldList" resultType = "map">
+    select
+    <foreach collection="fields" item="item" separator=",">
+      item
+    </foreach>
+    from #{tableName} where id = #{id}
+  </select>
 </mapper>

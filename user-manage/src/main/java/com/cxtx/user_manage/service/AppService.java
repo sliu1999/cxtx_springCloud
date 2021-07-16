@@ -1,12 +1,9 @@
-package com.info33.platform.oa.service;
-
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.info33.platform.oa.entity.OaFormMod;
+package com.cxtx.user_manage.service;
 
 import java.util.List;
 import java.util.Map;
 
-public interface AppService extends IService<OaFormMod> {
+public interface AppService{
 	int ifTableExist(String tableKey);
 
 	Map<String,Object> createTable(Map<String, Object> map) throws Exception;
@@ -33,15 +30,12 @@ public interface AppService extends IService<OaFormMod> {
 
 	List<Map<String,Object>> getInfoBySql(String sql);
 
-	Map<String,Object> getFormDataByField(Map<String,Object> data);
+	Map<String,Object> getFormDataByField(Map<String, Object> data);
 
 	List<Map<String,Object>> queryDataBySqlMap(Map<String, Object> map);
 
 	int queryCountBySqlMap(Map<String, Object> dataMap);
 
-//	List<String> getRoleName(String roleIds);
-
-//	List<String> getGroupName(String groupIds);
 	/**
 	 * 生成流水号
 	 * @param raw
@@ -52,32 +46,37 @@ public interface AppService extends IService<OaFormMod> {
 	Long queryRoleIdByUserId(Long userId);
 
 	boolean saveRoleAndMod(Long userId, Long roleId);
-	
-	void deleteForm(Map<String,Object> map);
+
+	void deleteForm(Map<String, Object> map);
 	/**
 	 *  添加map参数对象到指定的数据库表中，并返回该条数据的ID
 	 * @param tableName
 	 * @param paramMap
 	 * @return
 	 */
-	Long NamedCUDHoldId(String tableName,Map<String,Object> paramMap);
-	
-	void NamedCUD(String tableName,Map<String,Object> paramMap);
-	
-	int CUD(String sql);
-	
-	Object getObject(String sql,String key);
-	
-	Map<String,Object> getMap(String sql);
-	
-	List<Map<String, Object>> getList(String sql);
-	
-	List<Object> getObjectList(String sql);
-	
-	boolean ifTableExistInDataBase(String tableName);
-	
-	boolean ifColumnExistInTable(String table,String column);
+	Long NamedCUDHoldId(String tableName, Map<String, Object> paramMap);
 
+	void NamedCUD(String tableName, Map<String, Object> paramMap);
+
+	int CUD(String sql);
+
+	Object getObject(String sql, String key);
+
+	Map<String,Object> getMap(String sql);
+
+	List<Map<String, Object>> getList(String sql);
+
+	List<Object> getObjectList(String sql);
+
+	boolean ifTableExistInDataBase(String tableName);
+
+	boolean ifColumnExistInTable(String table, String column);
+
+	/**
+	 * sliu
+	 * @param tableKey
+	 * @return
+	 */
 	String updateTableKey(String tableKey);
 	/**
 	 * 根据formId查询指定表中的指定字段信息
@@ -86,7 +85,7 @@ public interface AppService extends IService<OaFormMod> {
 	 * @param formId
 	 * @return
 	 */
-	Map<String,Object> getFormDataByFieldList(List<String>fields,String tableName,Long formId);
+	Map<String,Object> getFormDataByFieldList(List<String> fields, String tableName, Long formId);
 	/**
 	 * 根据formId查询明细表中的指定字段信息
 	 * @param fields
@@ -94,5 +93,5 @@ public interface AppService extends IService<OaFormMod> {
 	 * @param formId
 	 * @return
 	 */
-	List<Map<String,Object>> getFormDataListByFieldList(List<String>fields,String tableName,Long formId);
+	List<Map<String,Object>> getFormDataListByFieldList(List<String> fields, String tableName, Long formId);
 } 

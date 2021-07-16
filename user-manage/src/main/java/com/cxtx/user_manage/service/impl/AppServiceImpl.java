@@ -1,40 +1,34 @@
-package com.info33.platform.oa.service.impl;
+package com.cxtx.user_manage.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Resource;
-
+import com.alibaba.fastjson.JSONObject;
+import com.cxtx.user_manage.domain.OaFormModel;
+import com.cxtx.user_manage.mapper.AppMapper;
+import com.cxtx.user_manage.mapper.OaFormModelMapper;
+import com.cxtx.user_manage.service.AppService;
+import com.cxtx.user_manage.unit.GuavaUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.info33.platform.oa.dao.AppDao;
-import com.info33.platform.oa.dao.OaFormModDao;
-import com.info33.platform.oa.entity.OaFormMod;
-import com.info33.platform.oa.service.AppService;
-import com.info33.platform.oa.util.GuavaUtil;
+import javax.annotation.Resource;
+import java.util.*;
 
 @Service("AppService")
-public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements AppService {
+public class AppServiceImpl implements AppService {
+	@Autowired
+	private AppMapper appMapper;
 	@Resource
-	private AppDao appDao;
-	@Resource
-	private OaFormModDao modDao;
+	private OaFormModelMapper oaFormModelMapper;
 	@Resource(name = "transactionManager")
 	private DataSourceTransactionManager transactionManager;
 	@Override
 	public int ifTableExist(String tableKey) {
-		return appDao.ifTableExist(tableKey);
+		return appMapper.ifTableExist(tableKey);
 	}
 	/**
+	 * sliu
 	 * 建表
 	 * @throws Exception 
 	 */
@@ -42,7 +36,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	@Transactional(rollbackFor = Exception.class )
 	public Map<String,Object> createTable(Map<String,Object> map) throws Exception {
 		try {
-			appDao.createTable(map);
+			appMapper.createTable(map);
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,7 +55,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 		//被复制表单的modId
 		Long copiedModId = Long.valueOf(map.get("copiedModId").toString());
 		//根据modId来查询sys_mod表中的mod信息
-		OaFormMod copyModEntity = modDao.selectById(copiedModId);
+		OaFormModel copyModEntity = oaFormModelMapper.selectByPrimaryKey(copiedModId);
 		String tableSchema = copyModEntity.getTableSchema();
 		String formView = copyModEntity.getFormView();
 		String detailKeys = copyModEntity.getDetailKeys();
@@ -113,7 +107,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 				fieldName = (String) field.get("name");
 				//判断字段是否存在，存在则进行删除操作
 				if(ifColumnExistInTable(tableKey, fieldId)) {
-					appDao.removeField(tableKey, fieldId);
+					appMapper.removeField(tableKey, fieldId);
 					operatedField.add(field);
 				}
 			}
@@ -136,7 +130,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 		map.put("tableKey", tableKey);
 		map.put("fieldList", GuavaUtil.turnCtrl(updateFieldList));
 		try {
-			appDao.updateFields(map);
+			appMapper.updateFields(map);
 			return flag;
 		} catch (Exception e) {
 			throw new Exception("更新主表字段失败！");
@@ -167,12 +161,12 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 				fieldId = (String) field.get("id");
 				fieldName = (String) field.get("name");
 				fieldCtrl = (String) field.get("ctrl");
-				appDao.addField(tableKey, fieldId, fieldCtrl);
+				appMapper.addField(tableKey, fieldId, fieldCtrl);
 				operatedFieldList.add(field);
 			} catch (Exception e) {
 				operatedField.put("fieldList", operatedFieldList);
 				//出现异常将新增的数据库字段删除
-				appDao.removeFields(operatedField);
+				appMapper.removeFields(operatedField);
 				throw new Exception("新增字段名称："+fieldName+"，字段ID："+fieldId+"和原数据存在冲突！");
 			}
 		}
@@ -197,7 +191,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 			map.put("fieldList", GuavaUtil.turnCtrl(fieldList));
 			map.put("detailName", detail.get("id"));
 			try {
-				appDao.addDetails(map);
+				appMapper.addDetails(map);
 				operatedFieldList.add(detail);
 				flag = true;
 			} catch (Exception e) {
@@ -256,7 +250,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 			try {
 				//先判断明细表是否存在，存在则进行删除操作
 				if(ifTableExistInDataBase(tableName+"_"+detail.get("id"))){
-					appDao.removeDetails(map);
+					appMapper.removeDetails(map);
 				}
 				flag = true;
 			} catch (Exception e) {
@@ -276,7 +270,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	 * @return
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	@Transactional(rollbackFor = Exception.class )
 	public boolean operateDetailTable(String tableName,Map<String,Object> dataMap) throws Exception {
 		boolean flag= true;
@@ -309,7 +303,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	 * @return
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
 	@Transactional(rollbackFor = Exception.class )
 	public boolean operateTable(String tableName,Map<String,Object> dataMap) throws Exception {
 		boolean flag = true;
@@ -340,14 +334,14 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	 */
 	@Override
 	public int getCount(String sql) {
-		return appDao.getCount(sql);
+		return appMapper.getCount(sql);
 	}
 	/**
 	 * 根据sql查询数据信息
 	 */
 	@Override
 	public List<Map<String, Object>> getInfoBySql(String sql) {
-		return appDao.getInfoBySql(sql);
+		return appMapper.getInfoBySql(sql);
 	}
 	/**
 	 * 翻译表字段信息
@@ -360,7 +354,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 		Object value = data.get("value");
 		String byField = (String) data.get("byField");
 		String sql = "select "+field+" from "+tableName+" where "+byField+" = '"+value+"'";
-		Map<String,Object> formData =  appDao.getFormDataByField(sql);
+		Map<String,Object> formData =  appMapper.getFormDataByField(sql);
 		result.put("value", formData.get(field));
 		return result;
 	}
@@ -369,19 +363,20 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	 */
 	@Override
 	public List<Map<String, Object>> queryDataBySqlMap(Map<String, Object> map) {
-		return appDao.queryData(map);
+		return appMapper.queryData(map);
 	}
 	/**
 	 * 查询数量
 	 */
 	@Override
 	public int queryCountBySqlMap(Map<String, Object> dataMap) {
-		return appDao.queryCount(dataMap);
+		return appMapper.queryCount(dataMap);
 	}
 	/**
 	 * 流水号生成
 	 * @return
 	 */
+	@Override
 	public String serialBuilder(Map<String,Object> raw) {
 		Date date = new Date();
 		Object tableKey = "_app_"+raw.get("tableKey");
@@ -394,8 +389,8 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 		}
 		if(!flagInitial){
 			sequence = 0;
-			Integer lastSequence = appDao.getCount("select count(1) from "+tableKey);
-			Map<String,Object> id = appDao.getFormDataByField("select id from "+tableKey+" order by id desc limit 1");
+			Integer lastSequence = appMapper.getCount("select count(1) from "+tableKey);
+			Map<String,Object> id = appMapper.getFormDataByField("select id from "+tableKey+" order by id desc limit 1");
 			Integer lastId = id==null?0:Integer.parseInt(id.get("id").toString());
 			
 			if(lastId!=null && lastId>lastSequence){
@@ -411,17 +406,21 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 		int count = 0;
 		String [] datePlaceHolder = new String[]{"tC","ty","tm","td","tH","tM","tS"};
 		for(String dpStr:datePlaceHolder){
-			if(format.contains(dpStr))
+			if(format.contains(dpStr)){
 				count++;
+			}
+
 		}
 		Object [] args = null;
 		if(count>0){
 			args = new Object[count+1];
 			for(int i = 0;i<args.length;i++){
-				if(i!=args.length-1)
+				if(i!=args.length-1){
 					args[i] = date;
-				else
+				} else{
 					args[i] = sequence;
+				}
+
 			}
 		}else{
 			args = new Object[1];
@@ -432,13 +431,13 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	}
 	@Override
 	public Long queryRoleIdByUserId(Long userId) {
-		return appDao.queryRoleIdByUserId(userId);
+		return appMapper.queryRoleIdByUserId(userId);
 	}
 	@Override
 	public boolean saveRoleAndMod(Long modId, Long roleId) {
 		boolean flag = true;
 		try {
-			appDao.saveRoleAndMod(modId, roleId);
+			appMapper.saveRoleAndMod(modId, roleId);
 		} catch (Exception e) {
 			flag = false;
 		}
@@ -447,7 +446,7 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	
 	@Override
 	public void deleteForm(Map<String, Object> map) {
-		appDao.deleteForm(map);
+		appMapper.deleteForm(map);
 	}
 	
 	@SuppressWarnings("unused")
@@ -458,18 +457,18 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 		for(String key :keySet) {
 			sql += key+",";
 		}
-		return appDao.NamedCUDHoldId(tableName, paramMap);
+		return appMapper.NamedCUDHoldId(tableName, paramMap);
 	}
 	@Override
 	public void NamedCUD(String tableName, Map<String, Object> paramMap) {
 		// TODO Auto-generated method stub
-		appDao.NamedCUD(tableName, paramMap);
+		appMapper.NamedCUD(tableName, paramMap);
 	}
 	@Override
 	public int CUD(String sql) {
 		// TODO Auto-generated method stub
 		try {
-			appDao.CUD(sql);	
+			appMapper.CUD(sql);	
 			return 1;
 		} catch (Exception e) {
 			return 0;
@@ -477,13 +476,13 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	}
 	@Override
 	public Object getObject(String sql,String key) {
-		Map<String,Object> map = appDao.getObject(sql);
+		Map<String,Object> map = appMapper.getObject(sql);
 		return map.get(key);
 	}
 	@Override
 	public List<Map<String, Object>> getList(String sql) {
 		try {
-			return appDao.getList(sql);
+			return appMapper.getList(sql);
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 			return new ArrayList<>();
@@ -491,27 +490,29 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	}
 	@Override
 	public Map<String, Object> getMap(String sql) {
-		return appDao.getMap(sql);
+		return appMapper.getMap(sql);
 	}
 	@Override
 	public List<Object> getObjectList(String sql) {
-		return appDao.getObjectList(sql);
+		return appMapper.getObjectList(sql);
 	}
 	/**
+	 * sliu
 	 * 判断表是否已存在
 	 */
 	@Override
 	public boolean ifTableExistInDataBase(String tableName) {
-		String dataBaseName = appDao.getDataBaseName();
-		return appDao.ifTableExistInDataBase(dataBaseName, tableName)>0?true:false;
+		String dataBaseName = appMapper.getDataBaseName();
+		return appMapper.ifTableExistInDataBase(dataBaseName, tableName)>0?true:false;
 	}
 	
 	@Override
 	public boolean ifColumnExistInTable(String table, String column) {
-		String dataBase = appDao.getDataBaseName();
-		return appDao.ifColumnExistInTable(dataBase, table, column)>0?true:false;
+		String dataBase = appMapper.getDataBaseName();
+		return appMapper.ifColumnExistInTable(dataBase, table, column)>0?true:false;
 	}
 	/**
+	 * sliu
 	 * 如果表名存在重复，加数字后缀名
 	 */
 	@Override
@@ -531,11 +532,11 @@ public class AppServiceImpl extends ServiceImpl<AppDao, OaFormMod> implements Ap
 	}
 	@Override
 	public Map<String, Object> getFormDataByFieldList(List<String> fields, String tableName, Long formId) {
-		return appDao.getFormDataByFieldList(fields, tableName, formId);
+		return appMapper.getFormDataByFieldList(fields, tableName, formId);
 	}
 	@Override
 	public List<Map<String, Object>> getFormDataListByFieldList(List<String> fields, String tableName, Long formId) {
-		return appDao.getFormDataListByFieldList(fields, tableName, formId);
+		return appMapper.getFormDataListByFieldList(fields, tableName, formId);
 	}
 	
 }

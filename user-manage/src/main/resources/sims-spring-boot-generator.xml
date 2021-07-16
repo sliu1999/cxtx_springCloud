@@ -1,6 +1,6 @@
 <simsSpringBoot>
-    <basePackage>com.cxtx.order</basePackage>
-    <entityName>SysRestLog</entityName>
+    <basePackage>com.cxtx.user_manage</basePackage>
+    <entityName>OaProcessLog</entityName>
     <entityPackageName>domain</entityPackageName>
     <resourcePackageName>web.rest</resourcePackageName>
     <serviceImplPackageName>service.impl</serviceImplPackageName>
