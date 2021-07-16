@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFlowModelDetailMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFlowModelDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="model_id" jdbcType="BIGINT" property="modelId" />
+    <result column="last_node_code" jdbcType="VARCHAR" property="lastNodeCode" />
+    <result column="node_code" jdbcType="VARCHAR" property="nodeCode" />
+    <result column="next_node_code" jdbcType="VARCHAR" property="nextNodeCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="BIGINT" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_id, last_node_code, node_code, next_node_code, name, sort, status, create_by, 
+    create_date, update_by, update_date, remarks
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oa_flow_model_detail
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_flow_model_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaFlowModelDetail">
+    insert into oa_flow_model_detail (id, model_id, last_node_code, 
+      node_code, next_node_code, name, 
+      sort, status, create_by, 
+      create_date, update_by, update_date, 
+      remarks)
+    values (#{id,jdbcType=BIGINT}, #{modelId,jdbcType=BIGINT}, #{lastNodeCode,jdbcType=VARCHAR}, 
+      #{nodeCode,jdbcType=VARCHAR}, #{nextNodeCode,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{sort,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
+      #{remarks,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelDetail">
+    insert into oa_flow_model_detail
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="modelId != null">
+        model_id,
+      </if>
+      <if test="lastNodeCode != null">
+        last_node_code,
+      </if>
+      <if test="nodeCode != null">
+        node_code,
+      </if>
+      <if test="nextNodeCode != null">
+        next_node_code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="modelId != null">
+        #{modelId,jdbcType=BIGINT},
+      </if>
+      <if test="lastNodeCode != null">
+        #{lastNodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeCode != null">
+        #{nodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="nextNodeCode != null">
+        #{nextNodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelDetail">
+    update oa_flow_model_detail
+    <set>
+      <if test="modelId != null">
+        model_id = #{modelId,jdbcType=BIGINT},
+      </if>
+      <if test="lastNodeCode != null">
+        last_node_code = #{lastNodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="nodeCode != null">
+        node_code = #{nodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="nextNodeCode != null">
+        next_node_code = #{nextNodeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowModelDetail">
+    update oa_flow_model_detail
+    set model_id = #{modelId,jdbcType=BIGINT},
+      last_node_code = #{lastNodeCode,jdbcType=VARCHAR},
+      node_code = #{nodeCode,jdbcType=VARCHAR},
+      next_node_code = #{nextNodeCode,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    *
+    FROM
+    oa_flow_model_detail
+    WHERE
+    1 = 1
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+  </select>
+</mapper>

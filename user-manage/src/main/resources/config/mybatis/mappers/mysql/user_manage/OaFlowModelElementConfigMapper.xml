@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFlowModelElementConfigMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFlowModelElementConfig">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="element_id" jdbcType="BIGINT" property="elementId" />
+    <result column="element_config" jdbcType="LONGVARCHAR" property="elementConfig" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_flow_model_element_config
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    *
+    from oa_flow_model_element_config
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElementConfig">
+    insert into oa_flow_model_element_config
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="elementId != null">
+        element_id,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="elementConfig != null">
+        element_config,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="elementId != null">
+        #{elementId,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="elementConfig != null">
+        #{elementConfig,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElementConfig">
+    update oa_flow_model_element_config
+    <set>
+      <if test="elementId != null">
+        element_id = #{elementId,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="elementConfig != null">
+        element_config = #{elementConfig,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    *
+    FROM
+    oa_flow_model_element_config
+    WHERE
+    1 = 1
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+  </select>
+
+</mapper>

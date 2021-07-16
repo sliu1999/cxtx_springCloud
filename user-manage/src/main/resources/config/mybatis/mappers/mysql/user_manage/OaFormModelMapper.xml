@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFormModelMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFormModel">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="form_type" jdbcType="VARCHAR" property="formType" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="table_key" jdbcType="VARCHAR" property="tableKey" />
+    <result column="detail_keys" jdbcType="VARCHAR" property="detailKeys" />
+    <result column="type" jdbcType="BIGINT" property="type" />
+    <result column="sort" jdbcType="BIGINT" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="table_schema" jdbcType="LONGVARCHAR" property="tableSchema" />
+    <result column="form_view" jdbcType="LONGVARCHAR" property="formView" />
+  </resultMap>
+
+
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_form_model
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFormModel">
+    insert into oa_form_model
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="formType != null">
+        form_type,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="tableKey != null">
+        table_key,
+      </if>
+      <if test="detailKeys != null">
+        detail_keys,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="tableSchema != null">
+        table_schema,
+      </if>
+      <if test="formView != null">
+        form_view,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="formType != null">
+        #{formType,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="tableKey != null">
+        #{tableKey,jdbcType=VARCHAR},
+      </if>
+      <if test="detailKeys != null">
+        #{detailKeys,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=BIGINT},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="tableSchema != null">
+        #{tableSchema,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="formView != null">
+        #{formView,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFormModel">
+    update oa_form_model
+    <set>
+      <if test="formType != null">
+        form_type = #{formType,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="tableKey != null">
+        table_key = #{tableKey,jdbcType=VARCHAR},
+      </if>
+      <if test="detailKeys != null">
+        detail_keys = #{detailKeys,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=BIGINT},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="tableSchema != null">
+        table_schema = #{tableSchema,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="formView != null">
+        form_view = #{formView,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+      SELECT
+        *
+    FROM
+        oa_form_model
+    WHERE
+        1 = 1
+    <if test="name != null and name != ''">
+      and name = #{name}
+    </if>
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    *
+    from oa_form_model
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+</mapper>

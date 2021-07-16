@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaProcessMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaProcess">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="flow_id" jdbcType="BIGINT" property="flowId" />
+    <result column="process_name" jdbcType="VARCHAR" property="processName" />
+    <result column="code_name" jdbcType="VARCHAR" property="codeName" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="form_id" jdbcType="BIGINT" property="formId" />
+    <result column="flow_model_id" jdbcType="BIGINT" property="flowModelId" />
+    <result column="assignee" jdbcType="LONGVARCHAR" property="assignee" />
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_process
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select
+    *
+    from oa_process
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcess">
+    insert into oa_process
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="flowId != null">
+        flow_id,
+      </if>
+      <if test="processName != null">
+        process_name,
+      </if>
+      <if test="codeName != null">
+        code_name,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="state != null">
+        state,
+      </if>
+      <if test="formId != null">
+        form_id,
+      </if>
+      <if test="flowModelId != null">
+        flow_model_id,
+      </if>
+      <if test="assignee != null">
+        assignee,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null">
+        #{flowId,jdbcType=BIGINT},
+      </if>
+      <if test="processName != null">
+        #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null">
+        #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="formId != null">
+        #{formId,jdbcType=BIGINT},
+      </if>
+      <if test="flowModelId != null">
+        #{flowModelId,jdbcType=BIGINT},
+      </if>
+      <if test="assignee != null">
+        #{assignee,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcess">
+    update oa_process
+    <set>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="flowId != null">
+        flow_id = #{flowId,jdbcType=BIGINT},
+      </if>
+      <if test="processName != null">
+        process_name = #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="codeName != null">
+        code_name = #{codeName,jdbcType=VARCHAR},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null">
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="formId != null">
+        form_id = #{formId,jdbcType=BIGINT},
+      </if>
+      <if test="flowModelId != null">
+        flow_model_id = #{flowModelId,jdbcType=BIGINT},
+      </if>
+      <if test="assignee != null">
+        assignee = #{assignee,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    *
+    FROM
+    oa_process
+    WHERE
+    1 = 1
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+  </select>
+
+</mapper>

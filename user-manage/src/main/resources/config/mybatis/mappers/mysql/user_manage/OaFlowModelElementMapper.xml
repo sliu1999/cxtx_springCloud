@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFlowModelElementMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFlowModelElement">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="model_id" jdbcType="BIGINT" property="modelId" />
+    <result column="code" jdbcType="VARCHAR" property="code" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="BIGINT" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+    <result column="start_x" jdbcType="VARCHAR" property="startX" />
+    <result column="start_y" jdbcType="VARCHAR" property="startY" />
+    <result column="height" jdbcType="VARCHAR" property="height" />
+    <result column="width" jdbcType="VARCHAR" property="width" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, model_id, code, name, sort, status, create_by, create_date, update_by, update_date, 
+    remarks, start_x, start_y, height, width
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oa_flow_model_element
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_flow_model_element
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
+    insert into oa_flow_model_element (id, model_id, code, 
+      name, sort, status, 
+      create_by, create_date, update_by, 
+      update_date, remarks, start_x, 
+      start_y, height, width
+      )
+    values (#{id,jdbcType=BIGINT}, #{modelId,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, 
+      #{name,jdbcType=VARCHAR}, #{sort,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, 
+      #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
+      #{updateDate,jdbcType=TIMESTAMP}, #{remarks,jdbcType=VARCHAR}, #{startX,jdbcType=VARCHAR}, 
+      #{startY,jdbcType=VARCHAR}, #{height,jdbcType=VARCHAR}, #{width,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
+    insert into oa_flow_model_element
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="modelId != null">
+        model_id,
+      </if>
+      <if test="code != null">
+        code,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+      <if test="createDate != null">
+        create_date,
+      </if>
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="updateDate != null">
+        update_date,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+      <if test="startX != null">
+        start_x,
+      </if>
+      <if test="startY != null">
+        start_y,
+      </if>
+      <if test="height != null">
+        height,
+      </if>
+      <if test="width != null">
+        width,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="modelId != null">
+        #{modelId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="startX != null">
+        #{startX,jdbcType=VARCHAR},
+      </if>
+      <if test="startY != null">
+        #{startY,jdbcType=VARCHAR},
+      </if>
+      <if test="height != null">
+        #{height,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        #{width,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
+    update oa_flow_model_element
+    <set>
+      <if test="modelId != null">
+        model_id = #{modelId,jdbcType=BIGINT},
+      </if>
+      <if test="code != null">
+        code = #{code,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="updateDate != null">
+        update_date = #{updateDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="startX != null">
+        start_x = #{startX,jdbcType=VARCHAR},
+      </if>
+      <if test="startY != null">
+        start_y = #{startY,jdbcType=VARCHAR},
+      </if>
+      <if test="height != null">
+        height = #{height,jdbcType=VARCHAR},
+      </if>
+      <if test="width != null">
+        width = #{width,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
+    update oa_flow_model_element
+    set model_id = #{modelId,jdbcType=BIGINT},
+      code = #{code,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=BIGINT},
+      status = #{status,jdbcType=INTEGER},
+      create_by = #{createBy,jdbcType=BIGINT},
+      create_date = #{createDate,jdbcType=TIMESTAMP},
+      update_by = #{updateBy,jdbcType=BIGINT},
+      update_date = #{updateDate,jdbcType=TIMESTAMP},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      start_x = #{startX,jdbcType=VARCHAR},
+      start_y = #{startY,jdbcType=VARCHAR},
+      height = #{height,jdbcType=VARCHAR},
+      width = #{width,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <!-- 获取当前节点配置  -->
+  <select id="getNowNodeConfig" resultType="map">
+		SELECT
+	        a.model_id AS modId,
+			a.`code` AS `code`,
+			b.element_id AS modElementId,
+			b.element_config AS modConfig
+        FROM
+            oa_flow_model_element a
+        INNER JOIN oa_flow_model_element_config b ON a.id = b.element_id
+		WHERE
+			a.model_id = #{modId}
+			AND a.code = #{code}
+	</select>
+
+  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+    SELECT
+    *
+    FROM
+    oa_flow_model_element
+    WHERE
+    1 = 1
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+  </select>
+
+  <!-- 获取当前节点的上下关系  -->
+  <select id="getLastNextNodes" resultType="com.info33.platform.oa.entity.OaFlowModDetail">
+		SELECT DISTINCT md.* FROM oa_flow_mod_element element LEFT JOIN oa_flow_mod_detail md ON
+			md.mod_id = element.mod_id AND element.`code` = md.node_code
+		WHERE md.mod_id = #{modId} AND md.node_code = #{code};
+	</select>
+
+  <select id="getNodeByProcessId" resultType = "map">
+		SELECT
+			e.id,e.mod_id,e.mod_uuid,e.`code`,e.`name`,cf.mod_config AS param,lg.cur_assignee
+		FROM
+			oa_process_log lg
+		LEFT JOIN oa_process p ON lg.process_id = p.id
+		LEFT JOIN oa_flow_mod m ON m.id = p.mod_id
+		LEFT JOIN oa_flow_mod_element e ON e.mod_id = m.id
+		AND e.`code` = lg.cur_node
+		LEFT JOIN oa_flow_mod_config cf ON cf.mod_element_id = e.id
+		WHERE
+			lg.process_id = #{processId} ORDER BY lg.create_date ASC
+	</select>
+</mapper>

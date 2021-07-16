@@ -1,0 +1,9 @@
+<simsSpringBoot>
+    <basePackage>com.cxtx.order</basePackage>
+    <entityName>SysRestLog</entityName>
+    <entityPackageName>domain</entityPackageName>
+    <resourcePackageName>web.rest</resourcePackageName>
+    <serviceImplPackageName>service.impl</serviceImplPackageName>
+    <servicePackageName>service</servicePackageName>
+    <user>sliu</user>
+</simsSpringBoot>
