@@ -25,5 +25,5 @@ public interface OaFlowModelService{
 
     List<OaFlowModel> selectAll(Map params);
 
-    OaFlowMod selectByFlowId(Long flowId);
+    OaFlowModel selectByFlowId(Long flowId);
 }
