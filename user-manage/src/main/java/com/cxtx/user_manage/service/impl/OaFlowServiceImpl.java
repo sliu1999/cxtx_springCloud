@@ -2,10 +2,10 @@ package com.cxtx.user_manage.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.cxtx.common.unit.ServiceUtil;
+import com.cxtx.user_manage.domain.*;
+import com.cxtx.user_manage.mapper.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.cxtx.user_manage.domain.OaFlow;
-import com.cxtx.user_manage.mapper.OaFlowMapper;
 import com.cxtx.user_manage.service.OaFlowService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +30,21 @@ public class OaFlowServiceImpl implements OaFlowService {
 
     @Autowired
     private OaFlowMapper oaFlowMapper;
+
+
+    @Autowired
+    private OaFlowModelMapper oaFlowModelMapper;
+
+    @Autowired
+    private OaFlowModelElementMapper oaFlowModelElementMapper;
+    @Autowired
+    private OaFlowModelDetailMapper oaFlowModelDetailMapper;
+    @Autowired
+    private OaFlowModelElementConfigMapper oaFlowModelElementConfigMapper;
+    @Autowired
+    private OaFlowFormMapper oaFlowFormMapper;
+    @Autowired
+    private OaFormModelMapper oaFormModelMapper;
 
 
     @Override
@@ -66,24 +81,7 @@ public class OaFlowServiceImpl implements OaFlowService {
         return new PageInfo<OaFlow>(labels);
     }
 
-    @Resource
-    OaFlowDao oaFlowDao;
 
-    @Resource
-    OaFlowModDao oaFlowModDao;
-
-    @Resource
-    OaFlowElementDao oaFlowElementDao;
-    @Resource
-    OaFlowModElementDao oaFlowModElementDao;
-    @Resource
-    OaFlowModDetailDao oaFlowModDetailDao;
-    @Resource
-    OaFlowModConfigDao oaFlowModConfigDao;
-    @Resource
-    OaFlowFormDao oaFlowFormDao;
-    @Resource
-    OaFormModDao oaFormModDao;
 
     @Override
     public boolean saveFlow(OaFlow oaFlow) {
@@ -477,7 +475,7 @@ public class OaFlowServiceImpl implements OaFlowService {
 
     @Override
     public OaFlow selectFlowByForm(Long formId) {
-        return oaFlowDao.selectFlowByForm(formId);
+        return oaFlowMapper.selectFlowByForm(formId);
     }
 
     @Override

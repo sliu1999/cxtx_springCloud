@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -30,53 +31,20 @@ public class OaFlowResource {
     private OaFlowService oaFlowService;
 
     /**
-     * POST  /oaFlows  : Creates a new oaFlow.
-     *
-     * @param oaFlow the oaFlow to create
-     * @return the ResponseEntity with status 200
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * 新增或编辑流程
+     * @return
      */
-    @ApiOperation(value = "新增__OaFlow__", notes = "新增一个__OaFlow__", response = ResponseUtil.Response.class)
-    @ApiImplicitParam(name = "oaFlow", value = "__OaFlow__", required = true, paramType = "body", dataType = "OaFlow")
-    @PostMapping("/oaFlows")
-    public ResponseEntity<Map> createOaFlow(@Valid @RequestBody OaFlow oaFlow) throws URISyntaxException {
-        log.debug("REST request to save OaFlow : {}", oaFlow);
+    @PostMapping("/addOrEditFlow")
+    @ApiOperation(value = "新增单个流程主表详情", notes = "新增单个流程主表详情")
+    public ResponseEntity<Map> addOrEditFlow(@Valid @RequestBody OaFlow oaFlow){
+
         try {
-            int result = oaFlowService.insertSelective(oaFlow);
-            if (result == 1) {
-                return ResponseUtil.success("");
-            } else {
-                return ResponseUtil.error("新增失败！");
-            }
-        }catch (Exception e){
-        return ResponseUtil.error(e.getMessage());
+            return oaFlowService.addOrEditFlow(oaFlow);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.error(20000,e.getMessage());
         }
     }
-
-    /**
-     * PUT  /oaFlows : Updates an existing OaFlow.
-     *
-     * @param oaFlow the oaFlow to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated oaFlow,
-     * or with status 500 (Internal Server Error) if the oaFlow couldn't be updated
-     */
-    @ApiOperation(value = "更新__OaFlow__", notes = "根据指定wid 更新一个__OaFlow__", response = ResponseUtil.Response.class)
-    @ApiImplicitParam(name = "oaFlow", value = "__OaFlow__", required = true, paramType = "body", dataType = "OaFlow")
-    @PutMapping("/oaFlows")
-    public ResponseEntity<Map> updateOaFlow(@Valid @RequestBody OaFlow oaFlow) {
-        log.debug("REST request to update OaFlow : {}", oaFlow);
-        try {
-            int result = oaFlowService.updateByPrimaryKeySelective(oaFlow);
-            if (result == 1) {
-                return ResponseUtil.success("");
-            } else {
-                return ResponseUtil.error("更新失败");
-            }
-        }catch (Exception e){
-            return ResponseUtil.error(e.getMessage());
-        }
-    }
-
     /**
      * GET  /oaFlows : get all oaFlows.
      *

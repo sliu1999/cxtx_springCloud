@@ -3,6 +3,8 @@ package com.cxtx.user_manage.domain;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Data
 public class OaFlow {
@@ -29,5 +31,13 @@ public class OaFlow {
     private String height;
 
     private String width;
+
+
+
+    private OaFlowModel processModel;
+    private List<OaFlowModelElement> modElements;
+    private Map<String,Object> module;
+    private List<Map<String,Object>> modSequenceElements;
+
 
 }
