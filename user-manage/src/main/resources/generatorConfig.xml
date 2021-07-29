@@ -50,8 +50,8 @@
         </javaClientGenerator>
 
         <!-- 指定数据库表 -->
-        <table tableName="oa_process_log"
-               domainObjectName="OaProcessLog"
+        <table tableName="oa_form_process_instance"
+               domainObjectName="OaFormProcessInstance"
                enableCountByExample="false"
                enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">

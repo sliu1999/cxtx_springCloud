@@ -1,14 +1,15 @@
 package com.cxtx.user_manage.mapper;
 
 import com.cxtx.user_manage.domain.OaFlowModel;
+import com.cxtx.user_manage.domain.OaFormModel;
+import sun.util.calendar.LocalGregorianCalendar;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public interface OaFlowModelMapper {
     int deleteByPrimaryKey(Long id);
-
-    int insert(OaFlowModel record);
 
     int insertSelective(OaFlowModel record);
 
@@ -16,10 +17,12 @@ public interface OaFlowModelMapper {
 
     int updateByPrimaryKeySelective(OaFlowModel record);
 
-    int updateByPrimaryKey(OaFlowModel record);
-
     List<OaFlowModel> selectAll(Map params);
 
     OaFlowModel selectByFlowId(Long flowId);
+
+    OaFlowModel selectByCreateDate(Date createDate);
+
+    int deleteByFlowId(Long flowId);
 
 }

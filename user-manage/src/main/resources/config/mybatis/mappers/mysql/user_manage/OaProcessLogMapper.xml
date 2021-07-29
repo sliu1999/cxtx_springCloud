@@ -6,7 +6,9 @@
     <result column="flow_id" jdbcType="BIGINT" property="flowId" />
     <result column="process_id" jdbcType="BIGINT" property="processId" />
     <result column="cur_node" jdbcType="VARCHAR" property="curNode" />
+    <result column="cur_node_name" jdbcType="VARCHAR" property="curNodeName" />
     <result column="next_node" jdbcType="VARCHAR" property="nextNode" />
+    <result column="next_node_name" jdbcType="VARCHAR" property="nextNodeName" />
     <result column="action_id" jdbcType="INTEGER" property="actionId" />
     <result column="create_by" jdbcType="BIGINT" property="createBy" />
     <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
@@ -32,7 +34,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcessLog">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcessLog" useGeneratedKeys="true" keyProperty="id">
     insert into oa_process_log
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -56,15 +58,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="sort != null">
         sort,
       </if>
@@ -106,15 +108,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
@@ -135,7 +133,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcessLog">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcessLog" useGeneratedKeys="true" keyProperty="id">
     update oa_process_log
     <set>
       <if test="flowId != null">
@@ -162,9 +160,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
@@ -197,6 +193,38 @@
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
+    <if test="processId != null and processId != ''">
+      and process_id = #{processId}
+    </if>
+    <if test="nextNode != null and nextNode != ''">
+      and next_node = #{nextNode}
+    </if>
+    <if test="curNode != null and curNode != ''">
+      and cur_node = #{curNode}
+    </if>
+    <if test="noCurNode != null and noCurNode != ''">
+      and cur_node != #{noCurNode}
+    </if>
+
+    order by create_date desc
   </select>
+
+  <select id="getLogByProcessId" resultMap="BaseResultMap">
+		SELECT DISTINCT
+            log.*,
+            e1.`name` AS cur_node_name,
+            e2.`name` AS next_node_name
+        FROM
+            oa_process_log log
+        LEFT JOIN tb_sys_user u ON log.cur_assignee = u.id
+        LEFT JOIN tb_sys_user uu ON log.next_assignees = uu.id
+        LEFT JOIN oa_process p ON p.id = log.process_id
+        LEFT JOIN oa_flow_model_element e1 ON e1.`code` = log.cur_node AND e1.model_id = p.flow_model_id
+        LEFT JOIN oa_flow_model_element e2 ON e2.`code` = log.next_node AND e2.model_id = p.flow_model_id
+        WHERE
+                log.process_id = #{processId}
+        ORDER BY
+            create_date ASC
+	</select>
 
 </mapper>

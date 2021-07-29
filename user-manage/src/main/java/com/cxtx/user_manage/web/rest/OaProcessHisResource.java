@@ -1,6 +1,8 @@
 package com.cxtx.user_manage.web.rest;
 
 
+import com.cxtx.common.domain.JwtModel;
+import com.cxtx.common.unit.HttpServletUtils;
 import com.cxtx.common.unit.ResponseUtil;
 import com.github.pagehelper.PageInfo;
 
@@ -32,13 +34,7 @@ public class OaProcessHisResource {
     @Autowired
     private OaProcessHisService oaProcessHisService;
 
-    /**
-     * POST  /oaProcessHiss  : Creates a new oaProcessHis.
-     *
-     * @param oaProcessHis the oaProcessHis to create
-     * @return the ResponseEntity with status 200
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
+
     @ApiOperation(value = "新增__OaProcessHis__", notes = "新增一个__OaProcessHis__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaProcessHis", value = "__OaProcessHis__", required = true, paramType = "body", dataType = "OaProcessHis")
     @PostMapping("/oaProcessHiss")
@@ -56,13 +52,7 @@ public class OaProcessHisResource {
         }
     }
 
-    /**
-     * PUT  /oaProcessHiss : Updates an existing OaProcessHis.
-     *
-     * @param oaProcessHis the oaProcessHis to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated oaProcessHis,
-     * or with status 500 (Internal Server Error) if the oaProcessHis couldn't be updated
-     */
+
     @ApiOperation(value = "更新__OaProcessHis__", notes = "根据指定wid 更新一个__OaProcessHis__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaProcessHis", value = "__OaProcessHis__", required = true, paramType = "body", dataType = "OaProcessHis")
     @PutMapping("/oaProcessHiss")
@@ -80,13 +70,9 @@ public class OaProcessHisResource {
         }
     }
 
-    /**
-     * GET  /oaProcessHiss : get all oaProcessHiss.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all oaProcessHiss
-     */
+
     @GetMapping("/oaProcessHiss")
-    @ApiOperation(value = "分页获取__OaProcessHis__", notes = "分页获取__OaProcessHis__列表", response = ResponseUtil.Response.class)
+    @ApiOperation(value = "已办事项", notes = "已办事项", response = ResponseUtil.Response.class)
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(name = "pageNum", value = "分页参数：第几页", required = true, paramType = "query", dataType = "int"),
@@ -95,7 +81,7 @@ public class OaProcessHisResource {
     )
     public ResponseEntity<Map> queryByPageOaProcessHiss(@ApiIgnore @RequestParam Map params) {
         try {
-            PageInfo<OaProcessHis> result = oaProcessHisService.queryByPage(params);
+            PageInfo<Map<String,Object>> result = oaProcessHisService.queryByPageMap(params);
             if (result != null) {
                 return ResponseUtil.success(result);
             } else {
@@ -107,11 +93,7 @@ public class OaProcessHisResource {
     }
 
 
-    /**
-     * GET  /oaProcessHiss/id : get  oaProcessHis by id.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all oaProcessHiss
-     */
+
     @ApiOperation(value = "获取__OaProcessHis__", notes = "根据wid 获取一个__OaProcessHis__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
     @GetMapping("/oaProcessHiss/{wid}")
@@ -124,12 +106,6 @@ public class OaProcessHisResource {
         }
     }
 
-    /**
-     * DELETE /oaProcessHiss/:login : delete the "login" OaProcessHis.
-     *
-     * @param id the login of the oaProcessHis to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
     @ApiOperation(value = "删除__OaProcessHis__", notes = "根据wid 删除一个__OaProcessHis__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
     @DeleteMapping("/oaProcessHiss/{id}")

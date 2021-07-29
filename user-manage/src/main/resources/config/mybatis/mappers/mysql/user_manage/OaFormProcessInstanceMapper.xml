@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFormProcessInstanceMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFormProcessInstance">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="app_form_id" jdbcType="BIGINT" property="appFormId" />
+    <result column="process_name" jdbcType="VARCHAR" property="processName" />
+    <result column="process_id" jdbcType="BIGINT" property="processId" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="form_model_id" jdbcType="BIGINT" property="formModelId" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="sort" jdbcType="INTEGER" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, app_form_id, process_name, process_id, user_id, form_model_id, create_date, create_by, 
+    update_date, update_by, sort, status, remarks
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oa_form_process_instance
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_form_process_instance
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFormProcessInstance" useGeneratedKeys="true" keyProperty="id">
+    insert into oa_form_process_instance
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="appFormId != null">
+        app_form_id,
+      </if>
+      <if test="processName != null">
+        process_name,
+      </if>
+      <if test="processId != null">
+        process_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="formModelId != null">
+        form_model_id,
+      </if>
+
+        create_date,
+
+      <if test="createBy != null">
+        create_by,
+      </if>
+
+        update_date,
+
+      <if test="updateBy != null">
+        update_by,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="appFormId != null">
+        #{appFormId,jdbcType=BIGINT},
+      </if>
+      <if test="processName != null">
+        #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="processId != null">
+        #{processId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="formModelId != null">
+        #{formModelId,jdbcType=BIGINT},
+      </if>
+      SYSDATE(),
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      SYSDATE(),
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFormProcessInstance" useGeneratedKeys="true" keyProperty="id">
+    update oa_form_process_instance
+    <set>
+      <if test="appFormId != null">
+        app_form_id = #{appFormId,jdbcType=BIGINT},
+      </if>
+      <if test="processName != null">
+        process_name = #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="processId != null">
+        process_id = #{processId,jdbcType=BIGINT},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=BIGINT},
+      </if>
+      <if test="formModelId != null">
+        form_model_id = #{formModelId,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      update_date = SYSDATE(),
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+</mapper>

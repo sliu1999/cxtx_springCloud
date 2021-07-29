@@ -16,4 +16,12 @@ public interface OaFormModelMapper {
     List<OaFormModel> selectAll(Map params);
 
     OaFormModel selectByPrimaryKey(Long id);
+
+    int insertForm(Map<String, Object> map);
+
+    void updateForm(Map<String, Object> map);
+
+    void updateDetailForm(Map<String, Object> map);
+
+
 }

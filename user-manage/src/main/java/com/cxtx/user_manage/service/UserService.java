@@ -36,4 +36,27 @@ public interface UserService {
     int changeUserPassword(ChangeUserPasswordDTO var1) throws Exception;
 
     int changeCurrentUserPassword(ChangeCurrentUserPasswordDTO var1) throws Exception;
+
+    /**
+     * 根据部门岗位查询人员
+     * @param groupId
+     * @param roleId
+     * @return
+     */
+    List<User> getUserByGroupRole(String groupId,String roleId);
+
+    /**
+     * 根据部门查询人员
+     * @param groupId
+     * @return
+     */
+    List<User> getUserByGroup(Long groupId);
+    /**
+     * 根据角色查询人员
+     * @param roleId
+     * @return
+     */
+    List<User> getUserByRole(Long roleId);
+
+    Map queryUserDetailById(String userId);
 }

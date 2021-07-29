@@ -16,6 +16,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "OaFlow")
@@ -30,26 +31,32 @@ public class OaFlowResource {
     @Autowired
     private OaFlowService oaFlowService;
 
-    /**
-     * 新增或编辑流程
-     * @return
-     */
-    @PostMapping("/addOrEditFlow")
-    @ApiOperation(value = "新增单个流程主表详情", notes = "新增单个流程主表详情")
-    public ResponseEntity<Map> addOrEditFlow(@Valid @RequestBody OaFlow oaFlow){
 
+    @PostMapping("/addOrEditFlow")
+    @ApiOperation(value = "流程设计--增加或编辑流程", notes = "流程设计--增加或编辑流程")
+    public ResponseEntity<Map> addOrEditFlow(@Valid @RequestBody OaFlow oaFlow){
         try {
-            return oaFlowService.addOrEditFlow(oaFlow);
+            Map result = oaFlowService.addOrEditFlow(oaFlow);
+            return ResponseUtil.success(result);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.error(20000,e.getMessage());
         }
     }
-    /**
-     * GET  /oaFlows : get all oaFlows.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all oaFlows
-     */
+
+    @ApiOperation(value = "流程设计--根据流程ID获取流程详情", notes = "流程设计--根据流程ID获取流程详情", response = ResponseUtil.Response.class)
+    @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
+    @GetMapping("/oaFlows/{id}")
+    public ResponseEntity<Map> getOaFlow(@PathVariable Long id) {
+        OaFlow result = oaFlowService.selectByPrimaryKey(id);
+        if (result != null) {
+            return ResponseUtil.success(result);
+        } else {
+            return ResponseUtil.error("获取失败！");
+        }
+    }
+
+
     @GetMapping("/oaFlows")
     @ApiOperation(value = "分页获取__OaFlow__", notes = "分页获取__OaFlow__列表", response = ResponseUtil.Response.class)
     @ApiImplicitParams(
@@ -71,41 +78,43 @@ public class OaFlowResource {
         }
     }
 
-
-    /**
-     * GET  /oaFlows/id : get  oaFlow by id.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all oaFlows
-     */
-    @ApiOperation(value = "获取__OaFlow__", notes = "根据wid 获取一个__OaFlow__", response = ResponseUtil.Response.class)
-    @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
-    @GetMapping("/oaFlows/{wid}")
-    public ResponseEntity<Map> getOaFlow(@PathVariable Long id) {
-        OaFlow result = oaFlowService.selectByPrimaryKey(id);
-        if (result != null) {
-            return ResponseUtil.success(result);
-        } else {
-            return ResponseUtil.error("获取失败！");
+    @GetMapping("/oaFlows/list")
+    @ApiOperation(value = "获取所有有效流程", notes = "获取所有有效流程", response = ResponseUtil.Response.class)
+    public ResponseEntity<Map> list(@ApiIgnore @RequestParam Map params) {
+        try {
+            params.put("status","1");
+            List<OaFlow> result = oaFlowService.selectAll(params);
+            if (result != null) {
+                return ResponseUtil.success(result);
+            } else {
+                return ResponseUtil.error("有错误");
+            }
+        }catch (Exception e){
+            return ResponseUtil.error(e.getMessage());
         }
     }
 
-    /**
-     * DELETE /oaFlows/:login : delete the "login" OaFlow.
-     *
-     * @param id the login of the oaFlow to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
-    @ApiOperation(value = "删除__OaFlow__", notes = "根据wid 删除一个__OaFlow__", response = ResponseUtil.Response.class)
+
+
+
+
+
+    @ApiOperation(value = "流程设计--删除流程", notes = "流程设计--删除流程", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
     @DeleteMapping("/oaFlows/{id}")
     public ResponseEntity<Map> deleteOaFlow(@PathVariable Long id) {
         log.debug("REST request to delete OaFlow: {}", id);
-        int result = oaFlowService.deleteByPrimaryKey(id);
-        if(result == 1){
-            return ResponseUtil.success("删除成功！");
-        }else{
-            return ResponseUtil.error("删除失败！");
+        try {
+            int result = oaFlowService.deleteByPrimaryKey(id);
+            if(result == 1){
+                return ResponseUtil.success("删除成功！");
+            }else{
+                return ResponseUtil.error("删除失败！");
+            }
+        }catch (Exception e){
+            return ResponseUtil.error(e.getMessage());
         }
+
     }
 
 }

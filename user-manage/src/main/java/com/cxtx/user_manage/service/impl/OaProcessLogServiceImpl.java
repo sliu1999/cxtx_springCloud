@@ -1,6 +1,10 @@
 package com.cxtx.user_manage.service.impl;
 
 import com.cxtx.common.unit.ServiceUtil;
+import com.cxtx.user_manage.domain.User;
+import com.cxtx.user_manage.mapper.UserMapper;
+import com.cxtx.user_manage.service.UserService;
+import com.cxtx.user_manage.unit.GuavaUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.OaProcessLog;
@@ -22,6 +26,9 @@ public class OaProcessLogServiceImpl implements OaProcessLogService {
 
     @Autowired
     private OaProcessLogMapper oaProcessLogMapper;
+
+    @Autowired
+    private UserMapper userMapper;
 
 
     @Override
@@ -61,15 +68,10 @@ public class OaProcessLogServiceImpl implements OaProcessLogService {
         return new PageInfo<OaProcessLog>(labels);
     }
 
-    @Autowired
-    OaProcessLogDao oaProcessLogDao;
-    @Autowired
-    SysUserDao sysUserDao;
-    @SuppressWarnings("unused")
     @Override
-    public List<OaProcessLogVO> getLogByProcessId(Long processId) {
-        List<OaProcessLogVO> logs = oaProcessLogDao.getLogByProcessId(processId);
-        for(OaProcessLogVO log:logs) {
+    public List<OaProcessLog> getLogByProcessId(Long processId) {
+        List<OaProcessLog> logs = oaProcessLogMapper.getLogByProcessId(processId);
+        for(OaProcessLog log:logs) {
             String curNodeName = "";
             String nextNodeName = "";
             List<String> curUserName = new ArrayList<String>();
@@ -79,16 +81,16 @@ public class OaProcessLogServiceImpl implements OaProcessLogService {
             System.out.println("当前审批人："+cur_assignee);
             System.out.println("下一节点审批人："+next_assignee);
             if(null != cur_assignee&&!(cur_assignee.isEmpty())) {
-                List<SysUser> curAssignee = sysUserDao.getUserInfoByIdStrings(cur_assignee, log.getTenantId());
-                for(SysUser u:curAssignee) {
-                    curUserName.add(u.getTrueName());
+                List<User> curAssignee = userMapper.getUserInfoByIdStrings(cur_assignee);
+                for(User u:curAssignee) {
+                    curUserName.add(u.getLoginId());
                 }
                 log.setCurAssigneeName(GuavaUtil.list2string(curUserName, ","));
             }
             if(null != next_assignee&&!(next_assignee.isEmpty())) {
-                List<SysUser> nextAssignee = sysUserDao.getUserInfoByIdStrings(next_assignee, log.getTenantId());
-                for(SysUser u:nextAssignee) {
-                    nextUserName.add(u.getTrueName());
+                List<User> nextAssignee = userMapper.getUserInfoByIdStrings(next_assignee);
+                for(User u:nextAssignee) {
+                    nextUserName.add(u.getLoginId());
                 }
                 log.setNextAssigneeName(GuavaUtil.list2string(nextUserName, ","));
             }

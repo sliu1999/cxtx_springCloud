@@ -31,13 +31,7 @@ public class OaProcessResource {
     @Autowired
     private OaProcessService oaProcessService;
 
-    /**
-     * POST  /oaProcesss  : Creates a new oaProcess.
-     *
-     * @param oaProcess the oaProcess to create
-     * @return the ResponseEntity with status 200
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
+
     @ApiOperation(value = "新增__OaProcess__", notes = "新增一个__OaProcess__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaProcess", value = "__OaProcess__", required = true, paramType = "body", dataType = "OaProcess")
     @PostMapping("/oaProcess")
@@ -55,13 +49,7 @@ public class OaProcessResource {
         }
     }
 
-    /**
-     * PUT  /oaProcesss : Updates an existing OaProcess.
-     *
-     * @param oaProcess the oaProcess to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated oaProcess,
-     * or with status 500 (Internal Server Error) if the oaProcess couldn't be updated
-     */
+
     @ApiOperation(value = "更新__OaProcess__", notes = "根据指定id 更新一个__OaProcess__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaProcess", value = "__OaProcess__", required = true, paramType = "body", dataType = "OaProcess")
     @PutMapping("/oaProcess")
@@ -79,11 +67,6 @@ public class OaProcessResource {
         }
     }
 
-    /**
-     * GET  /oaProcesss : get all oaProcesss.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all oaProcesss
-     */
     @GetMapping("/oaProcess")
     @ApiOperation(value = "分页获取__OaProcess__", notes = "分页获取__OaProcess__列表", response = ResponseUtil.Response.class)
     @ApiImplicitParams(
@@ -105,14 +88,6 @@ public class OaProcessResource {
         }
     }
 
-
-
-    /**
-     * DELETE /oaProcesss/:login : delete the "login" OaProcess.
-     *
-     * @param id the login of the oaProcess to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
     @ApiOperation(value = "删除__OaProcess__", notes = "根据id 删除一个__OaProcess__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
     @DeleteMapping("/oaProcess/{id}")

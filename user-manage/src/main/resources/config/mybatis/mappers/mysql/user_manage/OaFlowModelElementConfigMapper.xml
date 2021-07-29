@@ -27,7 +27,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElementConfig">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElementConfig" useGeneratedKeys="true" keyProperty="id">
     insert into oa_flow_model_element_config
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -39,15 +39,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="sort != null">
         sort,
       </if>
@@ -71,15 +71,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
@@ -94,7 +90,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElementConfig">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElementConfig" useGeneratedKeys="true" keyProperty="id">
     update oa_flow_model_element_config
     <set>
       <if test="elementId != null">
@@ -109,9 +105,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
@@ -138,6 +132,21 @@
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
+  </select>
+
+  <delete id="deleteByElementList" parameterType="map">
+    delete
+    FROM
+    oa_flow_model_element_config
+    WHERE
+    element_id IN
+    <foreach collection="elementIdList" separator="," open="(" close=")" item="elementId">
+      #{elementId}
+    </foreach>
+  </delete>
+
+  <select id="selectByElementId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from oa_flow_model_element_config where element_id = #{elementId}
   </select>
 
 </mapper>

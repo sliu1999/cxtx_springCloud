@@ -11,7 +11,6 @@ public interface OaProcessLogService{
 
     int deleteByPrimaryKey(Long id);
 
-
     int insertSelective(OaProcessLog record);
 
     int updateByPrimaryKeySelective(OaProcessLog record);
@@ -22,5 +21,5 @@ public interface OaProcessLogService{
 
     List<OaProcessLog> selectAll(Map params);
 
-    List<OaProcessLogVO> getLogByProcessId(Long processId);
+    List<OaProcessLog> getLogByProcessId(Long processId);
 }

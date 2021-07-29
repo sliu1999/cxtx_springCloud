@@ -31,11 +31,6 @@ public class OaFlowModelServiceImpl implements OaFlowModelService {
     }
 
     @Override
-    public int insert(OaFlowModel record) {
-        return oaFlowModelMapper.insert(record);
-    }
-
-    @Override
     public int insertSelective(OaFlowModel record) {
         return oaFlowModelMapper.insertSelective(record);
     }
@@ -52,11 +47,6 @@ public class OaFlowModelServiceImpl implements OaFlowModelService {
     }
 
     @Override
-    public int updateByPrimaryKey(OaFlowModel record) {
-        return oaFlowModelMapper.updateByPrimaryKey(record);
-    }
-
-    @Override
     public List<OaFlowModel> selectAll(Map params) {
         return oaFlowModelMapper.selectAll(params);
     }
@@ -70,8 +60,8 @@ public class OaFlowModelServiceImpl implements OaFlowModelService {
     }
 
     @Override
-    public OaFlowMod selectByFlowId(Long flowId) {
+    public OaFlowModel selectByFlowId(Long flowId) {
         // TODO Auto-generated method stub
-        return oaFlowModDao.selectByFlowId(flowId);
+        return oaFlowModelMapper.selectByFlowId(flowId);
     }
 }

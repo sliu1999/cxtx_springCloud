@@ -19,8 +19,6 @@ public interface OaFlowModelElementService{
 
     int updateByPrimaryKeySelective(OaFlowModelElement record);
 
-    int updateByPrimaryKey(OaFlowModelElement record);
-
     PageInfo<OaFlowModelElement> queryByPage(Map params);
 
     List<OaFlowModelElement> selectAll(Map params);
@@ -47,5 +45,8 @@ public interface OaFlowModelElementService{
      * @param processId
      * @return
      */
-    List<Map<String, Object>> getNodeByProcessId(Long processId, Long tenantId);
+    List<Map<String, Object>> getNodeByProcessId(Long processId);
+
+    OaFlowModelElement selectOneByCodeAndModelId(String code, Long modelId);
+
 }

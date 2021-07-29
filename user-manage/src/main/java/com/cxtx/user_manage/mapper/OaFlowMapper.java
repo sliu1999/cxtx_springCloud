@@ -16,5 +16,7 @@ public interface OaFlowMapper {
 
     List<OaFlow> selectAll(Map params);
 
+    OaFlow selectOne(Map params);
+
     OaFlow selectFlowByForm(Long formId);
 }

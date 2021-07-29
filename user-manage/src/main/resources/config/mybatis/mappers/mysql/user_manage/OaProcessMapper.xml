@@ -15,7 +15,7 @@
     <result column="code_name" jdbcType="VARCHAR" property="codeName" />
     <result column="code" jdbcType="VARCHAR" property="code" />
     <result column="state" jdbcType="INTEGER" property="state" />
-    <result column="form_id" jdbcType="BIGINT" property="formId" />
+    <result column="app_form_id" jdbcType="BIGINT" property="appFormId" />
     <result column="flow_model_id" jdbcType="BIGINT" property="flowModelId" />
     <result column="assignee" jdbcType="LONGVARCHAR" property="assignee" />
   </resultMap>
@@ -32,7 +32,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcess">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcess" useGeneratedKeys="true" keyProperty="id">
     insert into oa_process
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -41,15 +41,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="sort != null">
         sort,
       </if>
@@ -74,8 +74,8 @@
       <if test="state != null">
         state,
       </if>
-      <if test="formId != null">
-        form_id,
+      <if test="appFormId != null">
+        app_form_id,
       </if>
       <if test="flowModelId != null">
         flow_model_id,
@@ -91,15 +91,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
@@ -124,8 +120,8 @@
       <if test="state != null">
         #{state,jdbcType=INTEGER},
       </if>
-      <if test="formId != null">
-        #{formId,jdbcType=BIGINT},
+      <if test="appFormId != null">
+        #{appFormId,jdbcType=BIGINT},
       </if>
       <if test="flowModelId != null">
         #{flowModelId,jdbcType=BIGINT},
@@ -135,7 +131,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcess">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcess" useGeneratedKeys="true" keyProperty="id">
     update oa_process
     <set>
       <if test="createBy != null">
@@ -147,9 +143,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
@@ -174,8 +168,8 @@
       <if test="state != null">
         state = #{state,jdbcType=INTEGER},
       </if>
-      <if test="formId != null">
-        form_id = #{formId,jdbcType=BIGINT},
+      <if test="appFormId != null">
+        app_form_id = #{appFormId,jdbcType=BIGINT},
       </if>
       <if test="flowModelId != null">
         flow_model_id = #{flowModelId,jdbcType=BIGINT},

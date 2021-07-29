@@ -144,4 +144,24 @@ public class UserServiceImpl implements UserService {
             throw new Exception("密码错误……");
         }
     }
+
+    @Override
+    public List<User> getUserByGroupRole(String groupId, String roleId) {
+        return userMapper.getUserByGroupRole(groupId, roleId);
+    }
+
+    @Override
+    public List<User> getUserByGroup(Long groupId) {
+        return userMapper.getUserByGroup(groupId);
+    }
+
+    @Override
+    public List<User> getUserByRole(Long roleId) {
+        return userMapper.getUserByRole(roleId);
+    }
+
+    @Override
+    public Map queryUserDetailById(String userId) {
+        return userMapper.queryUserDetailById(userId);
+    }
 }

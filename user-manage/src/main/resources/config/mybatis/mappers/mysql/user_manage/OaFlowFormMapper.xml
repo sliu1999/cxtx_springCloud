@@ -28,17 +28,8 @@
     delete from oa_flow_form
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
-    insert into oa_flow_form (id, form_model_id, flow_id, 
-      flow_model_id, status, create_by, 
-      create_date, update_by, update_date, 
-      sort, remarks)
-    values (#{id,jdbcType=BIGINT}, #{formModelId,jdbcType=BIGINT}, #{flowId,jdbcType=BIGINT}, 
-      #{flowModelId,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
-      #{sort,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowForm" useGeneratedKeys="true" keyProperty="id">
     insert into oa_flow_form
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -59,15 +50,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="sort != null">
         sort,
       </if>
@@ -94,15 +85,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
@@ -111,7 +98,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowForm" useGeneratedKeys="true" keyProperty="id">
     update oa_flow_form
     <set>
       <if test="formModelId != null">
@@ -135,9 +122,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
@@ -145,20 +130,6 @@
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowForm">
-    update oa_flow_form
-    set form_model_id = #{formModelId,jdbcType=BIGINT},
-      flow_id = #{flowId,jdbcType=BIGINT},
-      flow_model_id = #{flowModelId,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      sort = #{sort,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -169,8 +140,25 @@
     oa_flow_form
     WHERE
     1 = 1
+    <if test="flowId != null and flowId != ''">
+      and flowId = #{flowId}
+    </if>
+    <if test="flowModelId != null and flowModelId != ''">
+      and flow_model_id = #{flowModelId}
+    </if>
+    <if test="formModelId != null and formModelId != ''">
+      and form_model_id = #{formModelId}
+    </if>
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
+  </select>
+
+  <delete id="deleteByFlowId" parameterType="java.lang.Long">
+    DELETE FROM oa_flow_form WHERE flow_id = #{flowId}
+  </delete>
+
+  <select id="selectByFlowModelId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select * from oa_flow_form where flow_model_id = #{flowModelId}
   </select>
 </mapper>

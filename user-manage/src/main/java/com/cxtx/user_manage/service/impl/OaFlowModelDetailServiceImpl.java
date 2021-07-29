@@ -30,11 +30,6 @@ public class OaFlowModelDetailServiceImpl implements OaFlowModelDetailService {
     }
 
     @Override
-    public int insert(OaFlowModelDetail record) {
-        return oaFlowModelDetailMapper.insert(record);
-    }
-
-    @Override
     public int insertSelective(OaFlowModelDetail record) {
         return oaFlowModelDetailMapper.insertSelective(record);
     }
@@ -49,12 +44,6 @@ public class OaFlowModelDetailServiceImpl implements OaFlowModelDetailService {
     public int updateByPrimaryKeySelective(OaFlowModelDetail record) {
         return oaFlowModelDetailMapper.updateByPrimaryKeySelective(record);
     }
-
-    @Override
-    public int updateByPrimaryKey(OaFlowModelDetail record) {
-        return oaFlowModelDetailMapper.updateByPrimaryKey(record);
-    }
-
     @Override
     public List<OaFlowModelDetail> selectAll(Map params) {
         return oaFlowModelDetailMapper.selectAll(params);

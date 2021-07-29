@@ -224,4 +224,87 @@
         SELECT COUNT(*) FROM tb_sys_user WHERE LOGIN_ID = #{loginId} AND PASSWORD = #{password}
     </select>
 
+    <select id="queryUserDetailById" resultType="map">
+        SELECT DISTINCT
+            a.id AS id,
+            staff.`NAME` AS trueName,
+            a.LOGIN_ID AS loginName,
+            staff.STAFF_NO AS jobNumber,
+            sr.`NAME` AS roleName,
+            sr.id AS roleId,
+            sd.`NAME` AS deptName,
+            sd.ID AS deptId,
+            sd.PARENT_ID AS parentDeptId
+        FROM
+            tb_sys_user a
+        LEFT JOIN tb_sys_user_r_role sur ON a.LOGIN_ID = sur.LOGIN_ID
+        LEFT JOIN tb_sys_role sr ON sr.ID = sur.ROLE_ID
+        LEFT JOIN tb_sys_staff staff ON staff.LOGIN_ID = a.LOGIN_ID
+        LEFT JOIN tb_sys_staff_r_department sdu ON sdu.STAFF_ID = staff.ID
+        LEFT JOIN tb_sys_department sd ON sd.id = sdu.DEPARTMENT_ID
+        WHERE
+            a.id = #{userId}
+        AND sur.IS_DEFAULT = 1
+    </select>
+
+    <select id="getUserByGroupRole" resultMap="BaseResultMap">
+		SELECT DISTINCT
+            u.*
+        FROM
+            tb_sys_user u
+        LEFT JOIN tb_sys_user_r_role r ON r.LOGIN_ID = u.LOGIN_ID
+        LEFT JOIN tb_sys_role role ON r.ROLE_ID = role.ID
+        LEFT JOIN tb_sys_staff staff ON staff.LOGIN_ID = u.LOGIN_ID
+        LEFT JOIN tb_sys_staff_r_department srd ON srd.STAFF_ID = staff.ID
+        LEFT JOIN tb_sys_department dept ON dept.ID = srd.DEPARTMENT_ID
+        WHERE
+            r.ROLE_ID IN (${roleId})
+        AND srd.DEPARTMENT_ID IN (${groupId})
+        GROUP BY
+            u.id
+	</select>
+    <select id="getUserByGroup" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		SELECT DISTINCT
+            u.*
+        FROM
+            tb_sys_user u
+
+        LEFT JOIN tb_sys_staff staff ON staff.LOGIN_ID = u.LOGIN_ID
+        LEFT JOIN tb_sys_staff_r_department srd ON srd.STAFF_ID = staff.ID
+        LEFT JOIN tb_sys_department dept ON dept.ID = srd.DEPARTMENT_ID
+        WHERE
+        srd.DEPARTMENT_ID = #{groupId}
+
+	</select>
+    <select id="getUserByRole" parameterType="java.lang.Long" resultMap="BaseResultMap">
+		SELECT DISTINCT
+            u.*
+        FROM
+            tb_sys_user u
+        LEFT JOIN tb_sys_user_r_role r ON r.LOGIN_ID = u.LOGIN_ID AND r.IS_DEFAULT = 1
+        LEFT JOIN tb_sys_role role ON r.ROLE_ID = role.ID
+        WHERE
+            r.ROLE_ID = #{roleId}
+
+	</select>
+
+    <select id="getUserInfoByIdStrings" parameterType="java.lang.String" resultMap="BaseResultMap">
+        SELECT * FROM `tb_sys_user` WHERE
+        <if test="idStrings!=null and idStrings!=''">
+            id in(${idStrings})
+        </if>
+        <if test="idStrings==null or idStrings==''">
+            1=0
+        </if>
+    </select>
+
+    <select id="getUserNameByIdStrings" resultType="string">
+        SELECT LOGIN_ID FROM `tb_sys_user` WHERE
+        <if test="idStrings!=null and idStrings!=''">
+            id in(${idStrings})
+        </if>
+        <if test="idStrings==null or idStrings==''">
+            1=0
+        </if>
+    </select>
 </mapper>

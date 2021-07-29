@@ -30,7 +30,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlow">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlow" useGeneratedKeys="true" keyProperty="id">
     insert into oa_flow
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -51,15 +51,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="remarks != null">
         remarks,
       </if>
@@ -89,15 +89,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
@@ -109,7 +105,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlow">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlow" useGeneratedKeys="true" keyProperty="id">
     update oa_flow
     <set>
       <if test="flowName != null">
@@ -133,9 +129,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
@@ -151,15 +145,32 @@
 
 
   <select id="selectFlowByForm" resultMap="BaseResultMap">
-		SELECT
-			DISTINCT flow.*
-		FROM
-			oa_flow flow
-		LEFT JOIN oa_flow_form form ON flow.id = form.flow_id
-		LEFT JOIN oa_flow_model md ON md.flow_id = flow.id
-		WHERE form.form_model_id = #{formId}
-		and form.status = 1
+		SELECT DISTINCT
+            flow.*
+        FROM
+            oa_flow flow
+        LEFT JOIN oa_flow_form form ON flow.id = form.flow_id
+        LEFT JOIN oa_flow_model md ON md.flow_id = flow.id
+        WHERE
+            form.form_model_id = #{formId}
+        AND form. STATUS = 1
 	</select>
+
+  <select id="selectOne" resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    oa_flow
+    WHERE
+    1 = 1
+    <if test="flowName != null and flowName != ''">
+      and flow_name = #{flowName}
+    </if>
+    <if test="status != null and status != ''">
+      and status = #{status}
+    </if>
+    limit 1
+  </select>
 
   <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
     SELECT
@@ -168,6 +179,9 @@
     oa_flow
     WHERE
     1 = 1
+    <if test="flowName != null and flowName != ''">
+      and flow_name = #{flowName}
+    </if>
     <if test="status != null and status != ''">
       and status = #{status}
     </if>

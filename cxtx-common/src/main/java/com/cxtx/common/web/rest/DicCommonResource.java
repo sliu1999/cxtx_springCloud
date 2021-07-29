@@ -1,5 +1,6 @@
 package com.cxtx.common.web.rest;
 
+import com.cxtx.common.domain.DicCommon;
 import com.cxtx.common.service.DicCommonService;
 import com.cxtx.common.service.FileInfoService;
 import com.cxtx.common.unit.ResponseUtil;
@@ -94,6 +95,26 @@ public class DicCommonResource {
             return result.size() > 0 ? ResponseUtil.success(result) : ResponseUtil.error("缺少参数");
         } catch (Exception var7) {
             return ResponseUtil.error(var7.getMessage());
+        }
+    }
+
+    @RequestMapping(
+            value = {"/selectOneDic"},
+            method = {RequestMethod.GET}
+    )
+    @ApiOperation(
+            value = "单个详情",
+            notes = "单个详情",
+            code = 200,
+            produces = "application/json",
+            response = ResponseUtil.Response.class
+    )
+    public ResponseEntity<?> selectOneDic(@ApiIgnore @RequestParam HashMap<String, Object> params) {
+        try {
+            DicCommon hm = this.dicCommonService.selectOneDic(params);
+            return hm != null ? ResponseUtil.success(hm) : ResponseUtil.error("缺少参数");
+        } catch (Exception var4) {
+            return ResponseUtil.error(var4.getMessage());
         }
     }
 }

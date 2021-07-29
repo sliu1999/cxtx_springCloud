@@ -2,7 +2,9 @@ package com.cxtx.user_manage.web.rest;
 
 
 import com.cxtx.common.domain.DicCommon;
+import com.cxtx.common.domain.JwtModel;
 import com.cxtx.common.service.DicCommonService;
+import com.cxtx.common.unit.HttpServletUtils;
 import com.cxtx.common.unit.ResponseUtil;
 import com.cxtx.user_manage.domain.OaFlow;
 import com.cxtx.user_manage.service.AppService;
@@ -50,13 +52,13 @@ public class OaFormModelResource {
     private OaFlowService oaFlowService;
 
 
-    @ApiOperation(value = "新增__OaFormModel__", notes = "新增一个__OaFormModel__", response = ResponseUtil.Response.class)
+    @ApiOperation(value = "表单设计--新增表单", notes = "表单设计--新增表单", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaFormModel", value = "__OaFormModel__", required = true, paramType = "body", dataType = "OaFormModel")
     @PostMapping("/oaFormModels")
     public ResponseEntity<Map> createOaFormModel(@Valid @RequestBody OaFormModel oaFormModel) throws URISyntaxException {
         log.debug("REST request to save OaFormModel : {}", oaFormModel);
         try {
-
+            JwtModel curUser = HttpServletUtils.getUserInfo();
 
             //和正在使用中的表单名称是否存在冲突
             HashMap param = new HashMap(2);
@@ -89,7 +91,8 @@ public class OaFormModelResource {
             Map tableKeyMap = new HashMap(1);
             tableKeyMap.put("tableKey", tableKey);
             appService.createTable(tableKeyMap);
-
+            oaFormModel.setCreateBy(Long.valueOf(curUser.getUserId()));
+            oaFormModel.setUpdateBy(Long.valueOf(curUser.getUserId()));
             oaFormModel.setTableKey(tableKey);
             int result = oaFormModelService.insertSelective(oaFormModel);
             if (result == 1) {
@@ -115,7 +118,7 @@ public class OaFormModelResource {
     }
 
 
-    @ApiOperation(value = "更新__OaFormModel__", notes = "根据指定id 更新一个__OaFormModel__", response = ResponseUtil.Response.class)
+    @ApiOperation(value = "表单管理--编辑基本信息（名称和分类）", notes = "表单管理--编辑基本信息（名称和分类）", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaFormModel", value = "__OaFormModel__", required = true, paramType = "body", dataType = "OaFormModel")
     @PutMapping("/oaFormModels")
     public ResponseEntity<Map> updateOaFormModel(@Valid @RequestBody OaFormModel oaFormModel) {
@@ -154,13 +157,9 @@ public class OaFormModelResource {
         }
     }
 
-    /**
-     * 对表单进行增删改
-     *
-     * @param dataMap
-     * @return
-     */
+
     @PostMapping("/updateFormModelConfig")
+    @ApiOperation(value = "表单设计--修改表单模型", response = ResponseUtil.Response.class)
     public ResponseEntity<Map> updateFormModelConfig(@RequestBody Map<String, Object> dataMap) {
         Map<String, Object> result = new HashMap<String, Object>();
         boolean flag = true;
@@ -200,12 +199,8 @@ public class OaFormModelResource {
 
 
 
-    /**
-     * GET  /oaFormModels/id : get  oaFormModel by id.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body all oaFormModels
-     */
-    @ApiOperation(value = "获取__OaFormModel__", notes = "根据id 获取一个__OaFormModel__", response = ResponseUtil.Response.class)
+
+    @ApiOperation(value = "表单设计--获取表单详情", notes = "表单设计--获取表单详情", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
     @GetMapping("/oaFormModels/{id}")
     public ResponseEntity<Map> getOaFormModel(@PathVariable Long id) {
@@ -216,12 +211,7 @@ public class OaFormModelResource {
 
     }
 
-    /**
-     * DELETE /oaFormModels/:login : delete the "login" OaFormModel.
-     *
-     * @param id the login of the oaFormModel to delete
-     * @return the ResponseEntity with status 200 (OK)
-     */
+
     @ApiOperation(value = "删除__OaFormModel__", notes = "根据id 删除一个__OaFormModel__", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "id", value = "id", required = true, paramType = "path")
     @DeleteMapping("/oaFormModels/{id}")
@@ -235,21 +225,23 @@ public class OaFormModelResource {
         }
     }
 
-    @GetMapping(value = "/flowMods")
-    @ApiOperation(value = "获取流程绑定的表单列表结构数据", notes = "获取流程绑定的表单列表结构数据")
-    public ResponseEntity<Map> getAllflowModelsList(){
+
+    @GetMapping(value = "/formMods")
+    @ApiOperation(value = "表单设计--获取表单列表结构数据", notes = "表单设计--获取表单列表结构数据")
+    public ResponseEntity<Map> getAllFormModsList(){
+        System.err.println("+++++++++++++++++++" + 1L);
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         HashMap dicParam = new HashMap(2);
         dicParam.put("tableName","tb_dic_form_type");
         dicParam.put("orderBy","sort");
         HashMap type = dicCommonService.selectAll(dicParam);
-        List<DicCommon> typeList = (List<DicCommon>)type.get("DicCommon");
+        List<DicCommon> typeList = (List<DicCommon>)type.get("content");
 
+        System.err.println(typeList);
         // status如果等于0，则该条表单为假删除的表单，前端页面不该展示该表单;
         HashMap param = new HashMap(1);
         param.put("status","1");
         List<OaFormModel> modList = oaFormModelService.selectAll(param);
-
         List<HashMap<String, Object>> cats = new ArrayList<HashMap<String, Object>>();
         List<HashMap<String, Object>> mods = new ArrayList<HashMap<String, Object>>();
         for (OaFormModel oaFormMod : modList) {
@@ -289,11 +281,26 @@ public class OaFormModelResource {
             }
             catsMap.put(String.valueOf(oaFormModType.getId()), catMap);
         }
+
         hashMap.put("cats", cats);
         hashMap.put("mods", mods);
         hashMap.put("catsMap", catsMap);
 
         return ResponseUtil.success(hashMap);
     }
+
+    @GetMapping(value = "/getFormListByAuth")
+    @ApiOperation(value = "获取某用户可发起的表单列表", notes = "获取某用户可发起的表单列表")
+    public ResponseEntity<Map> getFormListByAuth(){
+        String userId = HttpServletUtils.getUserInfo().getUserId();
+        try {
+            Map result = oaFormModelService.getFormListByAuth(userId);
+            return  ResponseUtil.success(result);
+        }catch (Exception E){
+            return ResponseUtil.error(E.getMessage());
+        }
+
+    }
+
 
 }

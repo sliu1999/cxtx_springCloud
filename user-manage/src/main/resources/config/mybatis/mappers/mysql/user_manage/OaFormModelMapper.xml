@@ -26,7 +26,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
 
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFormModel">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFormModel" useGeneratedKeys="true" keyProperty="id">
     insert into oa_form_model
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -56,15 +56,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="remarks != null">
         remarks,
       </if>
@@ -103,15 +103,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
@@ -123,7 +119,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFormModel">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFormModel" useGeneratedKeys="true" keyProperty="id">
     update oa_form_model
     <set>
       <if test="formType != null">
@@ -156,9 +152,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
@@ -182,8 +176,14 @@
     <if test="name != null and name != ''">
       and name = #{name}
     </if>
+    <if test="formType != null and formType != ''">
+      and form_type = #{formType}
+    </if>
     <if test="status != null and status != ''">
       and status = #{status}
+    </if>
+    <if test="type != null and type != ''">
+      and type = #{type}
     </if>
   </select>
 
@@ -193,5 +193,34 @@
     from oa_form_model
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+  <!-- 插入具体表 -->
+  <insert id="insertForm"
+          parameterType="map"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO _app_${tableKey}
+    <foreach collection="columns" index="index" item="item" open="(" separator="," close=")">
+      ${item}
+    </foreach>
+    VALUES
+    <foreach collection="values" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </insert>
+
+  <!-- 更新具体表 -->
+  <update id="updateForm" parameterType="map">
+        UPDATE _app_${tableKey}
+        SET
+            ${sql}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+  <update id="updateDetailForm" parameterType="map">
+        UPDATE _app_${tableKey}
+        SET
+            ${sql}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 
 </mapper>

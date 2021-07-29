@@ -9,15 +9,13 @@ import java.util.Map;
 public interface OaProcessHisMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(OaProcessHis record);
-
     int insertSelective(OaProcessHis record);
 
     OaProcessHis selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(OaProcessHis record);
-
-    int updateByPrimaryKey(OaProcessHis record);
+    int updateByPrimaryKeySelective(OaProcessHis record);;
 
     List<OaProcessHis> selectAll(Map params);
+
+    List<Map<String,Object>> queryByPageMap(Map params);
 }

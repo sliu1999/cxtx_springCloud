@@ -16,7 +16,7 @@ public interface OaFlowModelDetailMapper {
 
     int updateByPrimaryKeySelective(OaFlowModelDetail record);
 
-    int updateByPrimaryKey(OaFlowModelDetail record);
-
     List<OaFlowModelDetail> selectAll(Map params);
+
+    int deleteByModelId(Long modelId);
 }

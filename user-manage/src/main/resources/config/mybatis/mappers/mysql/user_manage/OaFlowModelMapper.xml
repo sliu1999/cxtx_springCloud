@@ -27,17 +27,7 @@
     delete from oa_flow_model
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaFlowModel">
-    insert into oa_flow_model (id, flow_id, flow_name, 
-      sort, status, create_by, 
-      create_date, update_by, update_date, 
-      remarks)
-    values (#{id,jdbcType=BIGINT}, #{flowId,jdbcType=BIGINT}, #{flowName,jdbcType=VARCHAR}, 
-      #{sort,jdbcType=BIGINT}, #{status,jdbcType=INTEGER}, #{createBy,jdbcType=BIGINT}, 
-      #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, 
-      #{remarks,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModel">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModel" useGeneratedKeys="true" keyProperty="id">
     insert into oa_flow_model
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -58,15 +48,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="remarks != null">
         remarks,
       </if>
@@ -90,21 +80,17 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModel">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModel" useGeneratedKeys="true" keyProperty="id">
     update oa_flow_model
     <set>
       <if test="flowId != null">
@@ -128,31 +114,16 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowModel">
-    update oa_flow_model
-    set flow_id = #{flowId,jdbcType=BIGINT},
-      flow_name = #{flowName,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      remarks = #{remarks,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 
   <select id="selectByFlowId" resultMap="BaseResultMap">
-		select * from oa_flow_model where flow_id = #{flowId}
+		select * from oa_flow_model where flow_id = #{flowId} limit 1
 	</select>
 
   <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
@@ -165,5 +136,25 @@
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
+    <if test="flowId != null and flowId != ''">
+      and flow_id = #{flowId}
+    </if>
+    <if test="createDate != null and createDate != ''">
+      AND DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s') <![CDATA[ <= ]]> DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s')
+    </if>
+  </select>
+
+  <delete id="deleteByFlowId" parameterType="java.lang.Long">
+    DELETE FROM oa_flow_model WHERE flow_id = #{flowId}
+  </delete>
+
+  <select id="selectByCreateDate" parameterType="java.util.Date" resultMap="BaseResultMap">
+    SELECT
+    *
+    FROM
+    oa_flow_model
+    WHERE
+    1 = 1
+    AND DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s') = DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s')
   </select>
 </mapper>

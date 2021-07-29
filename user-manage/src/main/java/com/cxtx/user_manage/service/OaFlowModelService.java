@@ -11,15 +11,11 @@ public interface OaFlowModelService{
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(OaFlowModel record);
-
     int insertSelective(OaFlowModel record);
 
     OaFlowModel selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(OaFlowModel record);
-
-    int updateByPrimaryKey(OaFlowModel record);
 
     PageInfo<OaFlowModel> queryByPage(Map params);
 

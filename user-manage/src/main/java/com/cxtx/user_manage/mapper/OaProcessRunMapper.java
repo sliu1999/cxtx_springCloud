@@ -8,16 +8,18 @@ import java.util.Map;
 public interface OaProcessRunMapper {
     int deleteByPrimaryKey(Long id);
 
-    int insert(OaProcessRun record);
-
     int insertSelective(OaProcessRun record);
 
     OaProcessRun selectByPrimaryKey(Long id);
 
     int updateByPrimaryKeySelective(OaProcessRun record);
 
-    int updateByPrimaryKey(OaProcessRun record);
+    List<Map<String,Object>> selectAll(Map params);
 
-    List<OaProcessRun> selectAll(Map params);
+    List<OaProcessRun> selectList(Map params);
+
+    int deleteByMap(Map param);
+
+    int deleteByProcessId(Long processId);
 
 }

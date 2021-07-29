@@ -72,15 +72,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="remarks != null">
         remarks,
       </if>
@@ -113,15 +113,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
@@ -160,29 +156,11 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowModelDetail">
-    update oa_flow_model_detail
-    set model_id = #{modelId,jdbcType=BIGINT},
-      last_node_code = #{lastNodeCode,jdbcType=VARCHAR},
-      node_code = #{nodeCode,jdbcType=VARCHAR},
-      next_node_code = #{nextNodeCode,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -193,8 +171,15 @@
     oa_flow_model_detail
     WHERE
     1 = 1
+    <if test="modelId != null and modelId != ''">
+      and model_id = #{modelId}
+    </if>
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
   </select>
+
+  <delete id="deleteByModelId" parameterType="java.lang.Long">
+    DELETE FROM oa_flow_model_detail WHERE model_id = #{modelId}
+  </delete>
 </mapper>

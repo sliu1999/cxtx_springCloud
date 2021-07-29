@@ -13,7 +13,6 @@ public interface OaProcessRunService{
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(OaProcessRun record);
 
     int insertSelective(OaProcessRun record);
 
@@ -21,22 +20,16 @@ public interface OaProcessRunService{
 
     int updateByPrimaryKeySelective(OaProcessRun record);
 
-    int updateByPrimaryKey(OaProcessRun record);
 
-    PageInfo<OaProcessRun> queryByPage(Map params);
+    PageInfo<Map<String,Object>> queryByPage(Map params);
 
-    List<OaProcessRun> selectAll(Map params);
+    List<Map<String,Object>> selectAll(Map params);
 
-    /**
-     * 根据用户ID获取待办流程
-     * @param userId
-     * @return
-     */
-    List<OaProcessRun> getMyProcess(Long userId);
+    List<OaProcessRun> selectList(Map params);
 
-    @SuppressWarnings("rawtypes")
-    Page getRunProcess(@Param("map")Map<String,Object> map, int pageNum, int pageSize);
+    int deleteByMap(Map param);
 
-    @SuppressWarnings("rawtypes")
-    IPage getRunProcess(Page page, Map<String, Object> data);
+    int deleteByProcessId(Long processId);
+
+
 }

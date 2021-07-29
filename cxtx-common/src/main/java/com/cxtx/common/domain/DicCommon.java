@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DicCommon {
-    private String id;
+    private Long id;
     private String name;
 }

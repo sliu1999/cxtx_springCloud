@@ -30,11 +30,6 @@ public class OaFlowFormServiceImpl implements OaFlowFormService {
     }
 
     @Override
-    public int insert(OaFlowForm record) {
-        return oaFlowFormMapper.insert(record);
-    }
-
-    @Override
     public int insertSelective(OaFlowForm record) {
         return oaFlowFormMapper.insertSelective(record);
     }
@@ -51,13 +46,13 @@ public class OaFlowFormServiceImpl implements OaFlowFormService {
     }
 
     @Override
-    public int updateByPrimaryKey(OaFlowForm record) {
-        return oaFlowFormMapper.updateByPrimaryKey(record);
+    public List<OaFlowForm> selectAll(Map params) {
+        return oaFlowFormMapper.selectAll(params);
     }
 
     @Override
-    public List<OaFlowForm> selectAll(Map params) {
-        return oaFlowFormMapper.selectAll(params);
+    public OaFlowForm selectByFlowModelId(Long flowModelId) {
+        return oaFlowFormMapper.selectByFlowModelId(flowModelId);
     }
 
     @Override

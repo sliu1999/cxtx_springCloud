@@ -26,4 +26,9 @@ public class DicCommonServiceImpl implements DicCommonService {
         hm.put("content", tbCateManageList);
         return hm;
     }
+
+    @Override
+    public DicCommon selectOneDic(HashMap<String, Object> params) {
+        return dicCommonMapper.selectOneDic(params);
+    }
 }

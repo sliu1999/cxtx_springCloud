@@ -18,8 +18,7 @@
             create_name varchar(500) DEFAULT '' COMMENT '创建人',
             update_by bigint(20) DEFAULT NULL COMMENT '修改人ID',
             update_date timestamp NULL COMMENT '修改时间',
-            remarks varchar(500) DEFAULT '' COMMENT '备注',
-            uuid varchar(255) DEFAULT ''
+            remarks varchar(500) DEFAULT '' COMMENT '备注'
         ) CHARSET=utf8
 	</update>
   <!-- 删除表字段属性 -->
@@ -66,7 +65,7 @@
              separator="," close=",">
       ${item.id} ${item.ctrl}
     </foreach>
-    status tinyInt ,create_by bigint(20) ,create_date datetime,tenant_id bigint(20),create_name varchar(255))
+    status tinyInt DEFAULT '1',create_by bigint(20) ,create_date datetime,create_name varchar(255))
   </insert>
   <!-- 移除明细表 -->
   <update id="removeDetails" parameterType="map">

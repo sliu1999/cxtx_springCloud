@@ -27,17 +27,7 @@
     delete from oa_process_run
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaProcessRun">
-    insert into oa_process_run (id, create_by, create_date, 
-      update_by, update_date, sort, 
-      status, remarks, process_id, 
-      user_id)
-    values (#{id,jdbcType=BIGINT}, #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=BIGINT}, #{updateDate,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, 
-      #{status,jdbcType=INTEGER}, #{remarks,jdbcType=VARCHAR}, #{processId,jdbcType=BIGINT}, 
-      #{userId,jdbcType=BIGINT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcessRun">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcessRun" useGeneratedKeys="true" keyProperty="id">
     insert into oa_process_run
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -46,15 +36,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="sort != null">
         sort,
       </if>
@@ -78,15 +68,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
@@ -104,7 +90,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcessRun">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcessRun" useGeneratedKeys="true" keyProperty="id">
     update oa_process_run
     <set>
       <if test="createBy != null">
@@ -116,9 +102,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
@@ -137,29 +121,54 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaProcessRun">
-    update oa_process_run
-    set create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      sort = #{sort,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR},
-      process_id = #{processId,jdbcType=BIGINT},
-      user_id = #{userId,jdbcType=BIGINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 
-  <select id="selectAll" resultMap="BaseResultMap" parameterType="map">
+  <select id="selectAll" resultType="map" parameterType="map">
     SELECT
-    *
+        pro.id,
+        pro.process_name AS processName,
+        u.LOGIN_ID AS creator,
+        uu.LOGIN_ID AS currentHandler,
+        pro.create_date AS createDate,
+        pro.`code`,
+        pro.code_name AS codeName,
+        run.create_date AS handleDate,
+        pro.state
     FROM
-    oa_process_run
-    WHERE
-    1 = 1
-    <if test="status != null and status != ''">
-      and status = #{status}
+        oa_process pro
+    LEFT JOIN oa_process_run run ON pro.id = run.process_id
+    LEFT JOIN tb_sys_user u ON pro.create_by = u.id
+    LEFT JOIN tb_sys_user uu ON pro.assignee = uu.id
+    LEFT JOIN oa_flow_model md ON md.id = pro.flow_model_id
+    where 1 = 1
+    and md.`status` = 1
+    <if test="userId != null and userId != ''"> and run.user_id = #{userId} </if>
+    <if test="processName != null and processName != ''"> AND pro.process_name like concat("%",#{processName},"%") </if>
+    <if test="startTime != null and startTime != ''"> and pro.create_date >= #{startTime}  </if>
+    <if test="endTime != null and endTime != ''"> and pro.create_date &lt;= #{endTime} </if>
+    <if test="creator != null and creator != ''"> and u.LOGIN_ID like concat("%",#{creator},"%") </if>
+    <if test="state != null and state != ''"> and pro.state = #{state}</if>
+    GROUP BY
+        pro.id
+    ORDER BY
+        pro.create_date DESC
+  </select>
+
+
+  <select id="selectList" parameterType="map" resultMap="BaseResultMap">
+    select * from oa_process_run
+    where 1 = 1
+    <if test="processId != null and processId != ''">
+      and process_id = #{processId}
     </if>
   </select>
+
+  <delete id="deleteByMap" parameterType="map">
+    delete from oa_process_run
+    where process_id = #{processId} and user_id = #{userId}
+  </delete>
+
+  <delete id="deleteByProcessId" parameterType="java.lang.Long">
+    delete from oa_process_run
+    where process_id = #{processId}
+  </delete>
 </mapper>

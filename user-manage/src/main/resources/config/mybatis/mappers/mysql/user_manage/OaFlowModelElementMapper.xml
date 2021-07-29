@@ -46,7 +46,7 @@
       #{startY,jdbcType=VARCHAR}, #{height,jdbcType=VARCHAR}, #{width,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement" useGeneratedKeys="true" keyProperty="id">
     insert into oa_flow_model_element
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -70,15 +70,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="remarks != null">
         remarks,
       </if>
@@ -117,15 +117,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="remarks != null">
         #{remarks,jdbcType=VARCHAR},
       </if>
@@ -143,7 +139,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement" useGeneratedKeys="true" keyProperty="id">
     update oa_flow_model_element
     <set>
       <if test="modelId != null">
@@ -170,9 +166,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="remarks != null">
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
@@ -191,24 +185,6 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaFlowModelElement">
-    update oa_flow_model_element
-    set model_id = #{modelId,jdbcType=BIGINT},
-      code = #{code,jdbcType=VARCHAR},
-      name = #{name,jdbcType=VARCHAR},
-      sort = #{sort,jdbcType=BIGINT},
-      status = #{status,jdbcType=INTEGER},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      remarks = #{remarks,jdbcType=VARCHAR},
-      start_x = #{startX,jdbcType=VARCHAR},
-      start_y = #{startY,jdbcType=VARCHAR},
-      height = #{height,jdbcType=VARCHAR},
-      width = #{width,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 
   <!-- 获取当前节点配置  -->
   <select id="getNowNodeConfig" resultType="map">
@@ -221,7 +197,7 @@
             oa_flow_model_element a
         INNER JOIN oa_flow_model_element_config b ON a.id = b.element_id
 		WHERE
-			a.model_id = #{modId}
+			a.model_id = #{flowModelId}
 			AND a.code = #{code}
 	</select>
 
@@ -232,29 +208,64 @@
     oa_flow_model_element
     WHERE
     1 = 1
+    <if test="modelId != null and modelId != ''">
+      and model_id = #{modelId}
+    </if>
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
   </select>
 
+  <resultMap id="DetailResultMap" type="com.cxtx.user_manage.domain.OaFlowModelDetail">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="model_id" jdbcType="BIGINT" property="modelId" />
+    <result column="last_node_code" jdbcType="VARCHAR" property="lastNodeCode" />
+    <result column="node_code" jdbcType="VARCHAR" property="nodeCode" />
+    <result column="next_node_code" jdbcType="VARCHAR" property="nextNodeCode" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="sort" jdbcType="BIGINT" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
   <!-- 获取当前节点的上下关系  -->
-  <select id="getLastNextNodes" resultType="com.info33.platform.oa.entity.OaFlowModDetail">
-		SELECT DISTINCT md.* FROM oa_flow_mod_element element LEFT JOIN oa_flow_mod_detail md ON
-			md.mod_id = element.mod_id AND element.`code` = md.node_code
-		WHERE md.mod_id = #{modId} AND md.node_code = #{code};
+  <select id="getLastNextNodes" resultMap="DetailResultMap">
+		SELECT DISTINCT
+          md.*
+        FROM
+            oa_flow_model_element element
+        LEFT JOIN oa_flow_model_detail md ON md.model_id = element.model_id AND element.`code` = md.node_code
+        WHERE md.model_id = #{modId} AND md.node_code = #{code}
 	</select>
 
   <select id="getNodeByProcessId" resultType = "map">
 		SELECT
-			e.id,e.mod_id,e.mod_uuid,e.`code`,e.`name`,cf.mod_config AS param,lg.cur_assignee
-		FROM
-			oa_process_log lg
-		LEFT JOIN oa_process p ON lg.process_id = p.id
-		LEFT JOIN oa_flow_mod m ON m.id = p.mod_id
-		LEFT JOIN oa_flow_mod_element e ON e.mod_id = m.id
-		AND e.`code` = lg.cur_node
-		LEFT JOIN oa_flow_mod_config cf ON cf.mod_element_id = e.id
-		WHERE
-			lg.process_id = #{processId} ORDER BY lg.create_date ASC
+          e.id,
+          e.model_id,
+          e.`code`,
+          e.`name`,
+          cf.element_config AS param,
+          lg.cur_assignee
+      FROM
+          oa_process_log lg
+      LEFT JOIN oa_process p ON lg.process_id = p.id
+      LEFT JOIN oa_flow_model m ON m.id = p.flow_model_id
+      LEFT JOIN oa_flow_model_element e ON e.model_id = m.id AND e.`code` = lg.cur_node
+      LEFT JOIN oa_flow_model_element_config cf ON cf.element_id = e.id
+      WHERE
+          lg.process_id = #{processId}
+      ORDER BY
+          lg.create_date ASC
 	</select>
+
+  <delete id="deleteByModelId" parameterType="java.lang.Long">
+    DELETE FROM oa_flow_model_element WHERE model_id = #{modelId}
+  </delete>
+
+  <select id="selectOneByCodeAndModelId" parameterType="map" resultMap="BaseResultMap">
+    SELECT * FROM oa_flow_model_element WHERE code = #{code} AND model_id = #{modelId} LIMIT 1
+  </select>
 </mapper>

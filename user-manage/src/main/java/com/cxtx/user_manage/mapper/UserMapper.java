@@ -47,4 +47,16 @@ public interface UserMapper {
     int updateUserPasswordByLoginId(ChangeCurrentUserPasswordDTO var1);
 
     Integer selectCountByLoginIdAndPassword(@Param("loginId") String var1, @Param("password") String var2);
+
+    Map<String, Object> queryUserDetailById(@Param("userId") String userId);
+
+    List<User> getUserByGroupRole(@Param("groupId")String groupId, @Param("roleId")String roleId);
+
+    List<User> getUserByGroup(@Param("groupId")Long groupId);
+
+    List<User> getUserByRole(@Param("roleId")Long roleId);
+
+    List<User> getUserInfoByIdStrings(@Param("idStrings")String idStrings);
+
+    List<String> getUserNameByIdStrings(@Param("idStrings")String idStrings);
 }

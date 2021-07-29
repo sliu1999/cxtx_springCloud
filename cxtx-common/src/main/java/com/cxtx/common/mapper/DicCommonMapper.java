@@ -9,4 +9,6 @@ public interface DicCommonMapper {
     List<DicCommon> selectAll(HashMap<String, Object> var1);
 
     int selectAllCount(HashMap<String, Object> var1);
+
+    DicCommon selectOneDic(HashMap<String, Object> var1);
 }

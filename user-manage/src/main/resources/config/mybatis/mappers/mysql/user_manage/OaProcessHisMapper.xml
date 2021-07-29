@@ -27,17 +27,8 @@
     delete from oa_process_his
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert" parameterType="com.cxtx.user_manage.domain.OaProcessHis">
-    insert into oa_process_his (id, process_id, user_id, 
-      create_by, create_date, update_by, 
-      update_date, sort, status, 
-      remarks)
-    values (#{id,jdbcType=BIGINT}, #{processId,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, 
-      #{createBy,jdbcType=BIGINT}, #{createDate,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=BIGINT}, 
-      #{updateDate,jdbcType=TIMESTAMP}, #{sort,jdbcType=INTEGER}, #{status,jdbcType=INTEGER}, 
-      #{remarks,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcessHis">
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaProcessHis" useGeneratedKeys="true" keyProperty="id">
     insert into oa_process_his
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -52,15 +43,15 @@
       <if test="createBy != null">
         create_by,
       </if>
-      <if test="createDate != null">
+
         create_date,
-      </if>
+
       <if test="updateBy != null">
         update_by,
       </if>
-      <if test="updateDate != null">
+
         update_date,
-      </if>
+
       <if test="sort != null">
         sort,
       </if>
@@ -84,15 +75,11 @@
       <if test="createBy != null">
         #{createBy,jdbcType=BIGINT},
       </if>
-      <if test="createDate != null">
-        #{createDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="updateBy != null">
         #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      SYSDATE(),
       <if test="sort != null">
         #{sort,jdbcType=INTEGER},
       </if>
@@ -104,7 +91,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcessHis">
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaProcessHis" useGeneratedKeys="true" keyProperty="id">
     update oa_process_his
     <set>
       <if test="processId != null">
@@ -122,9 +109,7 @@
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=BIGINT},
       </if>
-      <if test="updateDate != null">
-        update_date = #{updateDate,jdbcType=TIMESTAMP},
-      </if>
+      update_date = SYSDATE(),
       <if test="sort != null">
         sort = #{sort,jdbcType=INTEGER},
       </if>
@@ -135,19 +120,6 @@
         remarks = #{remarks,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.cxtx.user_manage.domain.OaProcessHis">
-    update oa_process_his
-    set process_id = #{processId,jdbcType=BIGINT},
-      user_id = #{userId,jdbcType=BIGINT},
-      create_by = #{createBy,jdbcType=BIGINT},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=BIGINT},
-      update_date = #{updateDate,jdbcType=TIMESTAMP},
-      sort = #{sort,jdbcType=INTEGER},
-      status = #{status,jdbcType=INTEGER},
-      remarks = #{remarks,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -161,5 +133,55 @@
     <if test="status != null and status != ''">
       and status = #{status}
     </if>
+  </select>
+
+  <select id="queryByPageMap" parameterType="map" resultType="map">
+    SELECT
+        pro.id,
+        pro.process_name AS processName,
+        u.LOGIN_ID AS creator,
+        uu.LOGIN_ID AS currentHandler,
+        pro.create_date AS createDate,
+        pro.`code`,
+        pro.code_name AS codeName,
+        pro.state,
+        pro.flow_model_id,
+        uuu.LOGIN_ID AS lastHandler,
+        log.create_date AS lastHandleDate
+    FROM
+        oa_process pro
+    LEFT JOIN oa_process_his his ON pro.id = his.process_id
+    LEFT JOIN tb_sys_user u ON pro.create_by = u.id
+    LEFT JOIN tb_sys_user uu ON pro.assignee = uu.id
+    LEFT JOIN oa_flow_form off ON pro.flow_model_id = off.flow_model_id
+    LEFT JOIN (
+        SELECT
+            a.process_id,
+            a.create_date,
+            a.cur_assignee
+        FROM
+            (
+                SELECT
+                    a.process_id,
+                    MAX(a.create_date) AS max_create_date
+                FROM
+                    oa_process_log a
+                GROUP BY
+                    a.process_id
+            ) b
+        LEFT JOIN oa_process_log a ON a.process_id = b.process_id
+        AND a.create_date = b.max_create_date
+        GROUP BY
+            a.process_id,
+            a.create_date,
+            a.cur_assignee
+    ) log ON pro.id = log.process_id
+    LEFT JOIN tb_sys_user uuu ON log.cur_assignee = uuu.id
+    WHERE
+        his.user_id = #{userId}
+    AND off.status != 0
+    GROUP BY
+        pro.id
+    ORDER BY pro.state,pro.create_date DESC
   </select>
 </mapper>

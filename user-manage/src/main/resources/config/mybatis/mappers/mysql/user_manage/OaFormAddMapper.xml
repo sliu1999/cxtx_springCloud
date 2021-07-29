@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFormAddMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFormAdd">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="main_id" jdbcType="BIGINT" property="mainId" />
+    <result column="form_id" jdbcType="VARCHAR" property="formId" />
+    <result column="dept_id" jdbcType="VARCHAR" property="deptId" />
+    <result column="role_id" jdbcType="VARCHAR" property="roleId" />
+    <result column="user_id" jdbcType="VARCHAR" property="userId" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="sort" jdbcType="BIGINT" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, main_id, form_id, dept_id, role_id, user_id, type, sort, status, create_by, create_date, 
+    update_by, update_date, remarks
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oa_form_add
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_form_add
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFormAdd" useGeneratedKeys="true" keyProperty="id">
+    insert into oa_form_add
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="mainId != null">
+        main_id,
+      </if>
+      <if test="formId != null">
+        form_id,
+      </if>
+      <if test="deptId != null">
+        dept_id,
+      </if>
+      <if test="roleId != null">
+        role_id,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="type != null">
+        type,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+
+        create_date,
+
+      <if test="updateBy != null">
+        update_by,
+      </if>
+
+        update_date,
+
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="mainId != null">
+        #{mainId,jdbcType=BIGINT},
+      </if>
+      <if test="formId != null">
+        #{formId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      SYSDATE(),
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      SYSDATE(),
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFormAdd" useGeneratedKeys="true" keyProperty="id">
+    update oa_form_add
+    <set>
+      <if test="mainId != null">
+        main_id = #{mainId,jdbcType=BIGINT},
+      </if>
+      <if test="formId != null">
+        form_id = #{formId,jdbcType=VARCHAR},
+      </if>
+      <if test="deptId != null">
+        dept_id = #{deptId,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null">
+        role_id = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      update_date = SYSDATE(),
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <delete id="deleteByMainId" parameterType="java.lang.Long">
+    DELETE FROM oa_form_add WHERE main_id = #{mainId}
+  </delete>
+
+  <select id="getFormIdByAuth" resultType="map" parameterType="map">
+	  SELECT
+          ofa.form_id AS id,
+          ofm.name,
+          IFNULL(
+              type.id,
+              SUBSTRING_INDEX(ofa.form_id, 'a', 1)
+          ) AS typeId,
+          type.`NAME` AS typeName,
+          ofm.table_key AS tableKey,
+          ofm.status
+      FROM
+          oa_form_add ofa
+      LEFT JOIN oa_form_model ofm ON ofa.form_id = ofm.id
+      LEFT JOIN tb_dic_form_type type ON ofm.form_type = type.id
+      WHERE
+          (
+              ofa.role_id = #{roleId}
+              AND ofa.dept_id IS NULL
+          )
+      OR (
+          ofa.dept_id = #{deptId}
+          AND ofa.role_id IS NULL
+      )
+      OR (
+          ofa.dept_id = #{deptId}
+          AND ofa.role_id = #{roleId}
+      )
+      OR ofa.user_id = #{id}
+      OR ofa.user_id = 'all'
+      OR ofa.main_id IS NULL
+      AND (
+          ofm.id IS NOT NULL
+          OR RIGHT (ofa.form_id, 3) = 'all'
+      )
+      GROUP BY
+          ofa.form_id,
+          type.id
+	</select>
+
+</mapper>

@@ -16,4 +16,6 @@ public interface OaProcessLogMapper {
     List<OaProcessLog> selectAll(Map params);
 
     OaProcessLog selectByPrimaryKey(Long id);
+
+    List<OaProcessLog> getLogByProcessId(Long processId);
 }

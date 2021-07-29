@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cxtx.user_manage.mapper.OaFormMainMapper">
+  <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.OaFormMain">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="types_forms" jdbcType="VARCHAR" property="typesForms" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="auth_group" jdbcType="VARCHAR" property="authGroup" />
+    <result column="auth_all" jdbcType="VARCHAR" property="authAll" />
+    <result column="sort" jdbcType="BIGINT" property="sort" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="create_by" jdbcType="BIGINT" property="createBy" />
+    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="update_by" jdbcType="BIGINT" property="updateBy" />
+    <result column="update_date" jdbcType="TIMESTAMP" property="updateDate" />
+    <result column="remarks" jdbcType="VARCHAR" property="remarks" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, types_forms, name, auth_group, auth_all, sort, status, create_by, create_date, 
+    update_by, update_date, remarks
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from oa_form_main
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from oa_form_main
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+  <insert id="insertSelective" parameterType="com.cxtx.user_manage.domain.OaFormMain" useGeneratedKeys="true" keyProperty="id">
+    insert into oa_form_main
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="typesForms != null">
+        types_forms,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="authGroup != null">
+        auth_group,
+      </if>
+      <if test="authAll != null">
+        auth_all,
+      </if>
+      <if test="sort != null">
+        sort,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="createBy != null">
+        create_by,
+      </if>
+
+        create_date,
+
+      <if test="updateBy != null">
+        update_by,
+      </if>
+
+        update_date,
+
+      <if test="remarks != null">
+        remarks,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="typesForms != null">
+        #{typesForms,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="authGroup != null">
+        #{authGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="authAll != null">
+        #{authAll,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        #{createBy,jdbcType=BIGINT},
+      </if>
+      SYSDATE(),
+      <if test="updateBy != null">
+        #{updateBy,jdbcType=BIGINT},
+      </if>
+      SYSDATE(),
+      <if test="remarks != null">
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cxtx.user_manage.domain.OaFormMain" useGeneratedKeys="true" keyProperty="id">
+    update oa_form_main
+    <set>
+      <if test="typesForms != null">
+        types_forms = #{typesForms,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="authGroup != null">
+        auth_group = #{authGroup,jdbcType=VARCHAR},
+      </if>
+      <if test="authAll != null">
+        auth_all = #{authAll,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null">
+        sort = #{sort,jdbcType=BIGINT},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="createBy != null">
+        create_by = #{createBy,jdbcType=BIGINT},
+      </if>
+      <if test="createDate != null">
+        create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateBy != null">
+        update_by = #{updateBy,jdbcType=BIGINT},
+      </if>
+      update_date = SYSDATE(),
+      <if test="remarks != null">
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectAll" parameterType="map" resultMap="BaseResultMap">
+    select * from oa_form_main
+    where 1 = 1
+  </select>
+</mapper>

@@ -36,4 +36,12 @@
         from ${tableName}
         <include refid="dynamicCondition"/>
     </select>
+
+    <select id="selectOneDic" parameterType="map" resultMap="BaseResultMap">
+        select
+        id,
+        name
+        from ${tableName}
+        where id = #{id}
+    </select>
 </mapper>
