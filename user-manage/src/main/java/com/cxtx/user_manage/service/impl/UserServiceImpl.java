@@ -164,4 +164,17 @@ public class UserServiceImpl implements UserService {
     public Map queryUserDetailById(String userId) {
         return userMapper.queryUserDetailById(userId);
     }
+
+    @Override
+    public PageInfo<Map> queryUserDetailPage(Map params) {
+        ServiceUtil.checkPageParams(params);
+        PageHelper.startPage(params);
+        List<Map<String,Object>> users = userMapper.queryUserDetailPage(params);
+        return new PageInfo(users);
+    }
+
+    @Override
+    public List<User> getUserInfoByIdStrings(String ids) {
+        return userMapper.getUserInfoByIdStrings(ids);
+    }
 }

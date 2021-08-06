@@ -117,4 +117,14 @@ public class DepartmentServiceImpl implements DepartmentService {
         List<Department> departments = this.departmentMapper.selectDepartmentList(params);
         return new PageInfo(departments);
     }
+
+    @Override
+    public List<Department> getDepartListByIds(List<String> ids) {
+        return departmentMapper.getDepartListByIds(ids);
+    }
+
+    @Override
+    public List<Department> departmentList(HashMap param) {
+        return departmentMapper.departmentList(param);
+    }
 }

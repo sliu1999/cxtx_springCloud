@@ -59,4 +59,8 @@ public interface UserService {
     List<User> getUserByRole(Long roleId);
 
     Map queryUserDetailById(String userId);
+
+    PageInfo<Map> queryUserDetailPage(Map var1);
+
+    List<User> getUserInfoByIdStrings(String ids);
 }

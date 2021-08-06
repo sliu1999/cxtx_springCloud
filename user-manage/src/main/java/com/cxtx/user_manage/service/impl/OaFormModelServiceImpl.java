@@ -379,7 +379,10 @@ public class OaFormModelServiceImpl implements OaFormModelService {
             List<Map<String, Object>> formIdNameList = new ArrayList<>();
             for (Map<String, Object> map : formIdList) {
                 // 截取formId 后3位
-                String typeId = map.get("id").toString().substring(map.get("id").toString().length() - 3, map.get("id").toString().length());
+                String typeId = "";
+                if(map.get("id").toString().length()>3){
+                    typeId = map.get("id").toString().substring(map.get("id").toString().length() - 3, map.get("id").toString().length());
+                }
                 if (tId.equals(map.get("typeId").toString()) && "all".equals(typeId.toString())) {
                     HashMap temp = new HashMap(2);
                     temp.put("formType",tId);

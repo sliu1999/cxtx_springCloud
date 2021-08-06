@@ -18,4 +18,6 @@ public interface OaProcessLogMapper {
     OaProcessLog selectByPrimaryKey(Long id);
 
     List<OaProcessLog> getLogByProcessId(Long processId);
+
+    int deleteByProcessId(Long processId);
 }

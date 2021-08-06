@@ -8,6 +8,7 @@ import com.cxtx.user_manage.domain.OaFormProcessInstance;
 import com.cxtx.user_manage.domain.OaProcess;
 import com.cxtx.user_manage.domain.OaProcessRun;
 import com.cxtx.user_manage.service.*;
+import com.cxtx.user_manage.unit.GuavaUtil;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -22,11 +23,12 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Api(tags = "Oa")
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/oa")
 public class OaResource {
 
     private final Logger log = LoggerFactory.getLogger(OaResource.class);
@@ -68,7 +70,14 @@ public class OaResource {
             } else {
                 // 发起流程
                 Map result = oaService.submit(payload, curUser);
-                return ResponseUtil.success(result);
+                if("1".equals(result.get("successStatus"))){
+                    return ResponseUtil.success(result);
+                }else if("2".equals(result.get("successStatus"))){
+                    return ResponseUtil.success(2,"请选择审批人",result.get("data"));
+                }else {
+                    return ResponseUtil.error("失败");
+                }
+
             }
 
         } catch (Exception e) {
@@ -132,6 +141,20 @@ public class OaResource {
             JwtModel curUser = HttpServletUtils.getUserInfo();
             Map result = oaService.refuse(payload, curUser);
             return ResponseUtil.success(result);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.error(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/deleteProcess/{processIds}")
+    public ResponseEntity<Map> deleteProcessBatch(@PathVariable("processIds") String processIds) {
+        try {
+            List<String> processIdList = GuavaUtil.split2list(",", processIds);
+            for (String id : processIdList) {
+                oaService.deleteProcess(Long.parseLong(id));
+            }
+            return ResponseUtil.success("");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.error(e.getMessage());

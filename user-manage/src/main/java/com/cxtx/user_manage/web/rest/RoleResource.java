@@ -5,6 +5,7 @@
 
 package com.cxtx.user_manage.web.rest;
 
+import com.cxtx.common.domain.SysDictionary;
 import com.cxtx.common.unit.ResponseUtil;
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.Role;
@@ -22,9 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api(
         tags = {"角色管理"},
@@ -106,6 +105,23 @@ public class RoleResource {
     public ResponseEntity<Map> selectRoleById(@PathVariable String id) {
         try {
             Role result = this.roleService.selectRoleById(id);
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询的角色信息！");
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
+    @GetMapping({"/getRoleListByIds/{id}"})
+    @ApiOperation(
+            value = "查询角色",
+            notes = "根据主键查询角色",
+            response = ResponseUtil.Response.class
+    )
+    public ResponseEntity<Map> getRoleListByIds(@PathVariable String ids) {
+        try {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList(Arrays.asList(idArr));
+            List<Role> result = roleService.getRoleListByIds(idList);
             return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询的角色信息！");
         } catch (Exception var3) {
             return ResponseUtil.error(var3.getMessage());

@@ -182,7 +182,7 @@
         A.LEADER,
         C.NAME AS LEADER_NAME,
         E.STAFF_COUNT
-        FROM TB_SYS_DEPARTMENT A
+        FROM tb_sys_department A
         LEFT JOIN tb_sys_department B ON B.ID = A.PARENT_ID
         LEFT JOIN tb_sys_staff C ON C.ID = A.LEADER
         LEFT JOIN (
@@ -203,5 +203,16 @@
         ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(getDepartChildList(ID) ORDER BY SORT) FROM tb_sys_department WHERE PARENT_ID IS NULL)), A.SORT
     </select>
 
+    <select id="getDepartListByIds" parameterType="map" resultMap="BaseResultMap">
+        select * from tb_sys_department
+        where id in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="departmentList" parameterType="hashmap" resultMap="BaseResultMap">
+        select * from tb_sys_department where 1 = 1
+    </select>
 
 </mapper>

@@ -18,4 +18,6 @@ public interface OaProcessHisMapper {
     List<OaProcessHis> selectAll(Map params);
 
     List<Map<String,Object>> queryByPageMap(Map params);
+
+    int deleteByProcessId(Long processId);
 }

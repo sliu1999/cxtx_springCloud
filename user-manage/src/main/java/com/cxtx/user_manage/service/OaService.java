@@ -40,5 +40,7 @@ public interface OaService {
 
     Map refuse(Map<String,Object> data,JwtModel sysUser) throws Exception;
 
+    int deleteProcess(Long processId) throws Exception;
+
 
 }

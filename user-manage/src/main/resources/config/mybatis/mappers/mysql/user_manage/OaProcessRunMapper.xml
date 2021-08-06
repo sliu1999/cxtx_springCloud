@@ -128,10 +128,10 @@
         pro.process_name AS processName,
         u.LOGIN_ID AS creator,
         uu.LOGIN_ID AS currentHandler,
-        pro.create_date AS createDate,
+        DATE_FORMAT(pro.create_date, '%Y-%m-%d %H:%i') AS createDate,
         pro.`code`,
         pro.code_name AS codeName,
-        run.create_date AS handleDate,
+        DATE_FORMAT(run.create_date, '%Y-%m-%d %H:%i') AS handleDate,
         pro.state
     FROM
         oa_process pro

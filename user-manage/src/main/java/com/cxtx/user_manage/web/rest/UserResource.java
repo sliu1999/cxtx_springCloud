@@ -29,6 +29,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -296,4 +297,44 @@ public class UserResource {
         result.put("name","Super Admin");
         return ResponseUtil.success(result);
     }
+
+
+    @GetMapping({"/getUserInfoByIdStrings/{ids}"})
+    public ResponseEntity<Map> getUserInfoByIdStrings(@PathVariable String ids) {
+        try {
+            List<User> result = this.userService.getUserInfoByIdStrings(ids);
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("查询失败！");
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
+    @GetMapping({"/queryUserDetailListById/{ids}"})
+    public ResponseEntity<Map> queryUserDetailListById(@PathVariable String ids) {
+        try {
+            String[] idList = ids.split(",");
+            List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+            for (String userId : idList) {
+                Map<String, Object> map = userService.queryUserDetailById(userId);
+                if(null==map) {
+                    return ResponseUtil.error("查无"+userId+"此id");
+                }
+                resultList.add(map);
+            }
+            return resultList != null ? ResponseUtil.success(resultList) : ResponseUtil.error("查询失败！");
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
+    @GetMapping({"/queryUserDetailPage"})
+    public ResponseEntity<Map> queryUserDetailPage(@ApiIgnore @RequestParam Map params) {
+        try {
+            PageInfo<Map> result = userService.queryUserDetailPage(params);
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询到数据……");
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
 }

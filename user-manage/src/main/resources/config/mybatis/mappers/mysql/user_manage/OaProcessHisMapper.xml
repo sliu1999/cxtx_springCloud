@@ -141,13 +141,13 @@
         pro.process_name AS processName,
         u.LOGIN_ID AS creator,
         uu.LOGIN_ID AS currentHandler,
-        pro.create_date AS createDate,
+        DATE_FORMAT(pro.create_date, '%Y-%m-%d %H:%i') AS createDate,
         pro.`code`,
         pro.code_name AS codeName,
         pro.state,
         pro.flow_model_id,
         uuu.LOGIN_ID AS lastHandler,
-        log.create_date AS lastHandleDate
+        DATE_FORMAT(log.create_date, '%Y-%m-%d %H:%i') AS lastHandleDate
     FROM
         oa_process pro
     LEFT JOIN oa_process_his his ON pro.id = his.process_id
@@ -184,4 +184,9 @@
         pro.id
     ORDER BY pro.state,pro.create_date DESC
   </select>
+
+  <delete id="deleteByProcessId" parameterType="java.lang.Long">
+    delete from oa_process_his
+    where process_id = #{processId}
+  </delete>
 </mapper>

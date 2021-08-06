@@ -2,6 +2,7 @@
 
 package com.cxtx.user_manage.web.rest;
 
+import com.cxtx.user_manage.domain.Role;
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.Department;
 import com.cxtx.user_manage.service.DepartmentService;
@@ -18,9 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.net.URISyntaxException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Api(
         tags = {"部门管理"},
@@ -171,6 +170,33 @@ public class DepartmentResource {
         try {
             PageInfo<Department> result = this.departmentService.selectDepartmentListByPage(params);
             return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询到结果！");
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
+    @GetMapping({"/departmentList"})
+    public ResponseEntity<?> departmentList(@ApiIgnore @RequestParam HashMap<String, Object> params) {
+        try {
+            List<Department> result = this.departmentService.departmentList(params);
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询到结果！");
+        } catch (Exception var3) {
+            return ResponseUtil.error(var3.getMessage());
+        }
+    }
+
+    @GetMapping({"/getDepartListByIds/{id}"})
+    @ApiOperation(
+            value = "查询角色",
+            notes = "根据主键查询角色",
+            response = ResponseUtil.Response.class
+    )
+    public ResponseEntity<Map> getDepartListByIds(@PathVariable String ids) {
+        try {
+            String[] idArr = ids.split(",");
+            List<String> idList = new ArrayList(Arrays.asList(idArr));
+            List<Department> result = departmentService.getDepartListByIds(idList);
+            return result != null ? ResponseUtil.success(result) : ResponseUtil.error("未查询的角色信息！");
         } catch (Exception var3) {
             return ResponseUtil.error(var3.getMessage());
         }

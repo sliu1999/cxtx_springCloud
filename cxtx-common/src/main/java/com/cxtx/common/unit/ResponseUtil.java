@@ -16,6 +16,18 @@ public class ResponseUtil {
         return ResponseEntity.ok(result);
     }
 
+    public static ResponseEntity<Map> success(int status,Object data) {
+        Map result = buildBase(status, "");
+        result.put("data", data);
+        return ResponseEntity.ok(result);
+    }
+
+    public static ResponseEntity<Map> success(int status,String msg,Object data) {
+        Map result = buildBase(status, msg);
+        result.put("data", data);
+        return ResponseEntity.ok(result);
+    }
+
 
     public static ResponseEntity<Map> error(String msg) {
         Map result = buildBase(-1, msg);
@@ -36,6 +48,7 @@ public class ResponseUtil {
         return data;
     }
 
+    //返回值组成 成功errorCode=0,不成功errorCode=-1,自定义返回值成功>=0
     public class Response {
         private Object data;
         private String msg;

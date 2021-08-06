@@ -8,6 +8,7 @@ package com.cxtx.user_manage.service;
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.Department;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,4 +28,8 @@ public interface DepartmentService {
     List<Map> treeExceptMeList(String departId);
 
     PageInfo<Department> selectDepartmentListByPage(Map var1);
+
+    List<Department> getDepartListByIds(List<String> ids);
+
+    List<Department> departmentList(HashMap param);
 }

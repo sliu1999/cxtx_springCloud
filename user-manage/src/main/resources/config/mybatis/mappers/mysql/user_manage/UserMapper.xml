@@ -237,14 +237,34 @@
             sd.PARENT_ID AS parentDeptId
         FROM
             tb_sys_user a
-        LEFT JOIN tb_sys_user_r_role sur ON a.LOGIN_ID = sur.LOGIN_ID
+        LEFT JOIN tb_sys_user_r_role sur ON a.LOGIN_ID = sur.LOGIN_ID AND sur.IS_DEFAULT = 1
         LEFT JOIN tb_sys_role sr ON sr.ID = sur.ROLE_ID
         LEFT JOIN tb_sys_staff staff ON staff.LOGIN_ID = a.LOGIN_ID
         LEFT JOIN tb_sys_staff_r_department sdu ON sdu.STAFF_ID = staff.ID
         LEFT JOIN tb_sys_department sd ON sd.id = sdu.DEPARTMENT_ID
         WHERE
             a.id = #{userId}
-        AND sur.IS_DEFAULT = 1
+    </select>
+
+    <select id="queryUserDetailPage" parameterType="map" resultType="map">
+        SELECT DISTINCT
+            a.id AS id,
+            staff.`NAME` AS trueName,
+            a.LOGIN_ID AS loginName,
+            staff.STAFF_NO AS jobNumber,
+            sr.`NAME` AS roleName,
+            sr.id AS roleId,
+            sd.`NAME` AS deptName,
+            sd.ID AS deptId,
+            sd.PARENT_ID AS parentDeptId
+        FROM
+            tb_sys_user a
+        LEFT JOIN tb_sys_user_r_role sur ON a.LOGIN_ID = sur.LOGIN_ID AND sur.IS_DEFAULT = 1
+        LEFT JOIN tb_sys_role sr ON sr.ID = sur.ROLE_ID
+        LEFT JOIN tb_sys_staff staff ON staff.LOGIN_ID = a.LOGIN_ID
+        LEFT JOIN tb_sys_staff_r_department sdu ON sdu.STAFF_ID = staff.ID
+        LEFT JOIN tb_sys_department sd ON sd.id = sdu.DEPARTMENT_ID
+        WHERE 1 = 1
     </select>
 
     <select id="getUserByGroupRole" resultMap="BaseResultMap">

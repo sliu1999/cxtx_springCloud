@@ -8,6 +8,7 @@ package com.cxtx.user_manage.mapper;
 import com.cxtx.user_manage.domain.Department;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,5 +32,9 @@ public interface DepartmentMapper {
     List<Map> selectAllExceptMe(@Param("departId") String departId);
 
     List<Department> selectDepartmentList(Map var1);
+
+    List<Department> getDepartListByIds(@Param("ids") List<String> ids);
+
+    List<Department> departmentList(HashMap param);
 
 }

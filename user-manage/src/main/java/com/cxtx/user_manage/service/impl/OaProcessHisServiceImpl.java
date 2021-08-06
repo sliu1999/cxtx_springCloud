@@ -70,4 +70,10 @@ public class OaProcessHisServiceImpl implements OaProcessHisService {
         return new PageInfo<OaProcessHis>(labels);
     }
 
+    @Override
+    public int deleteByProcessId(Long processId) {
+        return oaProcessHisMapper.deleteByProcessId(processId);
+    }
+
+
 }

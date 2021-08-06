@@ -23,4 +23,6 @@ public interface OaProcessHisService{
 
     PageInfo<Map<String,Object>> queryByPageMap(Map params);
 
+    int deleteByProcessId(Long processId);
+
 }

@@ -298,7 +298,9 @@ public class OaServiceImpl implements OaService {
                 assigneeMap.put("assignee", handlers);
                 assigneeMap.put("handlerSelectConfig", configMap.get("handlerSelectConfig"));
                 HashMap TEMP = new HashMap();
-                TEMP.put("message","请选择审批人"+assigneeMap);
+                TEMP.put("successStatus","2");
+                TEMP.put("message","请选择审批人");
+                TEMP.put("data",assigneeMap);
                 return TEMP;
             } else {
                 nextNodeAssignee = handlers;
@@ -383,7 +385,8 @@ public class OaServiceImpl implements OaService {
         //针对发起节点的下一个节点就是结束节点的流程提醒
         if ("endElement".equals(nextCode)) {
             HashMap TEMP = new HashMap();
-            TEMP.put("message","已至结束节点");
+            TEMP.put("message","提交成功");
+            TEMP.put("successStatus","1");
             return TEMP;
         }
         //流程发起过程中配置的系统通知
@@ -413,6 +416,7 @@ public class OaServiceImpl implements OaService {
             }
         }
         result.put("message","发起系统通知失败！流程提交成功并转移至下一节点:"+nextCodeName);
+        result.put("successStatus","1");
         return result;
     }
 
@@ -1003,6 +1007,68 @@ public class OaServiceImpl implements OaService {
         return result;
     }
 
+    @Override
+    public int deleteProcess(Long processId) throws Exception {
+        OaProcess oaProcess = oaProcessService.selectByPrimaryKey(processId);
+        if (null == oaProcess) {
+            throw new Exception("该流程不存在！");
+        }
+        Long appFormId = oaProcess.getAppFormId();
+        //流程模型ID
+        Long flowModId = oaProcess.getFlowModelId();
+        //流程表单绑定关系
+        OaFlowForm flowForm = oaFlowFormService.selectByFlowModelId(flowModId);
+        if (null == flowForm) {
+            throw new Exception("流程和表单绑定存在异常，请联系开发人员！");
+        }
+        OaFormModel formMod = oaFormModelService.selectByPrimaryKey(flowForm.getFormModelId());
+        if (null == formMod) {
+            throw new Exception("该流程表单模型存在异常，请联系开发人员！");
+        }
+        String tableKey = formMod.getTableKey();
+        String detailKeys = formMod.getDetailKeys();
+        Boolean flag = true;
+        // 删除主表信息
+        if (null != tableKey && !tableKey.isEmpty()) {
+            String sql = "delete from _app_" + tableKey + " where id = " + appFormId;
+            try {
+                appService.CUD(sql);
+                flag = true;
+            } catch (Exception e) {
+                flag = false;
+            }
+        }
+        // 删除明细表关联信息
+        if (null != detailKeys && !detailKeys.isEmpty()) {
+            List<String> dKeys = GuavaUtil.split2list(",", detailKeys);
+            for (String dKey : dKeys) {
+                String sql = "delete from _app_" + tableKey + "_" + dKey + " where " + dKey + "_id = " + appFormId;
+                try {
+                    appService.CUD(sql);
+                    flag = true;
+                } catch (Exception e) {
+                    flag = false;
+                }
+            }
+        }
+        int exeNum = 0;
+
+        // 删除流程实例
+        exeNum = oaProcessService.deleteByPrimaryKey(processId);
+        // 删除历史流程
+        if (exeNum > 0) {
+            oaProcessHisService.deleteByProcessId(processId);
+        }
+        // 删除待办流程
+        if (exeNum > 0) {
+            oaProcessRunService.deleteByProcessId(processId);
+        }
+        // 删除流程日志
+        if (exeNum > 0) {
+            oaProcessLogService.deleteByProcessId(processId);
+        }
+        return exeNum;
+    }
 
 
 }

@@ -1,6 +1,6 @@
 <simsSpringBoot>
     <basePackage>com.cxtx.user_manage</basePackage>
-    <entityName>OaFormProcessInstance</entityName>
+    <entityName>OaFormFile</entityName>
     <entityPackageName>domain</entityPackageName>
     <resourcePackageName>web.rest</resourcePackageName>
     <serviceImplPackageName>service.impl</serviceImplPackageName>

@@ -97,4 +97,10 @@ public class OaProcessLogServiceImpl implements OaProcessLogService {
         }
         return logs;
     }
+
+    @Override
+    public int deleteByProcessId(Long processId) {
+        return oaProcessLogMapper.deleteByProcessId(processId);
+    }
+
 }

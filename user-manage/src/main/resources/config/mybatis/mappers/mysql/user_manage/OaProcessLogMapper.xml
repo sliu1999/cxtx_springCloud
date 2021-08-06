@@ -227,4 +227,9 @@
             create_date ASC
 	</select>
 
+  <delete id="deleteByProcessId" parameterType="java.lang.Long">
+    delete from oa_process_log
+    where process_id = #{processId}
+  </delete>
+
 </mapper>

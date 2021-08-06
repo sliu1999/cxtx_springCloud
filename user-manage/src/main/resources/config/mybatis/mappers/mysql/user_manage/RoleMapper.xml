@@ -151,4 +151,12 @@
         WHERE 1=1
     </select>
 
+    <select id="getRoleListByIds" parameterType="map" resultMap="BaseResultMap">
+        select * from tb_sys_role
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+
 </mapper>

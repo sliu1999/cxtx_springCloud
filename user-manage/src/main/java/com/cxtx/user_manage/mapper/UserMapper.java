@@ -50,6 +50,8 @@ public interface UserMapper {
 
     Map<String, Object> queryUserDetailById(@Param("userId") String userId);
 
+    List<Map<String,Object>> queryUserDetailPage(Map map);
+
     List<User> getUserByGroupRole(@Param("groupId")String groupId, @Param("roleId")String roleId);
 
     List<User> getUserByGroup(@Param("groupId")Long groupId);

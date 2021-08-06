@@ -108,7 +108,7 @@ public class OaFormModelResource {
 //                boolean flag = oaFormModFlowService.save(modFlow);
 //                System.out.println(flag ? "成功添加formConfig！" : "添加失败！");
 //                return Result.ok(oaFormMod);
-                return ResponseUtil.success("");
+                return ResponseUtil.success(oaFormModel);
             } else {
                 return ResponseUtil.error("新增失败！");
             }
@@ -226,6 +226,71 @@ public class OaFormModelResource {
     }
 
 
+
+    @GetMapping(value = "/flowMods")
+    @ApiOperation(value = "流程设计--获取未绑定流程的表单数据", notes = "流程设计--获取未绑定流程的表单数据")
+    public ResponseEntity<Map> getFlowFormModsList(){
+        System.err.println("+++++++++++++++++++" + 1L);
+        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        HashMap dicParam = new HashMap(2);
+        dicParam.put("tableName","tb_dic_form_type");
+        dicParam.put("orderBy","sort");
+        HashMap type = dicCommonService.selectAll(dicParam);
+        List<DicCommon> typeList = (List<DicCommon>)type.get("content");
+
+        System.err.println(typeList);
+        // status如果等于0，则该条表单为假删除的表单，前端页面不该展示该表单;
+        HashMap param = new HashMap(1);
+        param.put("status","1");
+        List<OaFormModel> modList = oaFormModelService.selectAll(param);
+        List<HashMap<String, Object>> cats = new ArrayList<HashMap<String, Object>>();
+        List<HashMap<String, Object>> mods = new ArrayList<HashMap<String, Object>>();
+        for (OaFormModel oaFormMod : modList) {
+            HashMap<String, Object> mod = new HashMap<String, Object>();
+            mod.put("id", oaFormMod.getId());
+            mod.put("name", oaFormMod.getName());
+            mod.put("tableKey", oaFormMod.getTableKey());
+            mods.add(mod);
+        }
+        HashMap<String, Object> catsMap = new HashMap<String, Object>();
+        for (DicCommon oaFormModType : typeList) {
+            HashMap<String, Object> cat = new HashMap<String, Object>();
+            List<HashMap<String, Object>> catMap = new ArrayList<HashMap<String, Object>>();
+            cat.put("id", oaFormModType.getId());
+            cat.put("name", oaFormModType.getName());
+            cats.add(cat);
+            for (OaFormModel oaFormMod : modList) {
+                List<String> typeIdsList = GuavaUtil.split2list(",", oaFormMod.getFormType());
+                if (typeIdsList.contains(oaFormModType.getId().toString())) {
+                    // 找到表单绑定的流程
+                    OaFlow flow = oaFlowService.selectFlowByForm(oaFormMod.getId());
+                    //表单未绑定流程
+                    if (flow==null) {
+                        // 如果表单已经绑定流程，则无法再绑定其他流程，普通表(type==1)
+                        if (oaFormMod.getType() != null&&oaFormMod.getType() == 1) {
+                            HashMap<String, Object> hm = new HashMap<String, Object>();
+                            hm.put("id", oaFormMod.getId());
+                            hm.put("catId", oaFormModType.getId());
+                            hm.put("tableKey", oaFormMod.getTableKey());
+                            if (oaFormMod.getDetailKeys() != null) {
+                                hm.put("detailKeys", oaFormMod.getDetailKeys());
+                            }
+                            hm.put("name", oaFormMod.getName());
+                            catMap.add(hm);
+                        }
+                    }
+                }
+            }
+            catsMap.put(String.valueOf(oaFormModType.getId()), catMap);
+        }
+
+        hashMap.put("cats", cats);
+        hashMap.put("mods", mods);
+        hashMap.put("catsMap", catsMap);
+
+        return ResponseUtil.success(hashMap);
+    }
+
     @GetMapping(value = "/formMods")
     @ApiOperation(value = "表单设计--获取表单列表结构数据", notes = "表单设计--获取表单列表结构数据")
     public ResponseEntity<Map> getAllFormModsList(){
@@ -261,22 +326,15 @@ public class OaFormModelResource {
             for (OaFormModel oaFormMod : modList) {
                 List<String> typeIdsList = GuavaUtil.split2list(",", oaFormMod.getFormType());
                 if (typeIdsList.contains(oaFormModType.getId().toString())) {
-                    // 找到表单绑定的流程
-                    OaFlow flow = oaFlowService.selectFlowByForm(oaFormMod.getId());
-                    if (flow==null) {
-                        // 如果表单已经绑定流程，则无法再绑定其他流程，普通表(type==1)
-                        if (oaFormMod.getType() != null&&oaFormMod.getType() == 1) {
-                            HashMap<String, Object> hm = new HashMap<String, Object>();
-                            hm.put("id", oaFormMod.getId());
-                            hm.put("catId", oaFormModType.getId());
-                            hm.put("tableKey", oaFormMod.getTableKey());
-                            if (oaFormMod.getDetailKeys() != null) {
-                                hm.put("detailKeys", oaFormMod.getDetailKeys());
-                            }
-                            hm.put("name", oaFormMod.getName());
-                            catMap.add(hm);
-                        }
+                    HashMap<String, Object> hm = new HashMap<String, Object>();
+                    hm.put("id", oaFormMod.getId());
+                    hm.put("catId", oaFormModType.getId());
+                    hm.put("tableKey", oaFormMod.getTableKey());
+                    if (oaFormMod.getDetailKeys() != null) {
+                        hm.put("detailKeys", oaFormMod.getDetailKeys());
                     }
+                    hm.put("name", oaFormMod.getName());
+                    catMap.add(hm);
                 }
             }
             catsMap.put(String.valueOf(oaFormModType.getId()), catMap);

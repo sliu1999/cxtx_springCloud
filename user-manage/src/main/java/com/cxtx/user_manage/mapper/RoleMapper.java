@@ -6,6 +6,7 @@
 package com.cxtx.user_manage.mapper;
 
 import com.cxtx.user_manage.domain.Role;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -28,4 +29,6 @@ public interface RoleMapper {
     List<Role> selectRoleList(Map var1);
 
     List<Role> selectAllRole();
+
+    List<Role> getRoleListByIds(@Param("ids") List<String> ids);
 }

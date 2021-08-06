@@ -20,4 +20,6 @@ public interface RoleService {
     PageInfo<Role> selectRolesByPage(Map var1);
 
     List<Role> selectAllRole();
+
+    List<Role> getRoleListByIds(List<String> ids);
 }
