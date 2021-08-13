@@ -3,6 +3,7 @@ package com.cxtx.user_manage.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cxtx.common.domain.JwtModel;
+import com.cxtx.common.unit.HttpServletUtils;
 import com.cxtx.common.unit.ServiceUtil;
 import com.cxtx.user_manage.domain.*;
 import com.cxtx.user_manage.mapper.*;
@@ -227,37 +228,6 @@ public class OaServiceImpl implements OaService {
         String designee = modConfig.get("designee") ==null?null:modConfig.get("designee").toString();
         //获取是否通知发起人配置
         Boolean initiator = modConfig.get("initiator") ==null?false:(Boolean)modConfig.get("initiator");
-        // 获取下一节点
-        Map<String, Object> scriptMap = new HashMap<String, Object>();
-        /**********************************
-         执行脚本，目前放在本地启动会存在问题，需打包部署到Tomcat中运行
-         **********************************/
-//        scriptMap = resolveScript((String) modConfigMap.get("modConfig"), formData, appDao);
-//        if (null != scriptMap &&null!=scriptMap.get("errCode")&& scriptMap.get("errCode").equals(-1)) {
-//            throw new Exception(scriptMap.get("errMsg").toString());
-//        }
-//        if (null != scriptMap &&null!=scriptMap.get("errCode")&& scriptMap.get("errCode").equals(0)) {
-//            throw new Exception(scriptMap.get("errMsg").toString());
-//        }
-//        // 获取下一节点
-//        OaFlowModelElement nextElement = new OaFlowModelElement();
-//        // 脚本运行可能更改下一节点
-//        if (null != scriptMap && scriptMap.get("nextNode") != null) {
-//            QueryWrapper<OaFlowModElement> queryWrapper = new QueryWrapper<>();
-//            nextElement = oaFlowModElementDao
-//                    .selectOne(queryWrapper.eq("mod_id", modId).eq("code", scriptMap.get("nextNode").toString()));
-//            QueryWrapper<OaFlowModConfig> query = new QueryWrapper<>();
-//            OaFlowModConfig oaConfig = oaFlowModConfigDao.selectOne(query.eq("mod_element_id", nextElement.getId()));
-//            nextElement.setParam(oaConfig.getModConfig());
-//            System.err.println("下一节点信息：" + nextElement);
-//        } else {
-//            // 通过当前节点获取下一节点
-//            OaFlowModElement modElement = getNextNodes("startElement", modId, formData, curUserId);
-//            if (null == modElement) {
-//                throw new Exception("下一节点为空！");
-//            }
-//            nextElement = modElement;
-//        }
 
         // 获取下一节点
         OaFlowModelElement nextElement = new OaFlowModelElement();
@@ -266,6 +236,8 @@ public class OaServiceImpl implements OaService {
         if (null == modElement) {
             throw new Exception("下一节点为空！");
         }
+
+
         nextElement = modElement;
 
         // 获取下一节点审批人信息
@@ -420,15 +392,26 @@ public class OaServiceImpl implements OaService {
         return result;
     }
 
+    /**
+     * 根据当前节点获取下一节点，最重要的内容
+     * @param curCode
+     * @param modId
+     * @param formData
+     * @param userId
+     * @return
+     * @throws ScriptException
+     */
     @Override
     public OaFlowModelElement getNextNodes(String curCode, Long modId, Map<String, Object> formData, Long userId) throws ScriptException {
-        //获取当前节点详情
+        //获取当前节点涉及到的节点元素列表
         List<OaFlowModelDetail> elements = oaFlowModelElementMapper.getLastNextNodes(modId, curCode);
         //获取当前节点配置
         Map<String, Object> map = oaFlowModelElementMapper.getNowNodeConfig(modId, curCode);
         Map<String, Object> configMap = new HashMap<String, Object>();
         List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        //如果当前节点有配置信息
         if (null != map && elements.size() != 0) {
+            //如果当前节点的下一节点是多个
             if (null != map.get("modConfig") && !("".equals(map.get("modConfig"))) && elements.size() > 1) {
                 //获取节点配置信息
                 configMap = JSON.parseObject(map.get("modConfig").toString(), HashMap.class);
@@ -436,10 +419,12 @@ public class OaServiceImpl implements OaService {
                     //获取当前节点的下一节点指向
                     list = JSON.parseObject(configMap.get("toNode").toString(), ArrayList.class);
 
+                    //java 与 js 的互通类
                     ScriptEngineManager manager = new ScriptEngineManager();
                     ScriptEngine engine = manager.getEngineByName("javascript");
                     StringBuilder javascript = new StringBuilder("function time(date){ return +(new Date(date)); }");
                     javascript.append("var userInfo = {id:").append(userId).append(",").append("}");
+                    //eval()用于执行js脚本
                     engine.eval(javascript.toString());
 
                     for (String key : formData.keySet()) {
@@ -490,6 +475,7 @@ public class OaServiceImpl implements OaService {
                     return getNode(curCode, modId, elements.get(0));
                 }
             } else {
+                //如果当前节点没有配置信息，则下一节点去默认第一个
                 return getNode(curCode, modId, elements.get(0));
             }
         } else {
@@ -508,6 +494,109 @@ public class OaServiceImpl implements OaService {
 
     @Override
     public Map getProcessDetail(Long processId) {
+        Map<String, Object> result = new HashMap<String, Object>();
+        // 查询流程实例
+        OaProcess process = oaProcessService.selectByPrimaryKey(processId);
+        List<OaProcessLog> logs = oaProcessLogService.getLogByProcessId(processId);
+        Map<String, Object> module = new HashMap<String, Object>();
+        Date processDate = process.getCreateDate();
+
+        // 流程模型ID
+        Long flowId = process.getFlowId();
+        System.err.println(flowId);
+        // app表单实例ID
+        Long formId = process.getAppFormId();
+        Long flowModId = process.getFlowModelId();
+
+        OaFlowForm flowForm = oaFlowFormService.selectByFlowModelId(flowModId);
+        String code = process.getCode();
+        OaFormModel formMod = oaFormModelService.selectByPrimaryKey(flowForm.getFormModelId());
+        Map<String, Object> config = oaFlowModelElementService.getNowNodeConfig(code,flowModId);
+        // 解析节点配置json字符串
+        Map<String, Object> modElementConfig = JSONObject.parseObject(config.get("modConfig").toString(), Map.class);
+        // 审批意见必填
+        Boolean isRequired = modElementConfig.get("isRequired") == null ? false
+                : (Boolean) modElementConfig.get("isRequired");
+        String tableKey = formMod.getTableKey();
+        module.put("tableKey", tableKey);
+        module.put("detailKeys", formMod.getDetailKeys());
+        module.put("id", formMod.getId());
+        List<Map<String,String>> columnList = appService.getTableColumnList("_app_"+tableKey);
+        List<String> columns = new ArrayList<>();
+        for (Map<String,String> column : columnList){
+            if("datetime".equals(column.get("dataType")) || "timestamp".equals(column.get("dataType"))){
+                String columnFormat = "DATE_FORMAT("+column.get("columnName")+",'%Y-%m-%d %H:%i:%s') as "+column.get("columnName");
+                columns.add(columnFormat);
+            }else {
+                columns.add(column.get("columnName"));
+            }
+        }
+        String columnStr = StringUtils.join(columns,",");
+        String sql = "select "+columnStr+" from _app_" + tableKey + " where id = " + formId;
+        Map<String, Object> formData = appService.getMap(sql);
+        String detailKeys = formMod.getDetailKeys();
+        List<String> detailKeyList = GuavaUtil.split2list(",", detailKeys);
+        // 获取主表相关的明细表数据
+        for (String dKey : detailKeyList) {
+            List<Map<String,String>> columnDetailList = appService.getTableColumnList("_app_"+tableKey+"_" + dKey);
+            List<String> columnDetails = new ArrayList<>();
+            for (Map<String,String> column : columnDetailList){
+                if("datetime".equals(column.get("dataType")) || "timestamp".equals(column.get("dataType"))){
+                    String columnFormat = "DATE_FORMAT("+column.get("columnName")+",'%Y-%m-%d %H:%i:%s') as "+column.get("columnName");
+                    columnDetails.add(columnFormat);
+                }else {
+                    columnDetails.add(column.get("columnName"));
+                }
+            }
+            String columnDetailStr = StringUtils.join(columnDetails,",");
+
+            String dSql = "select "+columnDetailStr+" from _app_" + tableKey + "_" + dKey + " where " + dKey + "_id = "
+                    + formData.get("id");
+            List<Map<String, Object>> dValue = appService.getInfoBySql(dSql);
+            formData.put(dKey, dValue);
+        }
+
+        // 获取每个流程各个节点的表单配置信息
+        OaFlow flowDto = oaFlowService.newFindFlow(flowId, processDate);
+        GuavaUtil.entity2map(flowDto);
+        List<Map<String, Object>> modElements = JSONObject
+                .parseObject(GuavaUtil.entity2map(flowDto).get("modElements").toString(), List.class);
+        for (Map<String, Object> modElement : modElements) {
+            // 获取待办事项当前任务节点下的表单配置信息
+            if (modElement.get("code").equals(process.getCode())) {
+                HashMap<String, Object> modElementInfo = new HashMap<String, Object>();
+                Map<String, Object> Config = (Map<String, Object>) modElement.get("modElementConfig");
+                String editTable = (String) Config.get("editTable");
+                if (editTable == null) {
+                    editTable = "";
+                }
+                List<Map<String, Object>> editTableDetail = (List<Map<String, Object>>) Config.get("editTableDetail");
+                String hideTable = (String) Config.get("hideTable");
+                if (hideTable == null) {
+                    hideTable = "";
+                }
+                List<Map<String, Object>> hideTableDetail = (List<Map<String, Object>>) Config.get("hideTableDetail");
+                modElementInfo.put("editTable", editTable);
+                modElementInfo.put("editTableDetail", editTableDetail);
+                modElementInfo.put("hideTable", hideTable);
+                modElementInfo.put("hideTableDetail", hideTableDetail);
+                result.put("flowFormConfig", modElementInfo);
+            }
+        }
+        result.put("process", process);
+        result.put("formData", formData);
+        result.put("tableSchema", formMod.getTableSchema());
+        result.put("module", module);
+        result.put("tableKey", tableKey);
+        result.put("formView", formMod.getFormView());
+        result.put("name", formMod.getName());
+        result.put("logs", logs);
+        result.put("isRequired", isRequired);
+        return result;
+    }
+
+    @Override
+    public Map getProcessDetailTwo(Long processId) {
         Map<String, Object> result = new HashMap<String, Object>();
         // 查询流程实例
         OaProcess process = oaProcessService.selectByPrimaryKey(processId);
@@ -583,6 +672,168 @@ public class OaServiceImpl implements OaService {
         result.put("name", formMod.getName());
         result.put("logs", logs);
         result.put("isRequired", isRequired);
+        return result;
+    }
+
+    @Override
+    public Map getHisProcessDetail(Long processId) {
+        JwtModel curUser = HttpServletUtils.getUserInfo();
+        Map<String, Object> result = new HashMap<String, Object>();
+        // 查询流程实例
+        OaProcess process = oaProcessService.selectByPrimaryKey(processId);
+        List<OaProcessLog> logs = oaProcessLogService.getLogByProcessId(processId);
+        Map<String, Object> module = new HashMap<String, Object>();
+
+        // 流程模型ID
+        Long flowId = process.getFlowId();
+        System.err.println(flowId);
+        // 表单实例ID
+        Long formId = process.getAppFormId();
+        Long modId = process.getFlowModelId();
+        String code = process.getCode();
+        OaFormModel formMod = oaFormModelService.getFormModByFlowModId(modId);
+        Map<String, Object> config = oaFlowModelElementService.getNowNodeConfig(code,modId);
+        // 解析节点配置json字符串
+        Map<String, Object> modElementConfig = JSONObject.parseObject(config.get("modConfig").toString(), Map.class);
+        // 审批意见必填
+        Boolean isRequired = modElementConfig.get("isRequired") == null ? false
+                : (Boolean) modElementConfig.get("isRequired");
+        String tableKey = formMod.getTableKey();
+        module.put("tableKey", tableKey);
+        module.put("detailKeys", formMod.getDetailKeys());
+        module.put("id", formMod.getId());
+        List<Map<String,String>> columnList = appService.getTableColumnList("_app_"+tableKey);
+        List<String> columns = new ArrayList<>();
+        for (Map<String,String> column : columnList){
+            if("datetime".equals(column.get("dataType")) || "timestamp".equals(column.get("dataType"))){
+                String columnFormat = "DATE_FORMAT("+column.get("columnName")+",'%y-%m-%d %H:%i:%s') as "+column.get("columnName");
+                columns.add(columnFormat);
+            }else {
+                columns.add(column.get("columnName"));
+            }
+        }
+        String columnStr = StringUtils.join(columns,",");
+        String sql = "select "+columnStr+" from _app_" + tableKey + " where id = " + formId;
+        Map<String, Object> formData = appService.getMap(sql);
+        String detailKeys = formMod.getDetailKeys();
+        List<String> detailKeyList = GuavaUtil.split2list(",", detailKeys);
+        // 获取主表相关的明细表数据
+        for (String dKey : detailKeyList) {
+            List<Map<String,String>> columnDetailList = appService.getTableColumnList("_app_"+tableKey+"_" + dKey);
+            List<String> columnDetails = new ArrayList<>();
+            for (Map<String,String> column : columnDetailList){
+                if("datetime".equals(column.get("dataType")) || "timestamp".equals(column.get("dataType"))){
+                    String columnFormat = "DATE_FORMAT("+column.get("columnName")+",'%y-%m-%d %H:%i:%s') as "+column.get("columnName");
+                    columnDetails.add(columnFormat);
+                }else {
+                    columnDetails.add(column.get("columnName"));
+                }
+            }
+            String columnDetailStr = StringUtils.join(columnDetails,",");
+
+            String dSql = "select "+columnDetailStr+" from _app_" + tableKey + "_" + dKey + " where " + dKey + "_id = "
+                    + formData.get("id");
+            List<Map<String, Object>> dValue = appService.getInfoBySql(dSql);
+            formData.put(dKey, dValue);
+        }
+        result.put("process", process);
+        result.put("formData", formData);
+        result.put("tableSchema", formMod.getTableSchema());
+        result.put("module", module);
+        result.put("tableKey", tableKey);
+        result.put("formView", formMod.getFormView());
+        result.put("name", formMod.getName());
+        result.put("logs", logs);
+        result.put("isRequired", isRequired);
+
+        Map<String, Object> paramMap = new HashMap<String, Object>();
+
+        paramMap.put("userId", curUser.getUserId());
+        paramMap.put("processId", processId);
+        //获取用户日志，用户参与过的节点
+        List<OaProcessLog> elementList = oaProcessLogService.getLogEleListByUser(paramMap);
+        //获取主表字段idList
+        Set<String> formSet = new HashSet<>(oaFormModelService.getMainFormIdList(formMod.getId()));
+
+        //主表隐藏的内容
+        Set<String> hideTableList = new HashSet<>();
+
+        int mainFlag = 0;
+
+        List<Map<String, Object>> hideTableDetailList = new ArrayList<>();
+        List<Map<String, Object>> showTableDetailList = new ArrayList<>();
+        if (elementList.size() != 0) {
+            for (OaProcessLog map : elementList) {
+                //如果是开始节点，即我是流程发起人，
+                if ("startElement".equals(map.getCurNode())) {
+                    Map<String, Object> modElementInfo = new HashMap<String, Object>();
+                    //主表隐藏的字段为空
+                    modElementInfo.put("hideTable", hideTableList);
+                    for (String dKey : detailKeyList) {
+                        Map<String, Object> keyMap = new HashMap<String, Object>();
+                        keyMap.put("hostId", dKey);
+                        keyMap.put("orderId", hideTableList);
+                        hideTableDetailList.add(keyMap);
+                    }
+                    //明细表隐藏的字段为空
+                    modElementInfo.put("hideTableDetail", hideTableDetailList);
+                    result.put("flowFormConfig", modElementInfo);
+                    return result;
+                }
+                HashMap param = new HashMap(2);
+                param.put("curNode",map.getCurNode());
+                param.put("flowId",map.getFlowId());
+                //获取到节点配置
+                Map<String, Object> elementConfig = oaFlowModelElementService.getElementConfigByFlowIdAndCurNode(param);
+                if (elementConfig == null) {
+                    continue;
+                }
+                Map<String, Object> configMap = JSON.parseObject(elementConfig.get("modConfig").toString(), HashMap.class);
+                if (!(!configMap.containsKey("hideTable") && "".equals(configMap.get("hideTable")))) {
+                    if (mainFlag == 0) {
+                        hideTableList = formSet;
+                    }
+                    Set<String> tableList = new HashSet<>();
+                    Collections.addAll(tableList, configMap.get("hideTable").toString().split(","));
+                    hideTableList.retainAll(tableList);
+                    mainFlag = 1;
+                }
+
+                if (configMap.get("showTableDetail")!=null && ((List<HashMap>)configMap.get("showTableDetail")).size()>0) {
+                    List<Map<String, Object>> showTableDetail = (List<Map<String, Object>>) configMap.get("showTableDetail");
+                    Map<String, Object> a = new HashMap<String, Object>();
+                    for (Map<String, Object> map2 : showTableDetail) {
+                        for (String dKey : detailKeyList) {
+                            if (map2.get("id").equals(dKey)) {
+                                a.put(dKey, map2.get("list"));
+                            }
+                        }
+                    }
+                    showTableDetailList.add(a);
+                }
+            }
+        }
+
+        Map<String, Object> tableDetailSch = oaFormModelService.getDetailTableSchema(formMod.getId());
+        for (String dKey : detailKeyList) {
+            Map<String, Object> keyMap = new HashMap<String, Object>();
+            keyMap.put("hostId", dKey);
+
+            Set<String> hideSet = new HashSet<>((List<String>) tableDetailSch.get(dKey));
+
+            for (Map<String, Object> map : showTableDetailList) {
+                Set<String> littleShowSet = new HashSet<>((List<String>) map.get(dKey));
+                hideSet.removeAll(littleShowSet);
+            }
+            keyMap.put("orderId", hideSet);
+            hideTableDetailList.add(keyMap);
+        }
+        Map<String, Object> modElementInfo = new HashMap<String, Object>();
+        //主表隐藏的字段
+        modElementInfo.put("hideTable", hideTableList);
+        //明细表隐藏的字段
+        modElementInfo.put("hideTableDetail", hideTableDetailList);
+        result.put("flowFormConfig", modElementInfo);
         return result;
     }
 
@@ -736,7 +987,9 @@ public class OaServiceImpl implements OaService {
                     assigneeMap.put("assignee", handlers);
                     assigneeMap.put("handlerSelectConfig", nextConfigMap.get("handlerSelectConfig"));
                     HashMap temp = new HashMap(1);
-                    temp.put("message","请选择审批人"+assigneeMap);
+                    temp.put("successStatus","2");
+                    temp.put("message","请选择审批人");
+                    temp.put("data",assigneeMap);
                     return temp;
                 } else {
                     if (handlers.size() == 0) {
@@ -832,6 +1085,7 @@ public class OaServiceImpl implements OaService {
             handleMap.put("data", data);
             handleMap.put("handler", handlerTemp);
             handleMap.put("message","自动通过");
+            handleMap.put("successStatus","1");
             return handleMap;
         }
         // 数据保存异常进行事务回滚
@@ -851,6 +1105,7 @@ public class OaServiceImpl implements OaService {
         }
         //流程发起过程中配置的系统通知
         result.put("message","审批成功并转移至下一节点"+nextCodeName);
+        result.put("successStatus","1");
         return result;
     }
 
@@ -871,6 +1126,7 @@ public class OaServiceImpl implements OaService {
         if (null == process) {
             HashMap temp = new HashMap(1);
             temp.put("message","流程存在异常");
+            temp.put("successStatus","-2");
             return temp;
         }
         Long modId = process.getFlowModelId();
@@ -888,6 +1144,8 @@ public class OaServiceImpl implements OaService {
             List<Map<String, Object>> nodes = oaFlowModelElementService.getNodeByProcessId(processId);
             HashMap temp = new HashMap(1);
             temp.put("message","请选择回退节点");
+            temp.put("successStatus","2");
+            temp.put("data",nodes);
             return temp;
         }
         // 获取上一节点审批人信息
@@ -1004,6 +1262,94 @@ public class OaServiceImpl implements OaService {
             throw new Exception();
         }
         result.put("message","审批成功并转移至下一节点:" + lastCodeName);
+        result.put("successStatus","1");
+        return result;
+    }
+
+    @Override
+    public Map forward(Map<String, Object> data, JwtModel sysUser) throws Exception {
+        // TODO Auto-generated method stub
+        Map<String, Object> result = new HashMap<String, Object>();
+        Long curUserId = Long.valueOf(sysUser.getUserId());
+        //转交人员userId
+        Long transferId = Long.parseLong(data.get("transferId").toString());
+        if (transferId.equals(curUserId)) {
+            result.put("successStatus","-2");
+            result.put("message","转交人不能为本人");
+            return result;
+        }
+        // 数据库操作状态码
+        int exeNum = 1;
+        // 流程实例ID
+        Long processId = Long.parseLong(data.get("processId").toString());
+
+        OaProcess process = oaProcessService.selectByPrimaryKey(processId);
+        if (null == process) {
+            result.put("successStatus","-3");
+            result.put("message","流程存在异常");
+            return result;
+        }
+        // 获取流程所处节点
+        String curCode = process.getCode();
+
+
+        // 获取下一节点审批人信息
+        List<User> handlers = new ArrayList<User>();
+        List<Object> handlerList = new ArrayList<Object>();
+
+        OaProcessHis hisProcess = new OaProcessHis();
+        hisProcess.setProcessId(process.getId());
+        hisProcess.setUserId(curUserId);
+        //将当前处理人处理信息加入流程处理历史
+        exeNum = oaProcessHisService.insertSelective(hisProcess);
+
+        handlers.add(userService.selectUserById(transferId.toString()));
+
+        result.put("handlers", handlers);
+        result.put("nodeId", curCode);
+        result.put("processId", processId);
+        // 更新表单数据
+        oaFormModelService.updateFormData(data, sysUser);
+
+        for (User handler : handlers) {
+            OaProcessRun runProcess = new OaProcessRun();
+            runProcess.setProcessId(process.getId());
+            runProcess.setUserId(transferId);
+            if (exeNum > 0) {
+                //将转交人加入到流程待办中
+                exeNum = oaProcessRunService.insertSelective(runProcess);
+            }
+            handlerList.add(handler.getId());
+            // 添加数据到待处理流程表中
+        }
+        OaProcessLog processLog = new OaProcessLog();
+        processLog.setProcessId(processId);
+        processLog.setCurAssignee(curUserId.toString());
+        processLog.setCurNode(curCode);
+        processLog.setFlowId(process.getFlowId());
+        processLog.setNextNode(curCode);
+        processLog.setNextAssignees(GuavaUtil.list3string(handlerList, ","));
+        processLog.setMessage((String) data.get("message"));
+        // 将日志状态标记为转交
+        processLog.setActionId(4);
+
+        // 将当前人待办流程记录删除
+        if (exeNum > 0){
+            Map param = new HashMap();
+            param.put("processId",processId);
+            param.put("userId",curUserId);
+            exeNum = oaProcessRunService.deleteByMap(param);
+        }
+
+        // 插入流程日志
+        if (exeNum > 0){
+            exeNum = oaProcessLogService.insertSelective(processLog);
+        }
+        // 数据保存异常进行事务回滚
+        if (exeNum <= 0){
+            throw new Exception();
+        }
+        result.put("successStatus","1");
         return result;
     }
 

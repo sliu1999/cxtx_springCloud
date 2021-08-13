@@ -36,9 +36,15 @@ public interface OaService {
 
     Map getProcessDetail(Long processId);
 
+    Map getProcessDetailTwo(Long processId);
+
+    Map getHisProcessDetail(Long processId);
+
     Map approval(Map<String,Object> data,JwtModel sysUser) throws Exception;
 
     Map refuse(Map<String,Object> data,JwtModel sysUser) throws Exception;
+
+    Map forward(Map<String,Object> data,JwtModel sysUser) throws Exception;
 
     int deleteProcess(Long processId) throws Exception;
 

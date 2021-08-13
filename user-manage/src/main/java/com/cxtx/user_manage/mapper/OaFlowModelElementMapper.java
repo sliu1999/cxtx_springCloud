@@ -4,6 +4,7 @@ import com.cxtx.user_manage.domain.OaFlowModelDetail;
 import com.cxtx.user_manage.domain.OaFlowModelElement;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -29,5 +30,7 @@ public interface OaFlowModelElementMapper {
     int deleteByModelId(Long modelId);
 
     OaFlowModelElement selectOneByCodeAndModelId(@Param("code") String code, @Param("modelId") Long modelId);
+
+    Map<String,Object> getElementConfigByFlowIdAndCurNode(HashMap param);
 
 }

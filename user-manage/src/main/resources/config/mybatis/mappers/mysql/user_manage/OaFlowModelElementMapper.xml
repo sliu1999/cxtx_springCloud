@@ -268,4 +268,17 @@
   <select id="selectOneByCodeAndModelId" parameterType="map" resultMap="BaseResultMap">
     SELECT * FROM oa_flow_model_element WHERE code = #{code} AND model_id = #{modelId} LIMIT 1
   </select>
+
+  <select id="getElementConfigByFlowIdAndCurNode" parameterType="hashmap" resultType="map">
+    SELECT
+        element_config modConfig
+    FROM
+        oa_flow_model_element_config ofmc
+    INNER JOIN oa_flow_model_element ofme ON ofmc.element_id = ofme.id
+    INNER JOIN oa_flow_model ofm ON ofm.id = ofme.model_id
+    WHERE
+        ofme.`code` =  #{curNode}
+    AND ofm.flow_id = #{flowId}
+    LIMIT 1
+  </select>
 </mapper>

@@ -232,4 +232,25 @@
     where process_id = #{processId}
   </delete>
 
+  <select id="getLogEleListByUser" parameterType="map" resultMap="BaseResultMap">
+    SELECT
+            opl.*
+        FROM
+            oa_process_log opl
+        LEFT JOIN (
+            SELECT DISTINCT
+                process_id
+            FROM
+                oa_process_his oph
+            WHERE
+                oph.user_id = #{userId}
+        ) a ON opl.process_id = a.process_id
+        WHERE
+            cur_assignee = #{userId}
+        AND opl.process_id = #{processId}
+        GROUP BY
+            flow_id,
+            cur_node
+  </select>
+
 </mapper>

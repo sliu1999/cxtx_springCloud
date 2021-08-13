@@ -2,6 +2,8 @@ package com.cxtx.user_manage.service;
 
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.OaFlowModelElement;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,5 +50,7 @@ public interface OaFlowModelElementService{
     List<Map<String, Object>> getNodeByProcessId(Long processId);
 
     OaFlowModelElement selectOneByCodeAndModelId(String code, Long modelId);
+
+    Map<String,Object> getElementConfigByFlowIdAndCurNode(HashMap param);
 
 }

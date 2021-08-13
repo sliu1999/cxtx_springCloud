@@ -117,6 +117,18 @@ public class OaFormModelResource {
         }
     }
 
+    @GetMapping(value = "/mods")
+    @ApiOperation(value = "表单管理中获取表单列表结构数据", notes = "表单管理中获取表单列表结构数据")
+    public ResponseEntity<Map> getAllModsList(){
+        String userId = HttpServletUtils.getUserInfo().getUserId();
+        try {
+            HashMap result = oaFormModelService.getAllModsList();
+            return  ResponseUtil.success(result);
+        }catch (Exception E){
+            return ResponseUtil.error(E.getMessage());
+        }
+    }
+
 
     @ApiOperation(value = "表单管理--编辑基本信息（名称和分类）", notes = "表单管理--编辑基本信息（名称和分类）", response = ResponseUtil.Response.class)
     @ApiImplicitParam(name = "oaFormModel", value = "__OaFormModel__", required = true, paramType = "body", dataType = "OaFormModel")

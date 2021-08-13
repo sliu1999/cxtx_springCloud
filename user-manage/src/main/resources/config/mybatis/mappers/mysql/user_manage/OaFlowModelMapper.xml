@@ -155,6 +155,6 @@
     oa_flow_model
     WHERE
     1 = 1
-    AND DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s') = DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s')
+    AND DATE_FORMAT(#{createDate},'%y-%m-%d %H:%i:%s') = DATE_FORMAT(create_date,'%y-%m-%d %H:%i:%s')
   </select>
 </mapper>

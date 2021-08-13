@@ -24,4 +24,6 @@ public interface OaProcessLogService{
     List<OaProcessLog> getLogByProcessId(Long processId);
 
     int deleteByProcessId(Long processId);
+
+    List<OaProcessLog> getLogEleListByUser(Map param);
 }

@@ -36,13 +36,6 @@ public interface AppService{
 
 	int queryCountBySqlMap(Map<String, Object> dataMap);
 
-	/**
-	 * 生成流水号
-	 * @param raw
-	 * @return
-	 */
-	String serialBuilder(Map<String, Object> raw);
-
 	Long queryRoleIdByUserId(Long userId);
 
 	boolean saveRoleAndMod(Long userId, Long roleId);
@@ -72,11 +65,6 @@ public interface AppService{
 
 	boolean ifColumnExistInTable(String table, String column);
 
-	/**
-	 * sliu
-	 * @param tableKey
-	 * @return
-	 */
 	String updateTableKey(String tableKey);
 	/**
 	 * 根据formId查询指定表中的指定字段信息
@@ -94,4 +82,7 @@ public interface AppService{
 	 * @return
 	 */
 	List<Map<String,Object>> getFormDataListByFieldList(List<String> fields, String tableName, Long formId);
+
+	List<Map<String,String>> getTableColumnList(String tableName);
+
 } 

@@ -23,5 +23,7 @@ public interface OaFormModelMapper {
 
     void updateDetailForm(Map<String, Object> map);
 
+    OaFormModel getFormModByFlowModId(Long flowModelId);
+
 
 }

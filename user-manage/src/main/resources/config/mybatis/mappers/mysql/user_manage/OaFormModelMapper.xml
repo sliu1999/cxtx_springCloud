@@ -223,4 +223,14 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
 
+  <select id="getFormModByFlowModId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+      SELECT DISTINCT
+          fm.*
+      FROM
+          oa_form_model fm
+      LEFT JOIN oa_flow_form form ON form.form_model_id = fm.id
+      WHERE
+          form.flow_model_id = #{flowModelId}
+  </select>
+
 </mapper>

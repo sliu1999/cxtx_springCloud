@@ -47,7 +47,6 @@ public class AppServiceImpl implements AppService {
 	 * 复制表模型建表
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = Exception.class )
 	public Map<String,Object> createTableByCopy(Map<String, Object> map) throws Exception{
@@ -176,7 +175,6 @@ public class AppServiceImpl implements AppService {
 	 * 添加明细表字段
 	 * @throws Exception 
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	@Transactional(rollbackFor = Exception.class )
 	public boolean addDetails(String tableName, List<Map<String, Object>> addDetails) throws Exception {
@@ -207,7 +205,6 @@ public class AppServiceImpl implements AppService {
 	 * @throws Exception 
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	@Transactional(rollbackFor = Exception.class )
 	public boolean updateDetails(String tableName, List<Map<String, Object>> updateDetails) throws Exception {
 		boolean flag = true;
@@ -244,7 +241,6 @@ public class AppServiceImpl implements AppService {
 	public boolean removeDetails(String tableName, List<Map<String, Object>> removeDetails) throws Exception {
 		boolean flag = true;
 		Map<String,Object> map = new HashMap<String,Object>();
-		//map.put("fieldList", MapUtils.turnCtrl(removeDetails));
 		for(Map<String,Object> detail:removeDetails) {
 			map.put("tableName", tableName+"_"+detail.get("id"));
 			try {
@@ -372,63 +368,7 @@ public class AppServiceImpl implements AppService {
 	public int queryCountBySqlMap(Map<String, Object> dataMap) {
 		return appMapper.queryCount(dataMap);
 	}
-	/**
-	 * 流水号生成
-	 * @return
-	 */
-	@Override
-	public String serialBuilder(Map<String,Object> raw) {
-		Date date = new Date();
-		Object tableKey = "_app_"+raw.get("tableKey");
-		String format = raw.get("format").toString();
-		int sequence = 0;
-		boolean flagInitial = false;
-		try{
-		}catch(EmptyResultDataAccessException e){
-			flagInitial = true;
-		}
-		if(!flagInitial){
-			sequence = 0;
-			Integer lastSequence = appMapper.getCount("select count(1) from "+tableKey);
-			Map<String,Object> id = appMapper.getFormDataByField("select id from "+tableKey+" order by id desc limit 1");
-			Integer lastId = id==null?0:Integer.parseInt(id.get("id").toString());
-			
-			if(lastId!=null && lastId>lastSequence){
-				lastSequence = lastId;
-			}
-			System.out.println(lastId);
-			if(lastSequence!=null)
-				sequence = lastSequence+1;
-		}else{
-			sequence = 0;
-		}
-		String flowingId = "";
-		int count = 0;
-		String [] datePlaceHolder = new String[]{"tC","ty","tm","td","tH","tM","tS"};
-		for(String dpStr:datePlaceHolder){
-			if(format.contains(dpStr)){
-				count++;
-			}
 
-		}
-		Object [] args = null;
-		if(count>0){
-			args = new Object[count+1];
-			for(int i = 0;i<args.length;i++){
-				if(i!=args.length-1){
-					args[i] = date;
-				} else{
-					args[i] = sequence;
-				}
-
-			}
-		}else{
-			args = new Object[1];
-			args[0] = sequence;
-		}
-		flowingId = String.format(format, args);
-		return flowingId;
-	}
 	@Override
 	public Long queryRoleIdByUserId(Long userId) {
 		return appMapper.queryRoleIdByUserId(userId);
@@ -448,8 +388,7 @@ public class AppServiceImpl implements AppService {
 	public void deleteForm(Map<String, Object> map) {
 		appMapper.deleteForm(map);
 	}
-	
-	@SuppressWarnings("unused")
+
 	@Override
 	public Long NamedCUDHoldId(String tableName, Map<String, Object> paramMap) {
 		String sql = "insert into "+tableName+"(" ;
@@ -461,12 +400,10 @@ public class AppServiceImpl implements AppService {
 	}
 	@Override
 	public void NamedCUD(String tableName, Map<String, Object> paramMap) {
-		// TODO Auto-generated method stub
 		appMapper.NamedCUD(tableName, paramMap);
 	}
 	@Override
 	public int CUD(String sql) {
-		// TODO Auto-generated method stub
 		try {
 			appMapper.CUD(sql);	
 			return 1;
@@ -496,10 +433,7 @@ public class AppServiceImpl implements AppService {
 	public List<Object> getObjectList(String sql) {
 		return appMapper.getObjectList(sql);
 	}
-	/**
-	 * sliu
-	 * 判断表是否已存在
-	 */
+
 	@Override
 	public boolean ifTableExistInDataBase(String tableName) {
 		String dataBaseName = appMapper.getDataBaseName();
@@ -538,5 +472,12 @@ public class AppServiceImpl implements AppService {
 	public List<Map<String, Object>> getFormDataListByFieldList(List<String> fields, String tableName, Long formId) {
 		return appMapper.getFormDataListByFieldList(fields, tableName, formId);
 	}
-	
+
+	@Override
+	public List<Map<String, String>> getTableColumnList(String tableName) {
+		String dataBase = appMapper.getDataBaseName();
+		return appMapper.getTableColumnList(dataBase,tableName);
+	}
+
+
 }

@@ -1,5 +1,6 @@
 package com.cxtx.user_manage.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cxtx.common.domain.DicCommon;
 import com.cxtx.common.domain.JwtModel;
@@ -425,6 +426,127 @@ public class OaFormModelServiceImpl implements OaFormModelService {
         finalMap.put("mods", mods);
         finalMap.put("catsList", finalList);
         return finalMap;
+    }
+
+    @Override
+    public OaFormModel getFormModByFlowModId(Long flowModId) {
+        return oaFormModelMapper.getFormModByFlowModId(flowModId);
+    }
+
+    @Override
+    public List<String> getMainFormIdList(Long formModelId) {
+        OaFormModel oaFormMod = oaFormModelMapper.selectByPrimaryKey(formModelId);
+        List<String> schemaSet = new ArrayList<String>();
+        if(null == oaFormMod.getTableSchema() || "".equals(oaFormMod.getTableSchema())) {
+            return schemaSet;
+        }
+        List<Map<String, Object>> formList = JSONObject.parseObject(oaFormMod.getTableSchema(),List.class);
+        if (null != formList && formList.size() != 0) {
+            for (Map<String, Object> map : formList) {
+                if(!map.containsKey("flagDetail")) {
+                    schemaSet.add(map.get("id").toString());
+                }
+            }
+        }
+
+
+        return schemaSet;
+    }
+
+    @Override
+    public Map<String, Object> getDetailTableSchema(Long formModelId) {
+        OaFormModel oaFormMod = oaFormModelMapper.selectByPrimaryKey(formModelId);
+        Map<String, Object> resultMap = new HashMap<String, Object>();
+        List<Map<String, Object>> tableMap = JSON.parseObject(oaFormMod.getTableSchema(), List.class);
+        List<String> keyList = getdetailSchema(formModelId);
+        for (String key : keyList) {
+            List<String> fieldSet = new ArrayList<>();
+            for (Map<String, Object> map2 : tableMap) {
+                if(key.equals(map2.get("id"))) {
+                    List<Map<String, Object>> fieldsList = JSON.parseObject(map2.get("fields").toString(), List.class);
+                    for (Map<String, Object> map3 : fieldsList) {
+                        fieldSet.add(map3.get("id").toString());
+                    }
+                }
+            }
+            resultMap.put(key, fieldSet);
+        }
+
+        return resultMap;
+    }
+
+    @Override
+    public HashMap getAllModsList() {
+
+        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+        HashMap param = new HashMap();
+        param.put("tableName","tb_dic_form_type");
+        List<DicCommon> typeList = (List<DicCommon>) dicCommonService.selectAll(param).get("content");
+        HashMap params = new HashMap();
+        params.put("status","1");
+        List<OaFormModel> modList = oaFormModelMapper.selectAll(params);
+
+        List<HashMap<String, Object>> cats = new ArrayList<HashMap<String, Object>>();
+        List<HashMap<String, Object>> mods = new ArrayList<HashMap<String, Object>>();
+        for (OaFormModel oaFormMod : modList) {
+            HashMap<String, Object> mod = new HashMap<String, Object>();
+            mod.put("id", oaFormMod.getId());
+            mod.put("name", oaFormMod.getName());
+            mod.put("tableKey", oaFormMod.getTableKey());
+            mods.add(mod);
+        }
+        HashMap<String, Object> catsMap = new HashMap<String, Object>();
+        for (DicCommon oaFormType : typeList) {
+            HashMap<String, Object> cat = new HashMap<String, Object>();
+            List<HashMap<String, Object>> catMap = new ArrayList<HashMap<String, Object>>();
+            cat.put("id", oaFormType.getId());
+            cat.put("name", oaFormType.getName());
+            cats.add(cat);
+            for (OaFormModel oaFormMod : modList) {
+                List<String> typeIdsList = GuavaUtil.split2list(",", oaFormMod.getFormType());
+                if (typeIdsList.contains(oaFormType.getId().toString())) {
+                    // 普通表(type==1)
+                    if (oaFormMod.getType() != null) {
+                        if (oaFormMod.getType() == 1) {
+                            HashMap<String, Object> hm = new HashMap<String, Object>();
+                            hm.put("id", oaFormMod.getId());
+                            hm.put("catId", oaFormType.getId());
+                            hm.put("tableKey", oaFormMod.getTableKey());
+                            if (oaFormMod.getDetailKeys() != null) {
+                                hm.put("detailKeys", oaFormMod.getDetailKeys());
+                            }
+                            hm.put("name", oaFormMod.getName());
+                            catMap.add(hm);
+                        }
+                    }
+                }
+            }
+            catsMap.put(String.valueOf(oaFormType.getId()), catMap);
+        }
+        hashMap.put("cats", cats);
+        hashMap.put("mods", mods);
+        hashMap.put("catsMap", catsMap);
+
+        return hashMap;
+    }
+
+    public List<String> getdetailSchema(Long formModelId) {
+        OaFormModel oaFormMod = oaFormModelMapper.selectByPrimaryKey(formModelId);
+        List<String> schemaSet = new ArrayList<String>();
+        if(null == oaFormMod.getTableSchema() || "".equals(oaFormMod.getTableSchema())) {
+            return schemaSet;
+        }
+        List<Map<String, Object>> formList = JSONObject.parseObject(oaFormMod.getTableSchema(),List.class);
+        if (null != formList && formList.size() != 0) {
+            for (Map<String, Object> map : formList) {
+                if(map.containsKey("flagDetail")) {
+                    schemaSet.add(map.get("id").toString());
+                }
+            }
+        }
+
+
+        return schemaSet;
     }
 
     /**

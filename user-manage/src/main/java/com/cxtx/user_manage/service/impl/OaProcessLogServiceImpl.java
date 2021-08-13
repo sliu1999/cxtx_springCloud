@@ -103,4 +103,9 @@ public class OaProcessLogServiceImpl implements OaProcessLogService {
         return oaProcessLogMapper.deleteByProcessId(processId);
     }
 
+    @Override
+    public List<OaProcessLog> getLogEleListByUser(Map param) {
+        return oaProcessLogMapper.getLogEleListByUser(param);
+    }
+
 }

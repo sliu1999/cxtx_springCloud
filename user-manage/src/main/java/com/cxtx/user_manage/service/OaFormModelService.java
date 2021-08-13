@@ -4,6 +4,9 @@ import com.cxtx.common.domain.JwtModel;
 import com.cxtx.user_manage.domain.OaProcessHis;
 import com.github.pagehelper.PageInfo;
 import com.cxtx.user_manage.domain.OaFormModel;
+import org.omg.PortableServer.LIFESPAN_POLICY_ID;
+
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +43,16 @@ public interface OaFormModelService{
     int updateFormData(Map<String,Object> data,JwtModel user)throws Exception;
 
     Map getFormListByAuth(String userId);
+
+    OaFormModel getFormModByFlowModId(Long flowModId);
+
+    //获取主表字段id
+    List<String> getMainFormIdList(Long formModelId);
+
+    //获取明细表字段
+    Map<String,Object> getDetailTableSchema(Long formModelId);
+
+    HashMap getAllModsList();
 
 
 }

@@ -3,10 +3,7 @@ package com.cxtx.user_manage.web.rest;
 import com.cxtx.common.domain.JwtModel;
 import com.cxtx.common.unit.HttpServletUtils;
 import com.cxtx.common.unit.ResponseUtil;
-import com.cxtx.user_manage.domain.OaFlow;
-import com.cxtx.user_manage.domain.OaFormProcessInstance;
-import com.cxtx.user_manage.domain.OaProcess;
-import com.cxtx.user_manage.domain.OaProcessRun;
+import com.cxtx.user_manage.domain.*;
 import com.cxtx.user_manage.service.*;
 import com.cxtx.user_manage.unit.GuavaUtil;
 import com.github.pagehelper.PageInfo;
@@ -46,6 +43,9 @@ public class OaResource {
 
     @Autowired
     private OaProcessRunService oaProcessRunService;
+
+    @Autowired
+    private OaProcessLogService oaProcessLogService;
 
     @Autowired
     private OaService oaService;
@@ -121,13 +121,31 @@ public class OaResource {
         }
     }
 
+
+    @GetMapping("/getHisProcessDetail/{processId}")
+    @ApiOperation(value = "历史详情", notes = "历史详情", response = ResponseUtil.Response.class)
+    public ResponseEntity<Map> getHisProcessDetail(@PathVariable Long processId) {
+        Map result = oaService.getHisProcessDetail(processId);
+        if (result != null) {
+            return ResponseUtil.success(result);
+        } else {
+            return ResponseUtil.error("获取失败！");
+        }
+    }
+
     @PostMapping("/handle")
     @ApiOperation(value = "流程审批-同意", notes = "流程审批-同意", response = ResponseUtil.Response.class)
     public ResponseEntity<Map> handle(@RequestBody Map<String, Object> payload) {
         try {
             JwtModel curUser = HttpServletUtils.getUserInfo();
             Map result = oaService.approval(payload, curUser);
-            return ResponseUtil.success(result);
+            if("1".equals(result.get("successStatus"))){
+                return ResponseUtil.success(result);
+            }else if("2".equals(result.get("successStatus"))){
+                return ResponseUtil.success(2,"请选择审批人",result.get("data"));
+            }else {
+                return ResponseUtil.error("失败");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.error(e.getMessage());
@@ -140,7 +158,34 @@ public class OaResource {
         try {
             JwtModel curUser = HttpServletUtils.getUserInfo();
             Map result = oaService.refuse(payload, curUser);
-            return ResponseUtil.success(result);
+            if("1".equals(result.get("successStatus"))){
+                return ResponseUtil.success(result);
+            }else if("2".equals(result.get("successStatus"))){
+                return ResponseUtil.success(2,result.get("message").toString(),result.get("data"));
+            }else if("-2".equals(result.get("successStatus"))){
+                return ResponseUtil.error(result.get("message").toString());
+            }
+            return ResponseUtil.error("失败");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtil.error(e.getMessage());
+        }
+    }
+
+    @PostMapping("/transfer")
+    @ApiOperation(value = "流程审批-转交", notes = "流程审批-转交", response = ResponseUtil.Response.class)
+    public ResponseEntity<Map> transfer(@RequestBody Map<String, Object> payload) {
+        try {
+            JwtModel curUser = HttpServletUtils.getUserInfo();
+            Map result = oaService.forward(payload, curUser);
+            if("-2".equals(result.get("successStatus"))){
+                return ResponseUtil.error(result.get("message").toString());
+            }else if("-3".equals(result.get("successStatus"))){
+                return ResponseUtil.error(result.get("message").toString());
+            }else {
+                return ResponseUtil.success("转交成功",result);
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.error(e.getMessage());
@@ -154,7 +199,7 @@ public class OaResource {
             for (String id : processIdList) {
                 oaService.deleteProcess(Long.parseLong(id));
             }
-            return ResponseUtil.success("");
+            return ResponseUtil.success("流程删除成功");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtil.error(e.getMessage());

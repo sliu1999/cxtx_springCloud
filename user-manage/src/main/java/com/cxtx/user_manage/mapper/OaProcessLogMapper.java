@@ -20,4 +20,6 @@ public interface OaProcessLogMapper {
     List<OaProcessLog> getLogByProcessId(Long processId);
 
     int deleteByProcessId(Long processId);
+
+    List<OaProcessLog> getLogEleListByUser(Map map);
 }

@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -123,5 +124,10 @@ public class OaFlowModelElementServiceImpl implements OaFlowModelElementService 
     @Override
     public OaFlowModelElement selectOneByCodeAndModelId(String code, Long modelId) {
         return oaFlowModelElementMapper.selectOneByCodeAndModelId(code,modelId);
+    }
+
+    @Override
+    public Map<String, Object> getElementConfigByFlowIdAndCurNode(HashMap param) {
+        return oaFlowModelElementMapper.getElementConfigByFlowIdAndCurNode(param);
     }
 }

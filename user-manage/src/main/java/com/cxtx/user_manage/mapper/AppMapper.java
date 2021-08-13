@@ -31,19 +31,13 @@ public interface AppMapper{
 
 	void addDetails(@Param("map") Map<String, Object> addDetails);
 
-//	void updateDetails(@Param("map") Map<String, Object> updateDetails);
-
 	void removeDetails(@Param("map") Map<String, Object> removeDetails);
-
-//	void createTableByCopy(@Param("map") Map<String, Object> map);
 
 	int getCount(@Param("sql") String sql);
 
 	List<Map<String,Object>> getInfoBySql(@Param("sql") String sql);
 
 	Map<String, Object> getFormDataByField(@Param("sql") String sql);
-
-//	List<Map<String, Object>> test(Map<String, Object> map);
 
 	List<Map<String, Object>> queryData(Map<String, Object> map);
 
@@ -88,12 +82,11 @@ public interface AppMapper{
 	/**
 	 * sliu
 	 * 判断数据库中是否存在数据库表
-	 * @param data
+	 * @param
 	 * @return
 	 */
 	int ifTableExistInDataBase(@Param("dataBaseName") String dataBaseName, @Param("tableName") String tableName);
 
-	List<Map<String, Object>> getEleListByUser(Map<String, Object> map);
 	/**
 	 * 判断新增字段在数据库表中是否已存在
 	 * @param dataBase
@@ -106,4 +99,6 @@ public interface AppMapper{
 	Map<String,Object> getFormDataByFieldList(@Param("fields") List<String> fields, @Param("tableName") String tableName, @Param("id") Long formId);
 
 	List<Map<String,Object>> getFormDataListByFieldList(@Param("fields") List<String> fields, @Param("tableName") String tableName, @Param("id") Long formId);
+
+	List<Map<String,String>> getTableColumnList(@Param("dataBase") String dataBase, @Param("tableName") String tableName);
 }

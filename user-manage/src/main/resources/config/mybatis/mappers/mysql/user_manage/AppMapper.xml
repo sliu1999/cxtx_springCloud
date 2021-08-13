@@ -163,25 +163,6 @@
 		AND table_name = #{table}
 		AND column_name = #{column}
 	</select>
-  <select id="getEleListByUser" resultType="map" parameterType="map">
-		SELECT
-			*
-		FROM
-			oa_process_log opl
-			INNER JOIN (
-		SELECT
-			process_id
-		FROM
-			oa_process_his oph
-			INNER JOIN oa_process op ON oph.process_id = op.id
-			INNER JOIN oa_flow_form off ON off.flow_id = op.flow_id
-			INNER JOIN oa_form_mod ofm ON off.form_mod_id = ofm.id
-		WHERE
-			oph.user_id = #{userId}
-			) a ON opl.process_id = a.process_id
-			where cur_assignee = #{userId} and opl.process_id = #{processId}
-		group by flow_id,cur_node
-	</select>
   <select id="getFormDataByFieldList" resultType = "map">
     select
     <foreach collection="fields" item="item" separator=",">
@@ -196,4 +177,15 @@
     </foreach>
     from #{tableName} where id = #{id}
   </select>
+
+    <select id="getTableColumnList" parameterType="map" resultType="map">
+        SELECT
+            COLUMN_NAME AS columnName,
+            DATA_TYPE AS dataType
+        FROM
+            information_schema. COLUMNS
+        WHERE
+            table_name = #{tableName}
+        AND table_schema = #{dataBase}
+    </select>
 </mapper>
