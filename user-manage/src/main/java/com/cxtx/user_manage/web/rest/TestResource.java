@@ -1,6 +1,7 @@
 package com.cxtx.user_manage.web.rest;
 
 
+import com.cxtx.common.unit.aop.MonitorData;
 import com.cxtx.user_manage.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class TestResource {
         return "hello";
     }
 
+    @MonitorData(apiPath = "testEx",type = "out")
     @GetMapping(value = "/testEx")
     public String testEx() {
         int i = 1/0;

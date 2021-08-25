@@ -1,4 +1,4 @@
-package com.cxtx.common.unit;
+package com.cxtx.common.unit.aop;
 
 
 import org.aspectj.lang.JoinPoint;
@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+/**
+ * 在控制台打印错误日志
+ */
 @Aspect
 @Component
 public class LoggingAspect {

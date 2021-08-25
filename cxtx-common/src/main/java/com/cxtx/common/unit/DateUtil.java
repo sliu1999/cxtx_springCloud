@@ -7,51 +7,56 @@ import java.util.*;
 
 public class DateUtil {
 
+
+     //获取当前时间yyyy-MM-dd HH:mm:ss
     public static String getCurrentDate() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return dateFormat.format(new Date());
     }
 
+    //获取当前月份
     public static int getCurrentMonth() {
         Calendar c = Calendar.getInstance();
         int currentMonth = c.get(Calendar.MONTH) + 1;
         return currentMonth;
     }
-
+    //获取当前时间yyyy-MM-dd HH
     public static String getCurrentHour() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH");
         return dateFormat.format(new Date());
     }
-
+    //获取当前时间yyyy-MM
     public static String getCurrentYearMonth() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
         return dateFormat.format(new Date());
     }
-
+    //获取当前时间yyyy-MM
     public static String getLastYearMonth() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM");
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, -1);
         return simpleDateFormat.format(c.getTime());
     }
-
+    //获取当前时间yyyy年MM月
     public static String getLastYearMonth2() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月");
         Calendar c = Calendar.getInstance();
         c.add(Calendar.MONTH, -1);
         return simpleDateFormat.format(c.getTime());
     }
-
+    //获取当前时间MM-dd
     public static String getMonthDay() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd");
         return simpleDateFormat.format(new Date());
     }
 
+    //获取当前时间yyyy-MM-dd
     public static String getYearMonthDay() {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return simpleDateFormat.format(new Date());
     }
 
+    //判断当前时间是否在某一时间范围内
     public static int compareDate(String startTime, String endTime) {
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -75,6 +80,7 @@ public class DateUtil {
         return 0;
     }
 
+    //获取某一时间加天后的时间
     public static String getDateAdd(String date, int addDay) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         int time1 = Integer.parseInt(date.substring(0, 4));
@@ -208,7 +214,6 @@ public class DateUtil {
         if (str == null || str.length() == 0) {
             return false;
         }
-//        String s = str.replaceAll("[/\\ ]", "");
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentTime = format.format(new Date());
         try {
@@ -274,13 +279,10 @@ public class DateUtil {
         String date2 = end;
         int compareTo = date1.compareTo(date2);
         if (compareTo > 0) {
-//            System.out.println("date1 大于 date2");
             return false;
         } else if (compareTo == 0) {
-//            System.out.println("date1 等于 date2");
             return true;
         } else {
-//            System.out.println("date1 小于 date2");
             return true;
         }
 

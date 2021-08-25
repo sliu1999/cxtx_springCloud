@@ -11,6 +11,7 @@ import com.cxtx.user_manage.service.*;
 import com.cxtx.user_manage.unit.GuavaUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import javax.script.ScriptException;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static jdk.nashorn.internal.runtime.JSType.toObject;
 
 
 @Service
@@ -422,11 +425,13 @@ public class OaServiceImpl implements OaService {
                     //java 与 js 的互通类
                     ScriptEngineManager manager = new ScriptEngineManager();
                     ScriptEngine engine = manager.getEngineByName("javascript");
-                    StringBuilder javascript = new StringBuilder("function time(date){ return +(new Date(date)); }");
-                    javascript.append("var userInfo = {id:").append(userId).append(",").append("}");
+                    //StringBuilder javascript = new StringBuilder("function time(date){ return +(new Date(date)); }");
+                    //将userInfo放入脚本变量中
+                    //javascript.append("var userInfo = {id:").append(userId).append(",").append("}");
                     //eval()用于执行js脚本
-                    engine.eval(javascript.toString());
+                    //engine.eval(javascript.toString());
 
+                    //将表单的字段名及值放入脚本的变量中
                     for (String key : formData.keySet()) {
                         Object value = formData.get(key);
                         if (!(value instanceof List)) {
@@ -440,20 +445,24 @@ public class OaServiceImpl implements OaService {
                     boolean flag = false;
                     //循环下一节点指向
                     for (Map<String, Object> nextNode : list) {
-                        nextNode.get("condition");
-                        engine.eval("flag=("
-                                + (nextNode.get("condition").equals("default") ? false : nextNode.get("condition"))
-                                + ")");
-                        engine.eval(
-                                "ifDefault = (" + (nextNode.get("condition").equals("default") ? true : false) + ")");
-                        flag = (boolean) engine.get("flag");
-                        if (!ifDefault) {
-                            ifDefault = (boolean) engine.get("ifDefault");
-                            if (ifDefault) {
-                                defaultNodeId = (String) nextNode.get("code");
-                            }
+                        //如果为默认条件ifDefault = (true) 如果不是默认条件 ifDefault = (false)
+                        String ifDefaultScrip = "ifDefault = (" + (nextNode.get("condition").equals("default") ? true : false) + ")";
+                        //执行脚本，算出ifDefault 的值
+                        engine.eval(ifDefaultScrip);
+
+                        // 得到脚本执行后ifDefault
+                        ifDefault = (boolean) engine.get("ifDefault");
+                        if (ifDefault) {
+                            //如果是默认条件，获取默认节点
+                            defaultNodeId = (String) nextNode.get("code");
                         }
-                        // 优先选择满足条件的节点
+
+                        //flag=("1".equals(type) && "刘".equals(name)) 根据脚本存在的变量进行判断
+                        String flagScrip = "flag=(" + (nextNode.get("condition").equals("default") ? false : nextNode.get("condition")) + ")";
+                        engine.eval(flagScrip);
+                        //获取脚本执行后flag的值
+                        flag = (boolean) engine.get("flag");
+                        // 如果脚本执行后发现节点满足条件，则获取下一节点并返回
                         if (flag) {
                             nextNodeId = (String) nextNode.get("code");
                             for (OaFlowModelDetail oaFlowModelDetail : elements) {
