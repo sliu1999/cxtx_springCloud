@@ -45,6 +45,10 @@ public class AuthorizeFilter implements GlobalFilter, Ordered {
              return chain.filter(exchange);
          }
 
+        if (uri.indexOf("/authservice/api/getCode") >= 0) {
+            return chain.filter(exchange);
+        }
+
          String token = serverHttpRequest.getHeaders().getFirst("token");
          if (StringUtils.isBlank(token)) {
              //如果token为null 返回401

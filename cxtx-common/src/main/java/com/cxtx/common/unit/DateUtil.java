@@ -91,6 +91,19 @@ public class DateUtil {
         return format.format(calendar.getTime());
     }
 
+    public static String getDateTimeAdd(String date, int addDay) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        int time1 = Integer.parseInt(date.substring(0, 4));
+        int time2 = Integer.parseInt(date.substring(5, 7)) - 1;
+        int time3 = Integer.parseInt(date.substring(8, 10));
+        int time4 = Integer.parseInt(date.substring(11, 13));
+        int time5 = Integer.parseInt(date.substring(14, 16));
+        int time6 = Integer.parseInt(date.substring(17, 19));
+        GregorianCalendar calendar = new GregorianCalendar(time1, time2, time3,time4, time5, time6);
+        calendar.add(Calendar.DATE, addDay);
+        return format.format(calendar.getTime());
+    }
+
     public static String getCurrentYearMonthDayAdd(int addDay) {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -127,7 +140,7 @@ public class DateUtil {
     }
 
     /**
-     * 判断年月 日期格式是否正确
+     * 时间与当前时间比较
      *
      * @param str
      * @return
@@ -155,7 +168,7 @@ public class DateUtil {
     }
 
     /**
-     * 判断年月 日期格式是否正确
+     * 时间与当前时间比较
      *
      * @param str
      * @return
@@ -178,7 +191,7 @@ public class DateUtil {
     }
 
     /**
-     * 判断年月日 日期格式是否正确
+     * 时间与当前时间比较
      *
      * @param str
      * @return
@@ -205,7 +218,7 @@ public class DateUtil {
         return true;
     }
     /**
-     * 判断年月日时分秒 日期格式是否正确
+     * 时间与当前时间比较
      *
      * @param str
      * @return
@@ -229,7 +242,7 @@ public class DateUtil {
     }
 
     /**
-     * 判断小时 日期格式是否正确
+     * 时间与当前时间比较
      *
      * @param str
      * @return

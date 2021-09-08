@@ -5,6 +5,7 @@ public enum ResponseCodeEnum {
     SUCCESS(0, "成功"),
      FAIL(-1, "失败"),
      LOGIN_ERROR(1000, "用户名或密码错误"),
+        LOGIN_CODE_ERROR(1001, "验证码错误"),
      UNKNOWN_ERROR(2000, "未知错误"),
      PARAMETER_ILLEGAL(2001, "参数不合法"),
      TOKEN_INVALID(2002, "无效的Token"),

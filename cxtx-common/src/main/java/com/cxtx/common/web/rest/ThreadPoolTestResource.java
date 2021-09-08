@@ -22,7 +22,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 public class ThreadPoolTestResource {
 
     @GetMapping(value = "/testThreadPool")
-    public void test(){
+    public  void test(){
         //创建线程池
         List<HashMap> menuList = new ArrayList<>();
         final CountDownLatch count = new CountDownLatch(menuList.size());

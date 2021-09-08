@@ -2,8 +2,11 @@ package com.cxtx.auth_service.web.rest;
 
 
 
+import cn.hutool.core.codec.Base64;
+import cn.hutool.core.util.IdUtil;
 import com.cxtx.auth_service.service.AuthUserService;
 import com.cxtx.auth_service.unit.HttpServletUtils;
+import com.cxtx.auth_service.unit.VerifyCodeUtils;
 import com.cxtx.common.config.jwt.JWTUtil;
 import com.cxtx.common.config.jwt.vo.*;
 import com.cxtx.common.domain.JwtModel;
@@ -19,6 +22,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -44,12 +51,54 @@ public class LoginResource {
      @Autowired
       private StringRedisTemplate stringRedisTemplate;
 
+
+        @GetMapping("/getCode")
+        public ResponseResult getCode() throws IOException {
+            Map<String, Object> map=new HashMap<String, Object>();
+            // 生成随机字串
+            String verifyCode = VerifyCodeUtils.generateVerifyCode(4);
+
+            System.err.println(verifyCode);
+
+            // 唯一标识
+            String uuid = IdUtil.simpleUUID();
+            String verifyKey = "sysUser_codes"+ uuid;
+            //存入redis给予过期时间
+            redisTemplate.opsForValue().set(verifyKey,verifyCode,2,TimeUnit.MINUTES);
+            // 生成图片
+            int w = 111, h = 36;
+            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+            VerifyCodeUtils.outputImage(w, h, stream, verifyCode);
+            try
+            {
+                map.put("uuid", uuid);
+                map.put("img", Base64.encode(stream.toByteArray()));
+                return ResponseResult.success(map);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return ResponseResult.error(-1,"获取验证码失败");
+            }
+            finally
+            {
+                stream.close();
+            }
+        }
+
         @PostMapping("/login")
         public ResponseResult login(@RequestBody @Validated LoginRequest request, BindingResult bindingResult) throws JsonProcessingException {
          if (bindingResult.hasErrors()) {
              //如果实体类的注解验证不通过
              return ResponseResult.error(ResponseCodeEnum.PARAMETER_ILLEGAL.getErrorCode(), ResponseCodeEnum.PARAMETER_ILLEGAL.getMessage());
          }
+         HashMap codeInfo = new HashMap();
+         codeInfo.put("uuid",request.getUuid());
+         codeInfo.put("code",request.getCode());
+            if(!this.checkLogin(codeInfo))
+            {
+                return ResponseResult.error (ResponseCodeEnum.LOGIN_CODE_ERROR.getErrorCode(),"验证码错误");
+            }
 
          String username = request.getUsername();
          String password = request.getPassword();
@@ -99,4 +148,21 @@ public class LoginResource {
          stringRedisTemplate.delete(key);
          return ResponseResult.success();
       }
+
+    public boolean checkLogin(HashMap codeInfo)
+    {
+        String verifyKey = "sysUser_codes" + codeInfo.get("uuid");
+        // 判断验证码
+        if (redisTemplate.opsForValue().get(verifyKey) == null) {
+            return false;
+        } else {
+            String captcha = redisTemplate.opsForValue().get(verifyKey)
+                    .toString();
+            redisTemplate.delete(verifyKey);
+            if (!codeInfo.get("code").toString().equalsIgnoreCase(captcha)) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

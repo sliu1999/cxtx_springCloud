@@ -1,6 +1,7 @@
 package com.cxtx.user_manage.web.client.thirdparty;
 
 
+import com.cxtx.common.config.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -9,7 +10,7 @@ import java.util.Map;
 
 
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")
-@FeignClient(url = AMapClient.BASE_URL, name = "amapapi")
+@FeignClient(url = AMapClient.BASE_URL, name = "amapapi" ,configuration = FeignConfiguration.class)
 public interface AMapClient {
 
     public static final String BASE_URL = "http://restapi.amap.com/";

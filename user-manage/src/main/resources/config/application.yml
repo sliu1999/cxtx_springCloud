@@ -23,4 +23,15 @@ mybatis:
   mapper-locations: classpath*:config/mybatis/mappers/mysql/**/*.xml
   config-location: classpath:config/mybatis/config/mysql/mybatis-frame.xml
 
+
+logging:
+  level:
+    com:
+      cxtx:
+        user_manage:
+          web:
+            client:
+              thirdparty:
+                AMapClient: DEBUG
+
 upload-path: C:/root/cxtx/image
