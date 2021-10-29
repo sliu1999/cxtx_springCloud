@@ -31,6 +31,7 @@
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <spring.boot.version>2.3.3.RELEASE</spring.boot.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
 
@@ -64,8 +65,19 @@
                 <scope>import</scope>
             </dependency>
 
+            <!--集中定义项目依赖版本，防止项目中引用的依赖版本不一致-->
 
-            <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.12</version>
+            </dependency>
+            <!--阿里JSON包-->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>1.2.31</version>
+            </dependency>
 
 
 
@@ -87,8 +99,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.3.6.RELEASE</version>
                 <configuration>
                     <fork>true</fork>
+                    <!--src/main/resources 内的所有资源都将会被添加到应用程序类目录(application classpath)中-->
                     <addResources>true</addResources>
                 </configuration>
             </plugin>

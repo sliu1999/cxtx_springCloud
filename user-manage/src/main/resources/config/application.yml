@@ -35,3 +35,8 @@ logging:
                 AMapClient: DEBUG
 
 upload-path: C:/root/cxtx/image
+
+knife4j:
+  enable: true
+  setting:
+    enableDocumentManage: true

@@ -19,7 +19,7 @@ import java.util.List;
 @Data
 public class User {
     @ApiModelProperty("主键")
-    private String id;
+    private Long id;
     @ApiModelProperty("账号")
     private String loginId;
     @ApiModelProperty("密码")

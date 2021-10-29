@@ -11,26 +11,26 @@ public class ResponseUtil {
     }
 
     public static ResponseEntity<Map> success(Object data) {
-        Map result = buildBase(0, "");
+        Map<String, Object> result = buildBase(0, "");
         result.put("data", data);
         return ResponseEntity.ok(result);
     }
 
 
     public static ResponseEntity<Map> error(String msg) {
-        Map result = buildBase(-1, msg);
+        Map<String, Object> result = buildBase(-1, msg);
         result.put("data", "");
         return ResponseEntity.status(500).body(result);
     }
 
     public static ResponseEntity<Map> error(int status, String msg) {
-        Map result = buildBase(-1, msg);
+        Map<String, Object> result = buildBase(-1, msg);
         result.put("data", "");
         return ResponseEntity.status(status).body(result);
     }
 
     private static Map<String, Object> buildBase(int errorCode, String msg) {
-        Map<String, Object> data = new HashMap(16);
+        Map<String, Object> data = new HashMap<String, Object>(16);
         data.put("errorCode", errorCode);
         data.put("msg", msg);
         return data;

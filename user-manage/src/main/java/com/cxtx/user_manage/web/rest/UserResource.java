@@ -23,6 +23,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -45,13 +46,12 @@ public class UserResource {
     private static final String ENTITY_NAME = "user";
     private static final HashMap<String, String> POWER_MAP = new HashMap();
     @Autowired
+    @Qualifier("UserService")
     private UserService userService;
 
     @Autowired
     private RoleService roleService;
 
-    public UserResource() {
-    }
 
     @GetMapping({"/users/check/duplicate"})
     @ApiOperation(
@@ -75,7 +75,7 @@ public class UserResource {
     public ResponseEntity<Map> duplicateCheckLoginId(@ApiIgnore @RequestParam Map params) {
         try {
             String loginId = params.get("loginId").toString();
-            String id = params.get("id") != null ? params.get("id").toString() : null;
+            Long id = params.get("id") != null ? Long.parseLong(params.get("id").toString()) : null;
             Boolean result = this.userService.duplicateCheckLoginId(loginId, id);
             return result ? ResponseUtil.success("该账号可用") : ResponseUtil.error("账号重复……");
         } catch (Exception var5) {
@@ -216,7 +216,7 @@ public class UserResource {
             paramType = "path"
     )
     @DeleteMapping({"/users/{id}"})
-    public ResponseEntity<Map> deleteUser(@PathVariable String id) {
+    public ResponseEntity<Map> deleteUser(@PathVariable Long id) {
         try {
             int result = this.userService.deleteUserById(id);
             return result > 0 ? ResponseUtil.success("删除成功！") : ResponseUtil.error("删除失败！");

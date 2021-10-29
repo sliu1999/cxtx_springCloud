@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxtx.user_manage.mapper.UserMapper">
     <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.User">
-        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <id column="ID" jdbcType="BIGINT" property="id" />
         <result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
         <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
@@ -14,7 +14,7 @@
     </resultMap>
 
     <resultMap id="FullResultMap" type="com.cxtx.user_manage.domain.User">
-        <id column="ID" jdbcType="VARCHAR" property="id" />
+        <id column="ID" jdbcType="BIGINT" property="id" />
         <result column="LOGIN_ID" jdbcType="VARCHAR" property="loginId" />
         <result column="PASSWORD" jdbcType="VARCHAR" property="password" />
         <result column="CREATE_TIME" jdbcType="TIMESTAMP" property="createTime" />
@@ -25,7 +25,7 @@
         <collection property="roles" javaType="java.util.ArrayList" column="{loginId=LOGIN_ID}" select="selectRolesByLoginId"></collection>
     </resultMap>
 
-    <delete id="deleteUserById" parameterType="java.lang.String">
+    <delete id="deleteUserById" parameterType="java.lang.Long">
         DELETE FROM tb_sys_user WHERE ID = #{id}
     </delete>
 
@@ -33,7 +33,7 @@
         DELETE FROM tb_sys_user WHERE LOGIN_ID = #{loginId}
     </delete>
 
-    <delete id="deleteUser2RoleById" parameterType="java.lang.String">
+    <delete id="deleteUser2RoleById" parameterType="java.lang.Long">
         DELETE FROM tb_sys_user_r_role WHERE LOGIN_ID = (SELECT LOGIN_ID FROM tb_sys_user WHERE ID = #{id})
     </delete>
 
@@ -41,10 +41,7 @@
         DELETE FROM tb_sys_user_r_role WHERE LOGIN_ID = #{loginId}
     </delete>
 
-    <insert id="insertUser" parameterType="com.cxtx.user_manage.domain.User">
-        <selectKey  keyProperty="id" resultType="String" order="BEFORE">
-            <![CDATA[  SELECT uuid()  FROM  dual  ]]>
-        </selectKey>
+    <insert id="insertUser" parameterType="com.cxtx.user_manage.domain.User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO tb_sys_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">

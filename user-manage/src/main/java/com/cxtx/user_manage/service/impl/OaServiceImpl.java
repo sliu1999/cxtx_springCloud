@@ -4,29 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cxtx.common.domain.JwtModel;
 import com.cxtx.common.unit.HttpServletUtils;
-import com.cxtx.common.unit.ServiceUtil;
 import com.cxtx.user_manage.domain.*;
 import com.cxtx.user_manage.mapper.*;
 import com.cxtx.user_manage.service.*;
 import com.cxtx.user_manage.unit.GuavaUtil;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import jdk.nashorn.api.scripting.ScriptObjectMirror;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.validation.Valid;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static jdk.nashorn.internal.runtime.JSType.toObject;
 
 
 @Service
@@ -91,20 +81,20 @@ public class OaServiceImpl implements OaService {
         List<Map<String, Object>> groupRoleIds = (List<Map<String, Object>>) elementConfig.get("groupRoleIds");
         for (int i = 0; i < groupRoleIds.size(); i++) {
             Map<String, Object> groupRole = groupRoleIds.get(i);
-            String group_id = groupRole.get("groupId").equals("") ? null : groupRole.get("groupId").toString();
-            String role_id = groupRole.get("roleId").equals("") ? null : groupRole.get("roleId").toString();
+            String groupId = "".equals(groupRole.get("groupId")) ? null : groupRole.get("groupId").toString();
+            String roleId = "".equals(groupRole.get("roleId")) ? null : groupRole.get("roleId").toString();
             // 根据创建人ID获取部门岗位信息
             Map<String, Object> userMap = userService.queryUserDetailById(curUserId.toString());
             // 根据发起人部门
-            if ("byCreator".equals(group_id)) {
+            if ("byCreator".equals(groupId)) {
                 groupRole.put("groupId", userMap.get("deptId"));
             }
             // 根据发起人
-            if ("byCreator".equals(role_id)) {
+            if ("byCreator".equals(roleId)) {
                 groupRole.put("roleId", userMap.get("roleId"));
             }
             // 根据发起人及其上级部门
-            if ("groupIdAndParent".equals(group_id)) {
+            if ("groupIdAndParent".equals(groupId)) {
                 groupRole.put("groupId", userMap.get("deptId") + "," + userMap.get("parentDeptId"));
             }
             groupRoleIds.set(i, groupRole);
@@ -124,17 +114,17 @@ public class OaServiceImpl implements OaService {
             // 审批人配置部门岗位
             for (Map<String, Object> groupRole : groupRoleIds) {
 
-                String group_id = groupRole.get("groupId").equals("") ? null : groupRole.get("groupId").toString();
-                String role_id = groupRole.get("roleId").equals("") ? null : groupRole.get("roleId").toString();
-                if (group_id != null && role_id != null) {
-                    if(group_id.startsWith("[")&&group_id.endsWith("]")) {
-                        group_id = group_id.replaceAll("\\[", "").replaceAll("\\]", "");
+                String groupId = "".equals(groupRole.get("groupId")) ? null : groupRole.get("groupId").toString();
+                String roleId = "".equals(groupRole.get("roleId")) ? null : groupRole.get("roleId").toString();
+                if (groupId != null && roleId != null) {
+                    if(groupId.startsWith("[")&&groupId.endsWith("]")) {
+                        groupId = groupId.replaceAll("\\[", "").replaceAll("\\]", "");
                     }
-                    if(role_id.startsWith("[")&&role_id.endsWith("]")) {
-                        role_id = role_id.replaceAll("\\[", "").replaceAll("\\]", "");
+                    if(roleId.startsWith("[")&&roleId.endsWith("]")) {
+                        roleId = roleId.replaceAll("\\[", "").replaceAll("\\]", "");
                     }
-                    if ((group_id != null&&!"".equals(group_id)) && (role_id != null&&!"".equals(role_id))) {
-                        List<User> user = userService.getUserByGroupRole(group_id, role_id);
+                    if ((groupId != null&&!"".equals(groupId)) && (roleId != null&&!"".equals(roleId))) {
+                        List<User> user = userService.getUserByGroupRole(groupId, roleId);
                         users.addAll(user);
                     }
                 }
@@ -272,11 +262,11 @@ public class OaServiceImpl implements OaService {
                 Map<String, Object> assigneeMap = new HashMap<String, Object>();
                 assigneeMap.put("assignee", handlers);
                 assigneeMap.put("handlerSelectConfig", configMap.get("handlerSelectConfig"));
-                HashMap TEMP = new HashMap();
-                TEMP.put("successStatus","2");
-                TEMP.put("message","请选择审批人");
-                TEMP.put("data",assigneeMap);
-                return TEMP;
+                HashMap temp = new HashMap();
+                temp.put("successStatus","2");
+                temp.put("message","请选择审批人");
+                temp.put("data",assigneeMap);
+                return temp;
             } else {
                 nextNodeAssignee = handlers;
                 process.setAssignee(GuavaUtil.list3string(handlerList, ","));
@@ -359,10 +349,10 @@ public class OaServiceImpl implements OaService {
         }
         //针对发起节点的下一个节点就是结束节点的流程提醒
         if ("endElement".equals(nextCode)) {
-            HashMap TEMP = new HashMap();
-            TEMP.put("message","提交成功");
-            TEMP.put("successStatus","1");
-            return TEMP;
+            HashMap temp = new HashMap();
+            temp.put("message","提交成功");
+            temp.put("successStatus","1");
+            return temp;
         }
         //流程发起过程中配置的系统通知
         Boolean sendNotify = true;
@@ -431,7 +421,7 @@ public class OaServiceImpl implements OaService {
                     //eval()用于执行js脚本
                     //engine.eval(javascript.toString());
 
-                    //将表单的字段名及值放入脚本的变量中
+
                     for (String key : formData.keySet()) {
                         Object value = formData.get(key);
                         if (!(value instanceof List)) {
@@ -446,7 +436,7 @@ public class OaServiceImpl implements OaService {
                     //循环下一节点指向
                     for (Map<String, Object> nextNode : list) {
                         //如果为默认条件ifDefault = (true) 如果不是默认条件 ifDefault = (false)
-                        String ifDefaultScrip = "ifDefault = (" + (nextNode.get("condition").equals("default") ? true : false) + ")";
+                        String ifDefaultScrip = "ifDefault = (" + ("default".equals(nextNode.get("condition")) ? true : false) + ")";
                         //执行脚本，算出ifDefault 的值
                         engine.eval(ifDefaultScrip);
 
@@ -458,7 +448,7 @@ public class OaServiceImpl implements OaService {
                         }
 
                         //flag=("1".equals(type) && "刘".equals(name)) 根据脚本存在的变量进行判断
-                        String flagScrip = "flag=(" + (nextNode.get("condition").equals("default") ? false : nextNode.get("condition")) + ")";
+                        String flagScrip = "flag=(" + ("default".equals(nextNode.get("condition")) ? false : nextNode.get("condition")) + ")";
                         engine.eval(flagScrip);
                         //获取脚本执行后flag的值
                         flag = (boolean) engine.get("flag");
@@ -574,17 +564,17 @@ public class OaServiceImpl implements OaService {
             // 获取待办事项当前任务节点下的表单配置信息
             if (modElement.get("code").equals(process.getCode())) {
                 HashMap<String, Object> modElementInfo = new HashMap<String, Object>();
-                Map<String, Object> Config = (Map<String, Object>) modElement.get("modElementConfig");
-                String editTable = (String) Config.get("editTable");
+                Map<String, Object> config1 = (Map<String, Object>) modElement.get("modElementConfig");
+                String editTable = (String) config1.get("editTable");
                 if (editTable == null) {
                     editTable = "";
                 }
-                List<Map<String, Object>> editTableDetail = (List<Map<String, Object>>) Config.get("editTableDetail");
-                String hideTable = (String) Config.get("hideTable");
+                List<Map<String, Object>> editTableDetail = (List<Map<String, Object>>) config1.get("editTableDetail");
+                String hideTable = (String) config1.get("hideTable");
                 if (hideTable == null) {
                     hideTable = "";
                 }
-                List<Map<String, Object>> hideTableDetail = (List<Map<String, Object>>) Config.get("hideTableDetail");
+                List<Map<String, Object>> hideTableDetail = (List<Map<String, Object>>) config1.get("hideTableDetail");
                 modElementInfo.put("editTable", editTable);
                 modElementInfo.put("editTableDetail", editTableDetail);
                 modElementInfo.put("hideTable", hideTable);
@@ -654,17 +644,17 @@ public class OaServiceImpl implements OaService {
             // 获取待办事项当前任务节点下的表单配置信息
             if (modElement.get("code").equals(process.getCode())) {
                 HashMap<String, Object> modElementInfo = new HashMap<String, Object>();
-                Map<String, Object> Config = (Map<String, Object>) modElement.get("modElementConfig");
-                String editTable = (String) Config.get("editTable");
+                Map<String, Object> config1 = (Map<String, Object>) modElement.get("modElementConfig");
+                String editTable = (String) config1.get("editTable");
                 if (editTable == null) {
                     editTable = "";
                 }
-                List<Map<String, Object>> editTableDetail = (List<Map<String, Object>>) Config.get("editTableDetail");
-                String hideTable = (String) Config.get("hideTable");
+                List<Map<String, Object>> editTableDetail = (List<Map<String, Object>>) config1.get("editTableDetail");
+                String hideTable = (String) config1.get("hideTable");
                 if (hideTable == null) {
                     hideTable = "";
                 }
-                List<Map<String, Object>> hideTableDetail = (List<Map<String, Object>>) Config.get("hideTableDetail");
+                List<Map<String, Object>> hideTableDetail = (List<Map<String, Object>>) config1.get("hideTableDetail");
                 modElementInfo.put("editTable", editTable);
                 modElementInfo.put("editTableDetail", editTableDetail);
                 modElementInfo.put("hideTable", hideTable);
@@ -924,7 +914,7 @@ public class OaServiceImpl implements OaService {
 //            }
 //            nextElement = modElement;
 //        }
-        // 获取下一节点
+
         OaFlowModelElement nextElement = new OaFlowModelElement();
         // 通过当前节点获取下一节点
         OaFlowModelElement modElement = getNextNodes(curCode, modId, formData, curUserId);

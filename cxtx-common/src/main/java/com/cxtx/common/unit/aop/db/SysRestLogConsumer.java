@@ -17,6 +17,10 @@ public class SysRestLogConsumer extends AbstractMyConsumer implements Runnable,M
         this.consumerId = consumerId;
     }
 
+    /**
+     * 上锁给当前this，此方法顺序执行 且当前this对象是单例的，spring维护的bean默认是单例的
+     * @throws InterruptedException
+     */
     @Override
     public synchronized void consume() throws InterruptedException {
         logger.info(this.consumerId + "开始执行消费");
@@ -37,7 +41,11 @@ public class SysRestLogConsumer extends AbstractMyConsumer implements Runnable,M
     @Override
     public void run() {
         while(true) {
+            //对sysRestLogQueue上锁，必须拿到这个对象锁，才能执行其中的方法
             synchronized(this.sysRestLogQueue) {
+                //拿到这个 对象锁之后，如果任务为空，则调用wait()释放对象锁，这个线程就阻塞在这了
+                //当发生系统调用，会产生日志，调用这个对象的add()方法，add方法中的notify(),会唤醒这个对象锁，使其从阻塞状态出来
+                //线程重新运行时，执行循环，这个对象不为空，则执行消费
                 while(this.sysRestLogQueue.isEmpty()) {
                     try {
                         logger.info(this.consumerId + "执行等待……");

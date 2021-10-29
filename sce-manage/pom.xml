@@ -133,7 +133,7 @@
     <build>
         <plugins>
 
-            <!--逆向工程-->
+            <!--mybatis逆向工程-->
             <plugin>
                 <groupId>org.mybatis.generator</groupId>
                 <artifactId>mybatis-generator-maven-plugin</artifactId>
@@ -150,6 +150,7 @@
                     <overwrite>true</overwrite>
                 </configuration>
             </plugin>
+            <!--实现类的逆向工程-->
             <plugin>
                 <groupId>com.handsmap.plugins</groupId>
                 <artifactId>spring-boot-sims-generator-maven-plugin</artifactId>

@@ -6,8 +6,6 @@ import com.cxtx.common.config.jwt.vo.ResponseResult;
 import com.cxtx.common.domain.JwtModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,8 +48,8 @@ public class XianLiuResource {
 
     @GetMapping(value = "/menus")
     public ResponseResult menus() {
-        List<HashMap> result = new ArrayList<>(2);
-        List<HashMap> children = new ArrayList<>(2);
+        List<HashMap> result = new ArrayList<HashMap>(2);
+        List<HashMap> children = new ArrayList<HashMap>(2);
         HashMap user = new HashMap(4);
         user.put("path","user");
         user.put("component","system/user");

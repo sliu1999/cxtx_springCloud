@@ -173,7 +173,8 @@
                 <executions>
                     <execution>
                         <goals>
-                            <goal>repackage</goal>
+                            <!--默认goal。在mvn package之后，再次打包可执行的jar/war，同时保留mvn package生成的jar/war为.origin-->
+                            <!--<goal>repackage</goal>-->
                         </goals>
                     </execution>
                 </executions>

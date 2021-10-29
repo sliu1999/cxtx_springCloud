@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserService {
-    int deleteUserById(String var1);
+    int deleteUserById(Long var1);
 
     int deleteUserByLoginId(String var1);
 
@@ -29,7 +29,7 @@ public interface UserService {
 
     Boolean checkUser2Role(String var1, String var2);
 
-    Boolean duplicateCheckLoginId(String var1, String var2);
+    Boolean duplicateCheckLoginId(String var1, Long var2);
 
     Boolean checkLimit2ChangePassword(String var1);
 

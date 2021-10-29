@@ -33,6 +33,11 @@ public class SysRestLogRunner implements ApplicationRunner {
     private SysRestLogService sysRestLogService;
 
 
+    /**
+     * 系统启动时，会创建一个线程池，线程池里有自定义的任务队列，并启动这个线程池，当队列里有任务则会执行
+     * @param args
+     * @throws Exception
+     */
     @Override
     public void run(ApplicationArguments args) throws Exception {
         Boolean launch = isLaunch();

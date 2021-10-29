@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 
 public interface UserMapper {
-    int deleteUserById(String var1);
+    int deleteUserById(Long var1);
 
     int deleteUserByLoginId(String var1);
 
-    int deleteUser2RoleById(String var1);
+    int deleteUser2RoleById(Long var1);
 
     int deleteUser2RoleByLoginId(String var1);
 
@@ -38,7 +38,7 @@ public interface UserMapper {
 
     Integer selectCountByLoginIdAndRoleId(@Param("loginId") String var1, @Param("roleId") String var2);
 
-    Integer selectCountByLoginId(@Param("loginId") String var1, @Param("id") String var2);
+    Integer selectCountByLoginId(@Param("loginId") String var1, @Param("id") Long var2);
 
     Integer selectPasswordLimitIndexByLoginId(String var1);
 

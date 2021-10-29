@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Service("UserService")
 @Transactional(
         rollbackFor = {Exception.class}
 )
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     private StaffService staffService;
 
     @Override
-    public int deleteUserById(String id) {
+    public int deleteUserById(Long id) {
         this.userMapper.deleteUser2RoleById(id);
         return this.userMapper.deleteUserById(id);
     }
@@ -117,7 +117,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Boolean duplicateCheckLoginId(String loginId, String id) {
+    public Boolean duplicateCheckLoginId(String loginId, Long id) {
         return this.userMapper.selectCountByLoginId(loginId, id) == 0 ? true : false;
     }
 

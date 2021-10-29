@@ -13,6 +13,7 @@ import com.cxtx.common.domain.JwtModel;
 import com.cxtx.common.unit.Md5;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,6 +88,7 @@ public class LoginResource {
         }
 
         @PostMapping("/login")
+        @ApiOperation("系统用户登录")
         public ResponseResult login(@RequestBody @Validated LoginRequest request, BindingResult bindingResult) throws JsonProcessingException {
          if (bindingResult.hasErrors()) {
              //如果实体类的注解验证不通过
