@@ -12,14 +12,12 @@
         <module>cxtx-gateway</module>
         <!--通用，一些工具类-->
         <module>cxtx-common</module>
-		<!--景区管理服务-->
+		<!--用户授权服务-->
         <module>auth-service</module>
-        <!--用户jar,用于数据库解耦-->
-        <module>cxtx-user</module>
 
         <!--用户管理服务-->
         <module>user-manage</module>
-        <!--景区管理服务-->
+        <!--技术论证服务-->
         <module>sce-manage</module>
     </modules>
 

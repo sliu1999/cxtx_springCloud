@@ -5,10 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 
-/**
- * @author cx
- * @date 2021/3/24
- */
+
 @SpringBootApplication
 @EnableDiscoveryClient
 public class GatewayApplication {

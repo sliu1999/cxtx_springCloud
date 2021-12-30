@@ -94,13 +94,13 @@ public class LoginResource {
              //如果实体类的注解验证不通过
              return ResponseResult.error(ResponseCodeEnum.PARAMETER_ILLEGAL.getErrorCode(), ResponseCodeEnum.PARAMETER_ILLEGAL.getMessage());
          }
-         HashMap codeInfo = new HashMap();
-         codeInfo.put("uuid",request.getUuid());
-         codeInfo.put("code",request.getCode());
-            if(!this.checkLogin(codeInfo))
-            {
-                return ResponseResult.error (ResponseCodeEnum.LOGIN_CODE_ERROR.getErrorCode(),"验证码错误");
-            }
+//         HashMap codeInfo = new HashMap();
+//         codeInfo.put("uuid",request.getUuid());
+//         codeInfo.put("code",request.getCode());
+//            if(!this.checkLogin(codeInfo))
+//            {
+//                return ResponseResult.error (ResponseCodeEnum.LOGIN_CODE_ERROR.getErrorCode(),"验证码错误");
+//            }
 
          String username = request.getUsername();
          String password = request.getPassword();

@@ -19,18 +19,9 @@ import java.util.List;
 @RequestMapping("/api")
 public class XianLiuResource {
 
-    @Autowired
-    private TestService testservice;
 
 
 
-    @GetMapping(value = "/hello")
-    public String apiHello() {
-        JwtModel jwtModel = HttpServletUtils.getUserInfo();
-        System.out.println(jwtModel.getUserId());
-        System.out.println(jwtModel.getUsername());
-        return testservice.sayHello("hello");
-    }
 
     @GetMapping(value = "/current")
     public ResponseResult current() {
@@ -94,19 +85,6 @@ public class XianLiuResource {
     }
 
 
-    /**
-     * 热点限流，根据参数值限流
-     * @return
-     */
-    @GetMapping(value = "/hotPoint")
-    public String hotPoint(@RequestParam("hotPoint") int hotPoint) {
-        return testservice.hotPoint(hotPoint);
-    }
-
-    @GetMapping(value = "/getSysParam")
-    public String getSysParam(@RequestParam("paramId") String paramId) {
-        return testservice.getSysParam(paramId);
-    }
 
 
 }

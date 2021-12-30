@@ -23,15 +23,13 @@ public class StreamTest {
        System.out.println(timeStamp);
 
        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-       String time="2021-10-28 14:30:00";
+       String time="2021-12-24 16:30:00";
        Date date = format.parse(time);
        //日期转时间戳（毫秒）
        long times=date.getTime();
        System.out.print("Format To times:"+times);
 
-       String str= "苏a235g4";
-       String str3=str.toUpperCase();//转换成大写
-       System.out.println(str3);
+
 
     }
 

@@ -29,6 +29,7 @@ public class LoggingAspect {
 
     /**
      * 捕获被抛出的异常，然后输出，如果异常被try{}catch(){}捕获后，没有被throw 抛出，这不会被捕获，目前rest捕获的都没抛出
+     * 方法异常是调用，如果异常被捕获则不调用
      * @param joinPoint
      * @param e
      */

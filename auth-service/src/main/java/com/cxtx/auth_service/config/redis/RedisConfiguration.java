@@ -14,7 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfiguration {
 
     @Bean("redisTemplate")
-    public RedisTemplate redisTemplate(@Value("${spring.redis.host}") String host,
+    public RedisTemplate redisTemplate(@Value("${spring.redis.host}") String host,@Value("${spring.redis.password}") String password,
                                        @Value("${spring.redis.port}") int port) {
         RedisTemplate redisTemplate = new RedisTemplate();
         RedisSerializer stringRedisSerializer = new StringRedisSerializer();
@@ -23,14 +23,15 @@ public class RedisConfiguration {
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
         redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
         redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
-        redisTemplate.setConnectionFactory(standaloneConnectionFactory(host, port));
+        redisTemplate.setConnectionFactory(standaloneConnectionFactory(host,password, port));
         return redisTemplate;
     }
 
-    protected JedisConnectionFactory standaloneConnectionFactory(String host, int port) {
+    protected JedisConnectionFactory standaloneConnectionFactory(String host,String password, int port) {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
+        redisStandaloneConfiguration.setPassword(password);
         return new JedisConnectionFactory(redisStandaloneConfiguration);
     }
 
