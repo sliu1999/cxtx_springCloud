@@ -3,37 +3,15 @@ server:
   servlet:
     context-path: /scemanage
 spring:
-  application:
-    name: sce-manage
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://47.117.128.180:3306/boot_c?serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
-    username: bootc
-    password: 12345678
-
-
-    #配置控制台信息
-    sentinel:
-      transport:
-        port: 8719 #在控制台中显示的机器端口
-        dashboard: 175.24.206.215:8080
-      #sentinel整合nacos
-      datasource: #目前只能实现普通流控持久化
-        flow: #流控数据源配置
-          nacos:
-            server-addr: 175.24.206.215:8848
-            data-id: ${spring.application.name}-flow
-            group-id: DEFAULT_GROUP
-            data-type: json
-            rule-type: flow  #限流规则，普通流控
-
+  profiles:
+    active: test
 
 mybatis:
   mapper-locations: classpath*:config/mybatis/mappers/mysql/**/*.xml
   config-location: classpath:config/mybatis/config/mysql/mybatis-config.xml
 
 
-upload-path: /root/cxtx/image
+
 
 
 

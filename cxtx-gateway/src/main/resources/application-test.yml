@@ -1,0 +1,19 @@
+
+spring:
+  profiles: test
+  redis:
+    host: 192.168.1.17
+    port: 6379
+    password: 123456
+
+
+
+
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    #spring boot admin 要读取的日志文件位置
+    name: /opt/test/logs/cxtx-gateway.log
+    path: /opt/test/logs
+
+

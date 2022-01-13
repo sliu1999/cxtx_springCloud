@@ -1,0 +1,18 @@
+spring:
+  profiles: test
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.117.128.180:3306/user_manage?serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
+    username: usermanage
+    password: 12345678
+
+
+
+upload-path: C:/root/cxtx/image
+
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    #spring boot admin 要读取的日志文件位置
+    name: /opt/test/logs/user-manage.log
+    path: /opt/test/logs

@@ -1,0 +1,29 @@
+
+spring:
+  profiles: test
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.117.128.180:3306/user_manage?serverTimezone=Asia/Shanghai&useSSL=false&autoReconnect=true&allowMultiQueries=true&useUnicode=true&characterEncoding=utf8
+    username: usermanage
+    password: 12345678
+  redis:
+    host: 192.168.1.17
+    password: 123456
+    port: 6379
+#    jedis:
+#      pool:
+#        max-active: 8
+#        max-wait: -1
+#        max-idle: 500
+#        min-idle: 0
+
+
+
+upload-path: /root/cxtx/image
+
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    #spring boot admin 要读取的日志文件位置
+    name: /opt/test/logs/auth-service.log
+    path: /opt/test/logs

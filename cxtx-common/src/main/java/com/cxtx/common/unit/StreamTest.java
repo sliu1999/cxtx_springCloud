@@ -23,12 +23,15 @@ public class StreamTest {
        System.out.println(timeStamp);
 
        SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-       String time="2021-12-24 16:30:00";
+       String time="2022-01-07 09:29:00";
        Date date = format.parse(time);
        //日期转时间戳（毫秒）
        long times=date.getTime();
        System.out.print("Format To times:"+times);
 
+       String test = "1，2,3";
+       boolean flag = test.contains(null);
+        System.out.println(flag);
 
 
     }

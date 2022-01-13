@@ -2,10 +2,3 @@ spring:
   application:
     name: sce-manage
 
-  cloud:
-    nacos:
-      config:
-        server-addr: 175.24.206.215:8848 #Nacos配置中心地址
-        file-extension: yaml #文件拓展格式
-      discovery:
-        server-addr: 175.24.206.215:8848

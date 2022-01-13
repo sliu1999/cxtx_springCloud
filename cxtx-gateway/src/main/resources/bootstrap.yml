@@ -2,12 +2,13 @@ spring:
   application:
     name: cxtx-gateway
 
+  #这个nacos配置必须放这
   cloud:
     nacos:
       config:
         server-addr: 175.24.206.215:8848 #Nacos配置中心地址
         file-extension: yaml #文件拓展格式
-    #nacos发现配置
+      #nacos发现配置
       discovery:
         server-addr: 175.24.206.215:8848
     gateway:
@@ -16,3 +17,4 @@ spring:
         locator:
           enabled: true  #开启通过serviceId转发到具体的服务实例
           lower-case-service-id: true  #开启可以通过小写的serviceId进行基于服务路由转发
+
