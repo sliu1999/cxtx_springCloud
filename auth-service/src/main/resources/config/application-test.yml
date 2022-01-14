@@ -7,8 +7,8 @@ spring:
     username: usermanage
     password: 12345678
   redis:
-    host: 192.168.1.17
-    password: 123456
+    host: 121.40.97.206
+    password: caojian
     port: 6379
 #    jedis:
 #      pool:
