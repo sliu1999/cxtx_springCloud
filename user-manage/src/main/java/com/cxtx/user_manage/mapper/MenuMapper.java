@@ -25,23 +25,15 @@ public interface MenuMapper {
 
     int updateMenu(Menu var1);
 
-    List<Map> selectMenusTree();
-
     List<Map> selectAllMenu();
 
     List<Map> selectRoleStairMenu(@Param("roleId") String roleId);
 
     List<Map> selectRoleSubMenu(@Param("roleId") String roleId);
 
-    List<Menu> selectMenuModulesByRoleId(@Param("id") String var1, @Param("roleId") String var2);
-
-    List<Menu> selectModuleLimitsByRoleId(@Param("roleId") String var1, @Param("menuId") String var2);
-
-    List<Menu> selectStairMenuByUserId(@Param("userId") String userId);
-
     List<Menu> selectAllStairMenu();
 
     Menu queryMenuInfo(@Param("id") String id);
 
-    List<Menu> selectChildrenMenuByParentId(@Param("parentMenuId") String parentMenuId);
+    List<Menu> getAllByUserId(@Param("userId") String userId);
 }

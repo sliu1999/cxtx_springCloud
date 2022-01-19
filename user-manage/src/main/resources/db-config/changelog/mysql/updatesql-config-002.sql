@@ -1,6 +1,6 @@
 
 
--- 依赖表 --
+-- 依赖表 系统参数表 --
 CREATE TABLE IF NOT EXISTS `tb_sys_parameter` (
   `ID` varchar(40) NOT NULL,
   `PARAMETER_ID` varchar(50) NOT NULL,

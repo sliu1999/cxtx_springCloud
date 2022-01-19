@@ -1,4 +1,4 @@
--- usermanage 0.0.1 业务表创建 --
+-- usermanage 0.0.1系统管理 业务表创建 --
 
 -- 依赖表 --
 CREATE TABLE IF NOT EXISTS  `tb_sys_attached_tab` (
@@ -25,16 +25,31 @@ CREATE TABLE IF NOT EXISTS  `tb_sys_info` (
 ##
 
 -- 菜单管理 --
-CREATE TABLE IF NOT EXISTS  `tb_sys_menu` (
-  `ID` varchar(36) NOT NULL,
-  `NAME` varchar(100) DEFAULT NULL COMMENT '菜单名称',
-  `ACTION` varchar(100) DEFAULT NULL COMMENT '菜单action',
+-- CREATE TABLE IF NOT EXISTS  `tb_sys_menu` (
+--   `ID` varchar(36) NOT NULL,
+--   `NAME` varchar(100) DEFAULT NULL COMMENT '菜单名称',
+--   `ACTION` varchar(100) DEFAULT NULL COMMENT '菜单action',
+--   `SORT` int(9) DEFAULT NULL,
+--   `PARENT_ID` varchar(36) DEFAULT NULL COMMENT '父级菜单id',
+--   `STYLE` varchar(300) DEFAULT NULL COMMENT '菜单样式',
+--   `MENU_TYPE` int(9) DEFAULT NULL COMMENT '菜单类型',
+--   PRIMARY KEY (`ID`)
+-- ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单表';
+CREATE TABLE IF NOT EXISTS `tb_sys_menu` (
+  `ID` varchar(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `PARENT_ID` varchar(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '父级菜单id',
+  `PATH` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '菜单路径',
+  `COMPONENT` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '视图组件',
+  `REDIRECT` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '跳转路径',
+  `TITLE` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '面包屑展示',
+  `NAME` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '菜单名称',
+  `ICON` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '菜单图标',
+  `HIDDEN` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '菜单是否隐藏',
   `SORT` int(9) DEFAULT NULL,
-  `PARENT_ID` varchar(36) DEFAULT NULL COMMENT '父级菜单id',
-  `STYLE` varchar(300) DEFAULT NULL COMMENT '菜单样式',
-  `MENU_TYPE` int(9) DEFAULT NULL COMMENT '菜单类型',
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='菜单表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='管理端菜单';
+
+
  ##
 
 DROP FUNCTION IF EXISTS getMenuChildList; ##
@@ -73,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `tb_sys_role_r_menu` (
 
 -- 用户管理 --
 CREATE TABLE IF NOT EXISTS `tb_sys_user` (
-  `ID` varchar(36) NOT NULL,
+  `ID` bigint(36) NOT NULL AUTO_INCREMENT,
   `LOGIN_ID` varchar(100) NOT NULL,
   `PASSWORD` varchar(100) DEFAULT NULL COMMENT 'MD5加密后的密码',
   `CREATE_TIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -81,7 +96,8 @@ CREATE TABLE IF NOT EXISTS `tb_sys_user` (
   `ONLINE_ID` int(9) DEFAULT NULL COMMENT '在线状态id',
   `REMARK` varchar(300) DEFAULT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='系统用户表';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='系统用户表';
+
 ##
 
 CREATE TABLE IF NOT EXISTS `tb_sys_user_r_role` (

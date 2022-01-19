@@ -61,3 +61,17 @@ INSERT INTO tb_dic_staff_type (ID,NAME,TYPE,SORT) VALUES (1,'实习',1,1) ##
 INSERT INTO tb_dic_staff_type (ID,NAME,TYPE,SORT) VALUES (2,'试用',1,2) ##
 INSERT INTO tb_dic_staff_type (ID,NAME,TYPE,SORT) VALUES (3,'全职',1,3) ##
 INSERT INTO tb_dic_staff_type (ID,NAME,TYPE,SORT) VALUES (4,'离职',0,4) ##
+
+-- 字典表
+CREATE TABLE IF NOT EXISTS `tb_sys_dictionary` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `parent_id` bigint(20) DEFAULT '0' COMMENT '父ID',
+  `name` varchar(200) DEFAULT NULL COMMENT '名称',
+  `level` int(11) DEFAULT NULL COMMENT '级别',
+  `sort` bigint(20) DEFAULT NULL COMMENT '排序',
+  `status` int(11) DEFAULT '1' COMMENT '数据状态 1可用，0不可用',
+  `remarks` varchar(500) DEFAULT NULL COMMENT '备注',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='字典表';
+##
+

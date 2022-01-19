@@ -25,8 +25,6 @@ import java.util.Map;
 public class MenuServiceImpl implements MenuService {
     @Autowired
     private MenuMapper menuMapper;
-    @Autowired
-    private UserService userService;
 
 
     @Override
@@ -41,10 +39,6 @@ public class MenuServiceImpl implements MenuService {
         return menu.getId() == null ? this.menuMapper.insertMenu(menu) : this.menuMapper.updateMenu(menu);
     }
 
-    @Override
-    public List<Map> selectMenusTree() {
-        return this.menuMapper.selectMenusTree();
-    }
 
     @Override
     public List<Map> selectMenusTreeTwo() {
@@ -99,30 +93,6 @@ public class MenuServiceImpl implements MenuService {
         }
         return pNode;
     }
-
-    @Override
-    public List<Menu> selectMenuModulesByRoleId(String roleId,String loginId) throws Exception {
-        if (this.userService.checkUser2Role(loginId, roleId)) {
-            return this.menuMapper.selectMenuModulesByRoleId((String)null, roleId);
-        } else {
-            throw new Exception("当前登陆用户没有权限……");
-        }
-    }
-
-    @Override
-    public List<Menu> selectModuleLimitsByRoleId(Map params) throws Exception {
-        if (this.userService.checkUser2Role((String) params.get("loginId"),(String)params.get("roleId"))) {
-            return this.menuMapper.selectModuleLimitsByRoleId((String)params.get("roleId"),(String) params.get("menuId"));
-        } else {
-            throw new Exception("当前登陆用户没有权限……");
-        }
-    }
-
-    @Override
-    public List<Menu> selectStairMenuByUserId(String userId) {
-        return menuMapper.selectStairMenuByUserId(userId);
-    }
-
     @Override
     public List<Menu> queryAllStairMenu() {
         return menuMapper.selectAllStairMenu();
@@ -133,8 +103,9 @@ public class MenuServiceImpl implements MenuService {
         return menuMapper.queryMenuInfo(id);
     }
 
+
     @Override
-    public List<Menu> selectChildrenMenuByParentId(String parentMenuId) {
-        return menuMapper.selectChildrenMenuByParentId(parentMenuId);
+    public List<Menu> getAllByUserId(String userId) {
+        return menuMapper.getAllByUserId(userId);
     }
 }

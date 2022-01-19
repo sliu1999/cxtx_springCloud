@@ -145,10 +145,10 @@ public class OaServiceImpl implements OaService {
                 users.addAll(user);
             }
             // 审批人根据指定人员
-            List<String> userIds = elementConfig.get("userIds") == null ? new ArrayList<String>()
-                    : (List<String>) elementConfig.get("userIds");
-            for (String userId : userIds) {
-                User user = userService.selectUserById(userId);
+            List<Integer> userIds = elementConfig.get("userIds") == null ? new ArrayList<Integer>()
+                    : (List<Integer>) elementConfig.get("userIds");
+            for (Integer userId : userIds) {
+                User user = userService.selectUserById(userId.toString());
                 users.add(user);
             }
             //总体根据userId去重

@@ -100,7 +100,7 @@
             FROM
                 `tb_sys_menu`
             WHERE
-                MENU_TYPE = '0'
+                1 = 1
             AND PARENT_ID IS NOT NULL
         )
     </select>
@@ -131,7 +131,7 @@
         tb_sys_role_r_menu a
         LEFT JOIN tb_sys_menu b ON a.MENU_ID = b.ID
         WHERE
-        b.MENU_TYPE = '0'
+        1 = 1
         GROUP BY
         a.ROLE_ID
         ) c ON a.ID = c.ROLE_ID

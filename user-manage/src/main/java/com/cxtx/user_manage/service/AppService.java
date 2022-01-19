@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AppService{
-	int ifTableExist(String tableKey);
+
 
 	Map<String,Object> createTable(Map<String, Object> map) throws Exception;
 	
@@ -37,8 +37,6 @@ public interface AppService{
 	int queryCountBySqlMap(Map<String, Object> dataMap);
 
 	Long queryRoleIdByUserId(Long userId);
-
-	boolean saveRoleAndMod(Long userId, Long roleId);
 
 	void deleteForm(Map<String, Object> map);
 	/**

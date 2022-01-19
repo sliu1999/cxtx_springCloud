@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AppMapper{
-	int ifTableExist(@Param("tableKey") String tableKey);
+
 
 	void createTable(@Param("map") Map<String, Object> map);
 
@@ -44,8 +44,6 @@ public interface AppMapper{
 	int queryCount(Map<String, Object> map);
 
 	Long queryRoleIdByUserId(Long userId);
-
-	void saveRoleAndMod(@Param("modId") Long modId, @Param("roleId") Long roleId);
 
 	void deleteForm(@Param("map") Map<String, Object> map);
 

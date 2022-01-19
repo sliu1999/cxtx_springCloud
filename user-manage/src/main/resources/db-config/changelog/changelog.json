@@ -11,6 +11,10 @@
                 "file":"updatesql-config-002.sql",
                 "remark":""
             },{
+                "file":"updatesql-config-003.sql",
+                "remark":""
+            }
+            ,{
                 "file":"updatesql-config-004.sql",
                 "remark":""
             }

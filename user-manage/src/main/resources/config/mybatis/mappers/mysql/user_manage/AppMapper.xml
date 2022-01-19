@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cxtx.user_manage.mapper.AppMapper">
-  <!-- 查询表单是否存在 -->
-  <select id="ifTableExist" parameterType="String"
-          resultType="int">
-		select count(1) from sys_mod m where m.table_key =
-		#{tableKey}
-	</select>
+
   <!-- 创建表 -->
   <update id="createTable" parameterType="map">
         create table _app_${map.tableKey}(
@@ -98,9 +93,6 @@
 		WHERE
 		u.id = #{userId}
 	</select>
-  <insert id="saveRoleAndMod">
-		INSERT INTO sys_role_mod (mod_id, role_id) VALUES(#{modId},#{roleId})
-	</insert>
 
   <!-- 流程模块添加 -->
   <delete id="deleteForm" parameterType="map">

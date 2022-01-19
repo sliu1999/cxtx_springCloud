@@ -23,10 +23,7 @@ public class AppServiceImpl implements AppService {
 	private OaFormModelMapper oaFormModelMapper;
 	@Resource(name = "transactionManager")
 	private DataSourceTransactionManager transactionManager;
-	@Override
-	public int ifTableExist(String tableKey) {
-		return appMapper.ifTableExist(tableKey);
-	}
+
 	/**
 	 * sliu
 	 * 建表
@@ -372,16 +369,6 @@ public class AppServiceImpl implements AppService {
 	@Override
 	public Long queryRoleIdByUserId(Long userId) {
 		return appMapper.queryRoleIdByUserId(userId);
-	}
-	@Override
-	public boolean saveRoleAndMod(Long modId, Long roleId) {
-		boolean flag = true;
-		try {
-			appMapper.saveRoleAndMod(modId, roleId);
-		} catch (Exception e) {
-			flag = false;
-		}
-		return flag;
 	}
 	
 	@Override

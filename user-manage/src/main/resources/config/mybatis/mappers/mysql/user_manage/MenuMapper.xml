@@ -4,40 +4,18 @@
     <resultMap id="BaseResultMap" type="com.cxtx.user_manage.domain.Menu">
         <id column="ID" jdbcType="VARCHAR" property="id" />
         <result column="NAME" jdbcType="VARCHAR" property="name" />
-        <result column="ACTION" jdbcType="VARCHAR" property="action" />
+        <result column="PATH" jdbcType="VARCHAR" property="path" />
         <result column="SORT" jdbcType="INTEGER" property="sort" />
         <result column="PARENT_ID" jdbcType="VARCHAR" property="parentId" />
         <result column="PARENT_NAME" jdbcType="VARCHAR" property="parentName" />
-        <result column="STYLE" jdbcType="VARCHAR" property="style" />
-        <result column="MENU_TYPE" jdbcType="INTEGER" property="menuType" />
-        <result column="MENU_TYPE_NAME" jdbcType="VARCHAR" property="menuTypeName" />
+        <result column="COMPONENT" jdbcType="VARCHAR" property="component" />
+        <result column="REDIRECT" jdbcType="VARCHAR" property="redirect" />
+        <result column="TITLE" jdbcType="VARCHAR" property="title" />
+        <result column="ICON" jdbcType="VARCHAR" property="icon" />
+        <result column="HIDDEN" jdbcType="VARCHAR" property="hidden" />
         <result column="USE_ROLES" jdbcType="VARCHAR" property="useRoles" />
     </resultMap>
 
-    <resultMap id="FullResultMap" type="com.cxtx.user_manage.domain.Menu">
-        <id column="ID" jdbcType="VARCHAR" property="id" />
-        <result column="NAME" jdbcType="VARCHAR" property="name" />
-        <result column="ACTION" jdbcType="VARCHAR" property="action" />
-        <result column="SORT" jdbcType="INTEGER" property="sort" />
-        <result column="PARENT_ID" jdbcType="VARCHAR" property="parentId" />
-        <result column="PARENT_NAME" jdbcType="VARCHAR" property="parentName" />
-        <result column="STYLE" jdbcType="VARCHAR" property="style" />
-        <result column="MENU_TYPE" jdbcType="INTEGER" property="menuType" />
-        <result column="MENU_TYPE_NAME" jdbcType="VARCHAR" property="menuTypeName" />
-        <result column="ROLE_ID" jdbcType="VARCHAR" property="roleId" />
-        <collection property="subMenus" javaType="java.util.ArrayList" column="{id=ID,roleId=ROLE_ID}" select="selectMenuModulesByRoleId"></collection>
-    </resultMap>
-
-    <resultMap id="MenuNode" type="map">
-        <id column="ID" jdbcType="VARCHAR" property="id" />
-        <result column="NAME" jdbcType="VARCHAR" property="text" />
-        <result column="ACTION" jdbcType="VARCHAR" property="action" />
-        <result column="SORT" jdbcType="INTEGER" property="sort" />
-        <result column="PARENT_ID" jdbcType="VARCHAR" property="parent" />
-        <result column="STYLE" jdbcType="VARCHAR" property="style" />
-        <result column="MENU_TYPE" jdbcType="INTEGER" property="typeId" />
-        <result column="MENU_TYPE_NAME" jdbcType="VARCHAR" property="typeName" />
-    </resultMap>
 
     <delete id="deleteMenuByIds" parameterType="java.lang.String">
         DELETE FROM tb_sys_menu WHERE FIND_IN_SET(ID,#{ids})>0
@@ -60,119 +38,106 @@
             <if test="id != null">
                 ID,
             </if>
+            <if test="parentId != null">
+                PARENT_ID,
+            </if>
+            <if test="path != null">
+                PATH,
+            </if>
+            <if test="component != null">
+                COMPONENT,
+            </if>
+            <if test="redirect != null">
+                REDIRECT,
+            </if>
+            <if test="title != null">
+                TITLE,
+            </if>
             <if test="name != null">
                 NAME,
             </if>
-            <if test="action != null">
-                ACTION,
+            <if test="icon != null">
+                ICON,
+            </if>
+            <if test="hidden != null">
+                HIDDEN,
             </if>
             <if test="sort != null">
                 SORT,
-            </if>
-            <if test="parentId != null and parentId != ''">
-                PARENT_ID,
-            </if>
-            <if test="style != null">
-                STYLE,
-            </if>
-            <if test="menuType != null">
-                MENU_TYPE,
             </if>
         </trim>
         <trim prefix="VALUES (" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 #{id,jdbcType=VARCHAR},
             </if>
+            <if test="parentId != null">
+                #{parentId,jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                #{path,jdbcType=VARCHAR},
+            </if>
+            <if test="component != null">
+                #{component,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
             <if test="name != null">
                 #{name,jdbcType=VARCHAR},
             </if>
-            <if test="action != null">
-                #{action,jdbcType=VARCHAR},
+            <if test="icon != null">
+                #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="hidden != null">
+                #{hidden,jdbcType=VARCHAR},
             </if>
             <if test="sort != null">
                 #{sort,jdbcType=INTEGER},
             </if>
-            <if test="parentId != null and parentId != ''">
-                #{parentId,jdbcType=VARCHAR},
-            </if>
-            <if test="style != null">
-                #{style,jdbcType=VARCHAR},
-            </if>
-            <if test="menuType != null">
-                #{menuType,jdbcType=INTEGER},
-            </if>
+
         </trim>
     </insert>
 
     <update id="updateMenu" parameterType="com.cxtx.user_manage.domain.Menu">
         UPDATE tb_sys_menu
         <set>
-            <if test="name != null">
-                NAME = #{name,jdbcType=VARCHAR},
-            </if>
-            <if test="action != null">
-                ACTION = #{action,jdbcType=VARCHAR},
-            </if>
-            <if test="sort != null">
-                SORT = #{sort,jdbcType=INTEGER},
-            </if>
             <if test="parentId != null">
                 PARENT_ID = #{parentId,jdbcType=VARCHAR},
             </if>
-            <if test="style != null">
-                STYLE = #{style,jdbcType=VARCHAR},
+            <if test="path != null">
+                PATH = #{path,jdbcType=VARCHAR},
             </if>
-            <if test="menuType != null">
-                MENU_TYPE = #{menuType,jdbcType=INTEGER},
+            <if test="component != null">
+                COMPONENT = #{component,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                TITLE = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="redirect != null">
+                REDIRECT = #{redirect,jdbcType=VARCHAR},
+            </if>
+            <if test="name != null">
+                NAME = #{name,jdbcType=VARCHAR},
+            </if>
+            <if test="icon != null">
+                ICON = #{icon,jdbcType=VARCHAR},
+            </if>
+            <if test="hidden != null">
+                HIDDEN = #{hidden,jdbcType=VARCHAR},
+            </if>
+            <if test="sort != null">
+                SORT = #{sort,jdbcType=INTEGER},
             </if>
         </set>
         WHERE ID = #{id,jdbcType=VARCHAR}
     </update>
 
-    <select id="selectMenusTree" resultMap="MenuNode">
-        SELECT
-        A.ID,
-        A.NAME,
-        A.ACTION,
-        A.SORT,
-        A.PARENT_ID,
-        A.STYLE,
-        A.MENU_TYPE,
-        B.NAME AS MENU_TYPE_NAME
-        FROM tb_sys_menu A
-        LEFT JOIN tb_dic_menu_type B ON B.ID=A.MENU_TYPE
-        ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(GETMENUCHILDLIST(ID) ORDER BY SORT) FROM tb_sys_menu WHERE PARENT_ID IS NULL)), A.SORT
-    </select>
 
-    <select id="selectMenuModulesByRoleId" parameterType="map" resultMap="FullResultMap">
-        SELECT
-        A.ID,
-        A.NAME,
-        A.ACTION,
-        A.SORT,
-        A.PARENT_ID,
-        A.STYLE,
-        A.MENU_TYPE,
-        B.NAME AS MENU_TYPE_NAME,
-        #{roleId} AS ROLE_ID
-        FROM tb_sys_menu A
-        LEFT JOIN tb_dic_menu_type B ON B.ID=A.MENU_TYPE
-        WHERE 1=1
-        AND B.TYPE = 1
-        <if test="id != null and id != ''">
-            AND A.PARENT_ID = #{id}
-        </if>
-        <if test="id == null or id == ''">
-            AND (A.PARENT_ID = '' OR A.PARENT_ID IS NULL)
-        </if>
-        AND A.ID IN (SELECT MENU_ID FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId})
-        ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(GETMENUCHILDLIST(ID) ORDER BY SORT) FROM tb_sys_menu WHERE PARENT_ID IS NULL)), A.SORT
-    </select>
 
     <select id="selectAllMenu" resultType="map">
         SELECT
             ID AS id,
-            `NAME` AS label,
+            TITLE AS label,
             SORT AS sort,
             PARENT_ID AS parentId
         FROM
@@ -183,7 +148,7 @@
     <select id="selectRoleStairMenu" parameterType="java.lang.String" resultType="map">
         SELECT
             ID AS id,
-            `NAME` AS label,
+            TITLE AS label,
             SORT AS sort,
             PARENT_ID AS parentId
         FROM
@@ -198,44 +163,43 @@
     <select id="selectRoleSubMenu" parameterType="java.lang.String" resultType="map">
         SELECT
             ID AS id,
-            `NAME` AS label,
+            TITLE AS label,
             SORT AS sort,
             PARENT_ID AS parentId
         FROM
             tb_sys_menu
         WHERE
-            MENU_TYPE = '0'
+            1=1
         AND PARENT_ID IS NOT NULL
         AND ID IN (SELECT DISTINCT MENU_ID FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId})
         ORDER BY
             SORT ASC
     </select>
 
-    <select id="selectModuleLimitsByRoleId" parameterType="map" resultMap="BaseResultMap">
-        SELECT
-        A.ID,
-        A.NAME,
-        A.ACTION,
-        A.SORT,
-        A.PARENT_ID,
-        A.STYLE,
-        A.MENU_TYPE,
-        B.NAME AS MENU_TYPE_NAME
-        FROM tb_sys_menu A
-        LEFT JOIN tb_dic_menu_type B ON B.ID=A.MENU_TYPE
-        WHERE 1=1
-        AND B.TYPE = 0
-        AND A.ID IN (SELECT MENU_ID FROM tb_sys_role_r_menu WHERE ROLE_ID = #{roleId})
-        AND A.PARENT_ID = #{menuId}
-        ORDER BY FIND_IN_SET(A.ID,(SELECT GROUP_CONCAT(GETMENUCHILDLIST(ID) ORDER BY SORT) FROM tb_sys_menu WHERE PARENT_ID IS NULL)), A.SORT
+
+    <select id="selectAllStairMenu" resultMap="BaseResultMap">
+        select * from tb_sys_menu where PARENT_ID IS NULL ORDER BY SORT
     </select>
 
-    <select id="selectStairMenuByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT
-            a.*, GROUP_CONCAT(b.ROLE_ID) AS USE_ROLES
+    <select id="queryMenuInfo" resultMap="BaseResultMap">
+        select * from tb_sys_menu where ID = #{id}
+    </select>
+
+
+    <select id="getAllByUserId" parameterType="java.lang.String" resultMap="BaseResultMap">
+         SELECT
+            a.*, b.USE_ROLES
         FROM
             tb_sys_menu a
-        LEFT JOIN tb_sys_role_r_menu b ON a.ID = b.MENU_ID
+        LEFT JOIN (
+            SELECT
+                MENU_ID,
+                GROUP_CONCAT(ROLE_ID) AS USE_ROLES
+            FROM
+                tb_sys_role_r_menu
+            GROUP BY
+                MENU_ID
+        ) b ON a.ID = b.MENU_ID
         WHERE
             FIND_IN_SET(
                 a.ID,
@@ -253,51 +217,20 @@
                                 FROM
                                     tb_sys_user_r_role
                                 WHERE
-                                    LOGIN_ID = (SELECT LOGIN_ID FROM tb_sys_user WHERE ID = #{userId})
+                                    LOGIN_ID = (
+                                        SELECT
+                                            LOGIN_ID
+                                        FROM
+                                            tb_sys_user
+                                        WHERE
+                                            ID = #{userId}
+                                    )
                             )
                         ) > 0
                 )
             ) > 0
-        AND a.PARENT_ID IS NULL
-        AND a.MENU_TYPE = '0'
-        GROUP BY
-            a.ID,
-            a.`NAME`,
-            a.ACTION,
-            a.SORT,
-            a.PARENT_ID,
-            a.STYLE,
-            a.MENU_TYPE
         ORDER BY
             a.SORT
-    </select>
-
-    <select id="selectAllStairMenu" resultMap="BaseResultMap">
-        select * from tb_sys_menu where PARENT_ID IS NULL ORDER BY SORT
-    </select>
-
-    <select id="queryMenuInfo" resultMap="BaseResultMap">
-        select * from tb_sys_menu where ID = #{id}
-    </select>
-
-    <select id="selectChildrenMenuByParentId" parameterType="java.lang.String" resultMap="BaseResultMap">
-        SELECT
-            a.*, GROUP_CONCAT(b.ROLE_ID) AS USE_ROLES
-        FROM
-            tb_sys_menu a
-        LEFT JOIN tb_sys_role_r_menu b ON a.ID = b.MENU_ID
-        WHERE
-            a.PARENT_ID = #{parentMenuId}
-        GROUP BY
-            a.ID,
-            a.`NAME`,
-            a.ACTION,
-            a.SORT,
-            a.PARENT_ID,
-            a.STYLE,
-            a.MENU_TYPE
-        ORDER BY
-            a.SORT
-    </select>
+  </select>
 
 </mapper>
