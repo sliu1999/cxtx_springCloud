@@ -50,13 +50,13 @@ public interface UserService {
      * @param groupId
      * @return
      */
-    List<User> getUserByGroup(Long groupId);
+    List<User> getUserByGroup(String groupId);
     /**
      * 根据角色查询人员
      * @param roleId
      * @return
      */
-    List<User> getUserByRole(Long roleId);
+    List<User> getUserByRole(String roleId);
 
     Map queryUserDetailById(String userId);
 

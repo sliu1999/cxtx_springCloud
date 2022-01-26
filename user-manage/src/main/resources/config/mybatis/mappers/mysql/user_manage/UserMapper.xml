@@ -275,12 +275,12 @@
         LEFT JOIN tb_sys_staff_r_department srd ON srd.STAFF_ID = staff.ID
         LEFT JOIN tb_sys_department dept ON dept.ID = srd.DEPARTMENT_ID
         WHERE
-            r.ROLE_ID IN (${roleId})
-        AND srd.DEPARTMENT_ID IN (${groupId})
+            r.ROLE_ID IN (#{roleId})
+        AND srd.DEPARTMENT_ID IN (#{groupId})
         GROUP BY
             u.id
 	</select>
-    <select id="getUserByGroup" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getUserByGroup" parameterType="java.lang.String" resultMap="BaseResultMap">
 		SELECT DISTINCT
             u.*
         FROM
@@ -293,7 +293,7 @@
         srd.DEPARTMENT_ID = #{groupId}
 
 	</select>
-    <select id="getUserByRole" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="getUserByRole" parameterType="java.lang.String" resultMap="BaseResultMap">
 		SELECT DISTINCT
             u.*
         FROM
@@ -308,7 +308,7 @@
     <select id="getUserInfoByIdStrings" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT * FROM `tb_sys_user` WHERE
         <if test="idStrings!=null and idStrings!=''">
-            id in(${idStrings})
+            id in(#{idStrings})
         </if>
         <if test="idStrings==null or idStrings==''">
             1=0
@@ -318,7 +318,7 @@
     <select id="getUserNameByIdStrings" resultType="string">
         SELECT LOGIN_ID FROM `tb_sys_user` WHERE
         <if test="idStrings!=null and idStrings!=''">
-            id in(${idStrings})
+            id in(#{idStrings})
         </if>
         <if test="idStrings==null or idStrings==''">
             1=0

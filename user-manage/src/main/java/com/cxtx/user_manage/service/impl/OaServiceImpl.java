@@ -134,14 +134,14 @@ public class OaServiceImpl implements OaService {
             List<String> groupIds = elementConfig.get("groupIds") == null ? new ArrayList<String>()
                     : (List<String>) elementConfig.get("groupIds");
             for (String groupId : groupIds) {
-                List<User> user = userService.getUserByGroup(Long.parseLong(groupId));
+                List<User> user = userService.getUserByGroup(groupId);
                 users.addAll(user);
             }
             // 审批人仅根据指定岗位
             List<String> roleIds = elementConfig.get("roleIds") == null ? new ArrayList<String>()
                     : (List<String>) elementConfig.get("roleIds");
             for (String roleId : roleIds) {
-                List<User> user = userService.getUserByRole(Long.parseLong(roleId));
+                List<User> user = userService.getUserByRole(roleId);
                 users.addAll(user);
             }
             // 审批人根据指定人员
