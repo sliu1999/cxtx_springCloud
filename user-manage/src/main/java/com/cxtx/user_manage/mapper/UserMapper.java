@@ -54,9 +54,9 @@ public interface UserMapper {
 
     List<User> getUserByGroupRole(@Param("groupId")String groupId, @Param("roleId")String roleId);
 
-    List<User> getUserByGroup(@Param("groupId")Long groupId);
+    List<User> getUserByGroup(@Param("groupId")String groupId);
 
-    List<User> getUserByRole(@Param("roleId")Long roleId);
+    List<User> getUserByRole(@Param("roleId")String roleId);
 
     List<User> getUserInfoByIdStrings(@Param("idStrings")String idStrings);
 

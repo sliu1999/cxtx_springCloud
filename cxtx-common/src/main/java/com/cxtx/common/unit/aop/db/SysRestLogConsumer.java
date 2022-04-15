@@ -40,6 +40,7 @@ public class SysRestLogConsumer extends AbstractMyConsumer implements Runnable,M
      */
     @Override
     public void run() {
+        //写个死循环，保证现场不会结束
         while(true) {
             //对sysRestLogQueue上锁，必须拿到这个对象锁，才能执行其中的方法
             synchronized(this.sysRestLogQueue) {
@@ -50,7 +51,7 @@ public class SysRestLogConsumer extends AbstractMyConsumer implements Runnable,M
                     try {
                         logger.info(this.consumerId + "执行等待……");
                         //当队列为null时，调用wait()阻塞该线程，使其不向下执行（消费），指导另一个线程调用notifyAll()唤醒它
-                        this.sysRestLogQueue.wait();
+                        this.sysRestLogQueue.wait();//wait用来保证这个队列里有东西，才会消费
                     } catch (Exception var5) {
                         var5.printStackTrace();
                     }

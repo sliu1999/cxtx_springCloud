@@ -191,7 +191,7 @@ CREATE TABLE IF NOT EXISTS `tb_sys_staff_icon_card` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='员工证件照附件表';
 ##
-INSERT INTO tb_sys_attached_tab (ID,TABLE_NAME,REMARK) VALUES ('2018111401','TB_SYS_STAFF_ICON_CARD','员工证件照') ##
+INSERT INTO tb_sys_attached_tab (ID,TABLE_NAME,REMARK) VALUES ('2018111401','tb_sys_staff_icon_card','员工证件照') ##
 
 CREATE TABLE IF NOT EXISTS `tb_sys_staff_icon_photo` (
   `ID` varchar(36) NOT NULL,
@@ -207,7 +207,7 @@ CREATE TABLE IF NOT EXISTS `tb_sys_staff_icon_photo` (
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='员工头像附件表';
 ##
-INSERT INTO tb_sys_attached_tab (ID,TABLE_NAME,REMARK) VALUES ('2018111402','TB_SYS_STAFF_ICON_PHOTO','员工头像') ##
+INSERT INTO tb_sys_attached_tab (ID,TABLE_NAME,REMARK) VALUES ('2018111402','tb_sys_staff_icon_photo','员工头像') ##
 
 CREATE TABLE IF NOT EXISTS `tb_sys_staff_r_department` (
   `ID` varchar(36) NOT NULL,

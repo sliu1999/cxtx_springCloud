@@ -151,12 +151,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUserByGroup(Long groupId) {
+    public List<User> getUserByGroup(String groupId) {
         return userMapper.getUserByGroup(groupId);
     }
 
     @Override
-    public List<User> getUserByRole(Long roleId) {
+    public List<User> getUserByRole(String roleId) {
         return userMapper.getUserByRole(roleId);
     }
 
